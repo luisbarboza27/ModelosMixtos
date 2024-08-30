@@ -1,0 +1,54 @@
+# Introducción
+
+Carga de paquetes:
+
+```{r, warning=FALSE,message=FALSE}
+library(tidyverse)
+library(arm)
+library(readr)
+```
+
+Ejemplo de datos con medidas repetidas:
+
+Conjunto de datos longitudinal de unos 2000 adolescentes australianos cuyos patrones de consumo de tabaco se registraron cada seis meses (a través de un cuestionario) durante un período de tres años. 
+
+Carga de datos:
+
+```{r}
+smoking <- read_delim('./data/ARM_Data/smoking/smoke_pub.dat') 
+
+smoking <- smoking %>% rename(sex = `sex(1=F)`) %>%
+  mutate(sex = factor(sex))
+```
+
+Y graficamos la prevalencia en del fumado en cada una de las aplicaciones del cuestionario (wave) para cada uno de los sexos:
+
+```{r}
+prevalencia <- smoking %>%
+  group_by(sex,wave) %>%
+  summarise(prevalencia = mean(smkreg)) 
+
+ggplot()+geom_line(data=prevalencia,aes(x=wave,y=prevalencia,color = sex)
+                  )+theme_minimal()+labs(title = 'Prevalencia de fumado por sexo',
+                                          x = 'Aplicación del cuestionario',
+                                          y = 'Prevalencia de fumado')
+```
+
+También podemos separar la información propia del nivel 1 (waves) y los de nivel más agrupado o nivel 2 (individuos):
+
+```{r}
+smoking_ind <- smoking %>% 
+  dplyr::select(wave,newid,smkreg) %>%
+  arrange(wave,newid)
+
+head(smoking_ind)
+```
+
+```{r}
+smoking_group <- smoking %>% 
+  dplyr::select(newid,sex,parsmk) %>%
+  distinct()
+
+head(smoking_group)
+```
+
