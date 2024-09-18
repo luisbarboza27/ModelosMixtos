@@ -1,0 +1,150 @@
+# Modelos Lineales Multinivel básicos
+
+```{r, warning=FALSE,message=FALSE}
+library(tidyverse)
+library(arm)
+library(readr)
+library(lme4)
+library(stringr)
+```
+
+## Pooling completo vs no-pooling
+
+Carga de datos de radon y depuración:
+
+```{r}
+radon <- read_delim('./data/ARM_Data/radon/srrs2.dat')
+
+
+radon <- radon %>% 
+  mutate(log_radon = log(as.numeric(` activity`)+0.01),
+         county = as.factor(str_trim(` county`)),
+         state = as.factor(` state`),floor = ` floor`)
+```
+
+Filtrado a datos de Minnesota:
+
+```{r}
+radon_city_Minnesota <- radon %>% 
+  filter(state == "MN")
+```
+
+Boxplot de los niveles de radon por ciudad:
+
+```{r}
+mean_radon <- mean(radon_city_Minnesota$log_radon, na.rm = TRUE)
+
+ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
+  geom_boxplot() +
+  geom_abline(intercept = mean_radon, slope = 0, color = "red") +
+  labs(title = "Boxplot of Log Radon Levels by City",
+       x = "City",
+       y = "Log Radon Level") +
+  theme_minimal()
+```
+
+Boxplot de los niveles de radon por ciudad ordenados por tamaño de muestra:
+```{r}
+tabla_ns <- radon_city_Minnesota %>% group_by(county) %>% summarise(n = n())  
+
+radon_city_Minnesota <- radon_city_Minnesota %>% 
+  left_join(tabla_ns, by = "county")
+
+
+radon_city_Minnesota <- radon_city_Minnesota %>%
+  mutate(county = factor(county, levels = tabla_ns$county[order(tabla_ns$n)]))
+
+ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
+  geom_boxplot() +
+  geom_abline(intercept = mean_radon, slope = 0, color = "red") +
+  labs(title = "Boxplot of Log Radon Levels by County (Sorted by Sample Size)",
+       x = "City",
+       y = "Log Radon Level") +
+  theme_minimal()
+```
+
+Boxplot de los niveles de radon por ciudad usando partial-pooling (Multinivel):
+
+```{r}
+lmer_radon <- lmer(log_radon ~ 1 + (1|county), data = radon_city_Minnesota)
+
+radon_city_Minnesota <- radon_city_Minnesota %>% 
+  mutate(log_radon_pred = predict(lmer_radon))
+
+ggplot(radon_city_Minnesota, aes(x = county, y = log_radon_pred)) +
+  geom_boxplot() +
+  geom_abline(intercept = mean_radon, slope = 0, color = "red") +
+  labs(title = "Boxplot of Log Radon Levels by City (Predicted)",
+       x = "City",
+       y = "Log Radon Level (Predicted)") +
+  theme_minimal()
+```
+
+Pooling completo vs no-pooling con una covariable:
+
+```{r}
+muestra_counties <- c('LAC QUI PARLE', 'AITKIN','KOOCHICHING',
+                      'DOUGLAS','CLAY','STEARNS','RAMSEY','ST LOUIS')
+
+radon_city_Minnesota_m <- radon_city_Minnesota %>% mutate(county_s = as.character(county)) %>%
+  filter(county_s %in% muestra_counties)
+
+
+regresion_pooling <- lm(log_radon ~ floor, data = radon_city_Minnesota)
+regresion_no_pooling <- lm(log_radon ~ -1+floor+county, data = radon_city_Minnesota_m)
+
+
+coef_df <- coef(regresion_no_pooling)
+
+coef_data <- data.frame(
+  county_s = sub("county", "", names(coef_df)[grep("county", names(coef_df))]),
+  slope = coef_df[grep("floor", names(coef_df))],
+  intercept = coef_df[grep("county", names(coef_df))]
+)
+
+
+radon_city_Minnesota_m <- radon_city_Minnesota_m %>%
+  left_join(coef_data, by = "county_s")
+
+ggplot(data = radon_city_Minnesota_m) +
+  geom_point(aes(x = floor, y = log_radon)) +
+  geom_abline(aes(intercept = intercept, slope = slope), color = "blue") +  # Specific regression lines for each county
+  geom_abline(intercept = coef(regresion_pooling)[1], slope = coef(regresion_pooling)[2], color = "red") +  # General regression line
+  facet_wrap(~county_s) +
+  labs(title = "Radon Levels by Floor with Specific and General Regression Lines",
+       x = "Floor",
+       y = "Log Radon Level") +
+  theme_minimal()
+```
+
+Pooling parcial con una covariable (Multinivel):
+
+```{r}
+lmer_radon_floor <- lmer(log_radon ~ floor + (1|county), 
+                         data = radon_city_Minnesota_m)
+
+
+fixed_effect <- fixef(lmer_radon_floor)
+random_effects <- ranef(lmer_radon_floor)$county
+
+
+coef_data_lmer <- data.frame(
+  county_s = rownames(random_effects),
+  intercept_lmer = fixed_effect[1] + random_effects[, 1], 
+  slope_lmer = fixed_effect[2]  
+)
+
+radon_city_Minnesota_m <- radon_city_Minnesota_m %>%
+  left_join(coef_data_lmer, by = "county_s")
+
+ggplot(data = radon_city_Minnesota_m) +
+  geom_point(aes(x = floor, y = log_radon)) +
+  geom_abline(aes(intercept = intercept_lmer, slope = slope_lmer), color = "blue") +  # Specific regression lines for each county
+  geom_abline(intercept = fixed_effect[1], slope = fixed_effect[2], color = "red") +  # General regression line (fixed effects only)
+  facet_wrap(~county_s) +
+  labs(title = "Radon Levels by Floor with Specific and General Regression Lines",
+       x = "Floor",
+       y = "Log Radon Level") +
+  theme_minimal()
+```
+

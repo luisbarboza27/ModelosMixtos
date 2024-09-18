@@ -10,7 +10,7 @@ library(readr)
 
 Ejemplo de datos con medidas repetidas:
 
-Conjunto de datos longitudinal de unos 2000 adolescentes australianos cuyos patrones de consumo de tabaco se registraron cada seis meses (a través de un cuestionario) durante un período de tres años. 
+Conjunto de datos longitudinal de unos 2000 adolescentes australianos cuyos patrones de consumo de tabaco se registraron cada seis meses (a través de un cuestionario) durante un período de tres años.
 
 Carga de datos:
 
@@ -51,4 +51,3 @@ smoking_group <- smoking %>%
 
 head(smoking_group)
 ```
-
