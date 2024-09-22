@@ -170,6 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pooling-completo-vs-no-pooling" id="toc-pooling-completo-vs-no-pooling" class="nav-link active" data-scroll-target="#pooling-completo-vs-no-pooling"><span class="header-section-number">2.1</span> Pooling completo vs no-pooling</a></li>
   <li><a href="#modelo-multinivel-pooling-parcial" id="toc-modelo-multinivel-pooling-parcial" class="nav-link" data-scroll-target="#modelo-multinivel-pooling-parcial"><span class="header-section-number">2.2</span> Modelo multinivel (pooling parcial)</a></li>
   <li><a href="#modelo-multinivel-con-predictor-por-grupo" id="toc-modelo-multinivel-con-predictor-por-grupo" class="nav-link" data-scroll-target="#modelo-multinivel-con-predictor-por-grupo"><span class="header-section-number">2.3</span> Modelo multinivel con predictor por grupo</a></li>
+  <li><a href="#predicción-de-un-modelo-multinivel" id="toc-predicción-de-un-modelo-multinivel" class="nav-link" data-scroll-target="#predicción-de-un-modelo-multinivel"><span class="header-section-number">2.4</span> Predicción de un modelo multinivel</a></li>
   </ul>
 </nav>
     </div>
@@ -853,6 +854,61 @@ deviance = 2122.8 </code></pre>
 <p><img src="MLMbasicos_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+</section>
+<section id="predicción-de-un-modelo-multinivel" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="predicción-de-un-modelo-multinivel"><span class="header-section-number">2.4</span> Predicción de un modelo multinivel</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>n.sims <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>x.tilde <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>sigma.y.hat <span class="ot">&lt;-</span> <span class="fu">sigma.hat</span>(M2)<span class="sc">$</span>sigma<span class="sc">$</span>data</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>coef.hat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(M2)<span class="sc">$</span>county)[<span class="dv">26</span>, ]</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>u_value <span class="ot">&lt;-</span> county_u_data[<span class="dv">26</span>,<span class="dv">2</span>]</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="fu">sum</span>(coef.hat <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, x.tilde, u_value)), sigma.y.hat)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n.sims, <span class="fu">sum</span>(coef.hat <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, x.tilde, u_value)), sigma.y.hat)</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>mean_y_tilde <span class="ot">&lt;-</span> <span class="fu">mean</span>(y.tilde)</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>quantiles_y_tilde <span class="ot">&lt;-</span> <span class="fu">quantile</span>(y.tilde, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>unlogged <span class="ot">&lt;-</span> <span class="fu">exp</span>(y.tilde)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>mean_unlogged <span class="ot">&lt;-</span> <span class="fu">mean</span>(unlogged)</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>quantiles_unlogged <span class="ot">&lt;-</span> <span class="fu">quantile</span>(unlogged, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>u.tilde <span class="ot">&lt;-</span> <span class="fu">mean</span>(county_u_data[,<span class="dv">2</span>])</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>g.<span class="fl">0.</span>hat <span class="ot">&lt;-</span> <span class="fu">fixef</span>(M2)[<span class="st">"(Intercept)"</span>]</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>g.<span class="fl">1.</span>hat <span class="ot">&lt;-</span> <span class="fu">fixef</span>(M2)[<span class="st">"u"</span>]</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>sigma.a.hat <span class="ot">&lt;-</span> <span class="fu">sigma.hat</span>(M2)<span class="sc">$</span>sigma<span class="sc">$</span>county</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>b.hat <span class="ot">&lt;-</span> b.hat.M2</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>a.tilde <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n.sims, g.<span class="fl">0.</span>hat <span class="sc">+</span> g.<span class="fl">1.</span>hat <span class="sc">*</span> u.tilde, sigma.a.hat)</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n.sims, a.tilde <span class="sc">+</span> b.hat <span class="sc">*</span> x.tilde, sigma.y.hat)</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>quantiles_y_tilde <span class="ot">&lt;-</span> <span class="fu">quantile</span>(y.tilde, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>),<span class="at">na.rm =</span> T)</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>exp_quantiles_y_tilde <span class="ot">&lt;-</span> <span class="fu">exp</span>(quantiles_y_tilde)</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Nonlinear predictions</span></span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>y.tilde.basement <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n.sims, a.hat.M2[<span class="dv">26</span>, ], sigma.y.hat)</span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>y.tilde.nobasement <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n.sims, a.hat.M2[<span class="dv">26</span>, ] <span class="sc">+</span> b.hat.M2, sigma.y.hat)</span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>y.tilde <span class="ot">&lt;-</span> <span class="fl">0.9</span> <span class="sc">*</span> y.tilde.basement <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> y.tilde.nobasement</span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a>mean_radon_basement <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">exp</span>(y.tilde.basement))</span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>mean_radon_nobasement <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">exp</span>(y.tilde.nobasement))</span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a>mean_radon <span class="ot">&lt;-</span> <span class="fl">0.9</span> <span class="sc">*</span> mean_radon_basement <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> mean_radon_basement</span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_radon_basement)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.15949</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_radon_nobasement)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.639663</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_radon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.15949</code></pre>
 </div>
 </div>
 

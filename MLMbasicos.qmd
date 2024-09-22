@@ -295,3 +295,51 @@ ggplot(plot_data, aes(x = u, y = a_hat)) +
   )
 ```
 
+## Predicción de un modelo multinivel
+ 
+```{r}
+n.sims <- 1000
+
+x.tilde <- 1
+sigma.y.hat <- sigma.hat(M2)$sigma$data
+coef.hat <- as.matrix(coef(M2)$county)[26, ]
+u_value <- county_u_data[26,2]
+
+y.tilde <- rnorm(1, sum(coef.hat * c(1, x.tilde, u_value)), sigma.y.hat)
+y.tilde <- rnorm(n.sims, sum(coef.hat * c(1, x.tilde, u_value)), sigma.y.hat)
+
+mean_y_tilde <- mean(y.tilde)
+quantiles_y_tilde <- quantile(y.tilde, probs = c(0.25, 0.5, 0.75))
+
+unlogged <- exp(y.tilde)
+mean_unlogged <- mean(unlogged)
+quantiles_unlogged <- quantile(unlogged, probs = c(0.25, 0.5, 0.75))
+
+u.tilde <- mean(county_u_data[,2])
+g.0.hat <- fixef(M2)["(Intercept)"]
+g.1.hat <- fixef(M2)["u"]
+sigma.a.hat <- sigma.hat(M2)$sigma$county
+b.hat <- b.hat.M2
+
+a.tilde <- rnorm(n.sims, g.0.hat + g.1.hat * u.tilde, sigma.a.hat)
+y.tilde <- rnorm(n.sims, a.tilde + b.hat * x.tilde, sigma.y.hat)
+
+quantiles_y_tilde <- quantile(y.tilde, probs = c(0.25, 0.5, 0.75),na.rm = T)
+exp_quantiles_y_tilde <- exp(quantiles_y_tilde)
+
+# Nonlinear predictions
+y.tilde.basement <- rnorm(n.sims, a.hat.M2[26, ], sigma.y.hat)
+y.tilde.nobasement <- rnorm(n.sims, a.hat.M2[26, ] + b.hat.M2, sigma.y.hat)
+y.tilde <- 0.9 * y.tilde.basement + 0.1 * y.tilde.nobasement
+
+mean_radon_basement <- mean(exp(y.tilde.basement))
+mean_radon_nobasement <- mean(exp(y.tilde.nobasement))
+mean_radon <- 0.9 * mean_radon_basement + 0.1 * mean_radon_basement
+
+print(mean_radon_basement)
+print(mean_radon_nobasement)
+print(mean_radon)
+
+```
+
+
