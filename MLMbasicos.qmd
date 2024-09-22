@@ -13,28 +13,31 @@ library(stringr)
 Carga de datos de radon y depuración:
 
 ```{r}
-radon <- read_delim('./data/ARM_Data/radon/srrs2.dat')
+radon <- read_delim('./data/ARM_Data/radon/srrs2.dat',trim_ws = TRUE)
 
+radon_data <- radon %>%
+  filter(state == "MN") %>%
+  mutate(
+    radon = activity,
+    log_radon = log(if_else(activity == 0, 0.1, activity)),
+    floor = floor,  # 0 for basement, 1 for first floor
+    county_name = as.vector(county)
+  ) %>%
+  group_by(county_name) %>%
+  mutate(
+    county = cur_group_id()
+  ) %>%
+  ungroup()
 
-radon <- radon %>% 
-  mutate(log_radon = log(as.numeric(` activity`)+0.01),
-         county = as.factor(str_trim(` county`)),
-         state = as.factor(` state`),floor = ` floor`)
 ```
 
-Filtrado a datos de Minnesota:
-
-```{r}
-radon_city_Minnesota <- radon %>% 
-  filter(state == "MN")
-```
 
 Boxplot de los niveles de radon por ciudad:
 
 ```{r}
-mean_radon <- mean(radon_city_Minnesota$log_radon, na.rm = TRUE)
+mean_radon <- mean(radon_data$log_radon, na.rm = TRUE)
 
-ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
+ggplot(radon_data, aes(x = county_name, y = log_radon)) +
   geom_boxplot() +
   geom_abline(intercept = mean_radon, slope = 0, color = "red") +
   labs(title = "Boxplot of Log Radon Levels by City",
@@ -44,17 +47,18 @@ ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
 ```
 
 Boxplot de los niveles de radon por ciudad ordenados por tamaño de muestra:
+
 ```{r}
-tabla_ns <- radon_city_Minnesota %>% group_by(county) %>% summarise(n = n())  
+tabla_ns <- radon_data %>% group_by(county_name) %>% summarise(n = n())  
 
-radon_city_Minnesota <- radon_city_Minnesota %>% 
-  left_join(tabla_ns, by = "county")
+radon_data <- radon_data %>% 
+  left_join(tabla_ns, by = "county_name")
 
 
-radon_city_Minnesota <- radon_city_Minnesota %>%
-  mutate(county = factor(county, levels = tabla_ns$county[order(tabla_ns$n)]))
+radon_data <- radon_data %>%
+  mutate(county_name = factor(county_name, levels = tabla_ns$county_name[order(tabla_ns$n)]))
 
-ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
+ggplot(radon_data, aes(x = county_name, y = log_radon)) +
   geom_boxplot() +
   geom_abline(intercept = mean_radon, slope = 0, color = "red") +
   labs(title = "Boxplot of Log Radon Levels by County (Sorted by Sample Size)",
@@ -66,12 +70,12 @@ ggplot(radon_city_Minnesota, aes(x = county, y = log_radon)) +
 Boxplot de los niveles de radon por ciudad usando partial-pooling (Multinivel):
 
 ```{r}
-lmer_radon <- lmer(log_radon ~ 1 + (1|county), data = radon_city_Minnesota)
+lmer_radon <- lmer(log_radon ~ 1 + (1|county_name), data = radon_data)
 
-radon_city_Minnesota <- radon_city_Minnesota %>% 
+radon_data <- radon_data %>% 
   mutate(log_radon_pred = predict(lmer_radon))
 
-ggplot(radon_city_Minnesota, aes(x = county, y = log_radon_pred)) +
+ggplot(radon_data, aes(x = county_name, y = log_radon_pred)) +
   geom_boxplot() +
   geom_abline(intercept = mean_radon, slope = 0, color = "red") +
   labs(title = "Boxplot of Log Radon Levels by City (Predicted)",
@@ -86,12 +90,12 @@ Pooling completo vs no-pooling con una covariable:
 muestra_counties <- c('LAC QUI PARLE', 'AITKIN','KOOCHICHING',
                       'DOUGLAS','CLAY','STEARNS','RAMSEY','ST LOUIS')
 
-radon_city_Minnesota_m <- radon_city_Minnesota %>% mutate(county_s = as.character(county)) %>%
+radon_data_r <- radon_data %>% mutate(county_s = as.character(county_name)) %>%
   filter(county_s %in% muestra_counties)
 
 
-regresion_pooling <- lm(log_radon ~ floor, data = radon_city_Minnesota)
-regresion_no_pooling <- lm(log_radon ~ -1+floor+county, data = radon_city_Minnesota_m)
+regresion_pooling <- lm(log_radon ~ floor, data = radon_data_r)
+regresion_no_pooling <- lm(log_radon ~ -1+floor+county_name, data = radon_data_r)
 
 
 coef_df <- coef(regresion_no_pooling)
@@ -103,10 +107,10 @@ coef_data <- data.frame(
 )
 
 
-radon_city_Minnesota_m <- radon_city_Minnesota_m %>%
+radon_data_r <- radon_data_r %>%
   left_join(coef_data, by = "county_s")
 
-ggplot(data = radon_city_Minnesota_m) +
+ggplot(data = radon_data_r) +
   geom_point(aes(x = floor, y = log_radon)) +
   geom_abline(aes(intercept = intercept, slope = slope), color = "blue") +  # Specific regression lines for each county
   geom_abline(intercept = coef(regresion_pooling)[1], slope = coef(regresion_pooling)[2], color = "red") +  # General regression line
@@ -120,8 +124,8 @@ ggplot(data = radon_city_Minnesota_m) +
 Pooling parcial con una covariable (Multinivel):
 
 ```{r}
-lmer_radon_floor <- lmer(log_radon ~ floor + (1|county), 
-                         data = radon_city_Minnesota_m)
+lmer_radon_floor <- lmer(log_radon ~ floor + (1|county_name), 
+                         data = radon_data_r)
 
 
 fixed_effect <- fixef(lmer_radon_floor)
@@ -134,10 +138,10 @@ coef_data_lmer <- data.frame(
   slope_lmer = fixed_effect[2]  
 )
 
-radon_city_Minnesota_m <- radon_city_Minnesota_m %>%
+radon_data_r <- radon_data_r %>%
   left_join(coef_data_lmer, by = "county_s")
 
-ggplot(data = radon_city_Minnesota_m) +
+ggplot(data = radon_data_r) +
   geom_point(aes(x = floor, y = log_radon)) +
   geom_abline(aes(intercept = intercept_lmer, slope = slope_lmer), color = "blue") +  # Specific regression lines for each county
   geom_abline(intercept = fixed_effect[1], slope = fixed_effect[2], color = "red") +  # General regression line (fixed effects only)
@@ -146,5 +150,148 @@ ggplot(data = radon_city_Minnesota_m) +
        x = "Floor",
        y = "Log Radon Level") +
   theme_minimal()
+```
+
+## Modelo multinivel (pooling parcial)
+
+Modelo con intercepto variable por condado y piso
+
+```{r}
+M1 <- lmer (log_radon ~ floor + (1 | county_name),data = radon_data)
+display (M1)
+```
+
+Coeficientes estimados de regresion
+
+```{r}
+coef (M1)
+```
+
+Efectos fijos y efectos aleatorios
+
+```{r}
+fixef (M1)
+ranef (M1)
+```
+
+Incertidumbres de los coeficientes estimados
+
+```{r}
+se.fixef (M1)
+
+se.ranef (M1)
+
+se_random <- se.ranef (M1)
+```
+
+Incertidumbre de los coeficientes por condado vs tamaño de muestra:
+
+```{r}
+tabla_se_random <- data.frame(county_name = rownames(se_random$county),
+                              se = as.numeric(se_random$county))
+
+
+tabla_se <- radon_data %>% group_by(county_name) %>% summarise(n = n()) %>% 
+  left_join(tabla_se_random, by = "county_name") 
+
+  ggplot(mapping = aes(x = n, y = se),data = tabla_se) +
+  geom_point()
+
+```
+
+Intervalos de confianza para los coeficientes fijos:
+  
+```{r}
+fixef(M1)[1]+c(-1,1)*qnorm(0.975)*se.fixef(M1)[1]
+fixef(M1)[2]+c(-1,1)*qnorm(0.975)*se.fixef(M1)[2]
+```
+  
+Intervalos de confianza para los coeficientes por condado. Intercepto total:
+```{r}
+coef(M1)$county[26,1]+c(-1,1)*qnorm(0.975)*se.ranef(M1)$county[26]
+```
+
+Solo efecto aleatorio sobre intercepto fijo
+```{r}
+as.matrix(ranef(M1)$county)[26]+c(-1,1)*qnorm(0.975)*se.ranef(M1)$county[26]
+```
+
+## Modelo multinivel con predictor por grupo
+
+Preparación de datos:
+
+```{r}
+cty <- read_delim('./data/ARM_Data/radon/cty.dat',trim_ws = TRUE)
+
+radon_data <- radon_data %>% mutate(fips = stfips * 1000 + cntyfips)
+
+# Obtener el FIPS a nivel de EE.UU.
+usa.fips <- 1000 * as.numeric(cty$stfips) + as.numeric(cty$ctfips)
+
+# Encontrar las filas correspondientes a los condados únicos en Minnesota
+usa.rows <- match(unique(radon_data$fips), usa.fips)
+
+uranium <- cty[usa.rows, "Uppm"]
+u <- log(uranium)
+
+county_u_data <- data.frame(
+  county_name = unique(radon_data$county_name),
+  u = u
+)
+
+radon_data <- radon_data %>%
+  left_join(county_u_data, by = "county_name") %>% 
+  rename(u = Uppm)
+```
+
+Modelo con intercepto variable por condado y piso y Uranio
+```{r}
+M2 <- lmer (log_radon ~ floor + u + (1 | county_name),data = radon_data)
+display (M2)
+```
+
+Resultados:
+```{r, warning=FALSE,message=FALSE}
+#coef(M2)
+#fixef(M2)
+#ranef(M2)
+```
+
+Relación coeficientes aleatorios por condado vs uranio:
+
+
+```{r}
+# Summarize the data
+u <- radon_data %>%
+  group_by(county_name) %>%
+  summarise(u = mean(u))
+
+# Calculate model coefficients
+a.hat.M2 <- fixef(M2)[1] + fixef(M2)[3] * u$u + ranef(M2)$county
+b.hat.M2 <- fixef(M2)[2]
+
+# Standard error (assuming se.coef function calculates this)
+a.se.M2 <- se.coef(M2)$county
+
+# Prepare data for plotting
+plot_data <- data.frame(
+  u = u$u,
+  a_hat = a.hat.M2,
+  se = a.se.M2
+) 
+colnames(plot_data) <- c("u", "a_hat", "se")
+
+# Create the plot
+ggplot(plot_data, aes(x = u, y = a_hat)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "black") +
+  labs(x = "County-level uranium measure", y = "Estimated regression intercept") +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(-1, 1, 0.5)) +
+  scale_y_continuous(limits = c(0.5, 2.0)) +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
 ```
 
