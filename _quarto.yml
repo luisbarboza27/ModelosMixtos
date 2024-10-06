@@ -9,6 +9,7 @@ book:
     - index.qmd
     - introduccion.qmd
     - MLMbasicos.qmd
+    - MLMavanzados.qmd
 
 bibliography: references.bib
 

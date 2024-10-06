@@ -1,0 +1,383 @@
+# Modelos Lineales Multinivel avanzados
+
+## Modelos multinivel no-anidados
+
+### Ejemplo 1: Pilotos
+
+Carga de paquetes necesarios:
+
+```{r, warning=FALSE,message=FALSE}
+library(tidyverse)
+library(arm)
+library(readr)  
+```
+
+Carga de datos:
+
+```{r, warning=FALSE,message=FALSE}
+pilots <- read_delim('./data/ARM_Data/pilots/pilots.dat')
+
+pilots <- pilots %>% mutate(group = as.factor(group), 
+                            scenario = as.factor(scenario),
+                            recovered = ifelse(is.na(recovered),NA,as.numeric(recovered)))
+```
+
+Depuración de datos:
+
+```{r, warning=FALSE,message=FALSE}
+result <- pilots %>%
+  group_by(group, scenario) %>%
+  summarize(
+    successes = sum(recovered == 1, na.rm = TRUE),
+    failures = sum(recovered == 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    y = successes / (successes + failures)
+  )
+
+result <- result %>%
+  distinct(group, scenario, .keep_all = TRUE)
+```
+
+Cambio a formato ancho y ordenamiento de datos:
+
+```{r}
+y_mat <- result %>%
+  pivot_wider(names_from = group, values_from = y, values_fill = 0, id_cols = scenario) %>%
+  column_to_rownames("scenario")
+
+
+sort_group <- order(apply(y_mat, 2, mean, na.rm = TRUE))
+sort_scenario <- order(apply(y_mat, 1, mean, na.rm = TRUE))
+
+
+y_mat_new <- y_mat[sort_scenario, sort_group]
+
+result <- result %>%
+  mutate(
+    group_id_new = factor(group, levels = colnames(y_mat)[sort_group]),
+    scenario_id_new = factor(scenario, levels = rownames(y_mat)[sort_scenario])
+  )
+```
+
+Heatmap de tasa de exito por grupo y escenario:
+
+```{r}
+ggplot(result, aes(x = group_id_new, y = scenario_id_new, fill = y)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "blue", high = "red", name = "Success Rate") +
+  labs(
+    title = "Success Rate by Group and Scenario",
+    x = "Group",
+    y = "Scenario"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(angle = 45, vjust = 1)
+  )
+```
+
+Ajuste de modelo multinivel usando grupos y escenarios:
+
+```{r}
+M1 <- lmer (y ~ 1 + (1 | group) + (1 | scenario),data = result)
+display (M1)
+```
+
+Ajuste con paquete nlme:
+
+```{r}
+M1_nlme <- nlme::lme(y ~ 1, random = ~ 1 | group / scenario, data = result)
+SS <- summary(M1_nlme)
+SS
+```
+
+### Ejemplo 2: Ganancias vs altura
+
+Carga de datos:
+
+```{r}
+library(haven)
+heights <- read_dta("data/ARM_Data/earnings/heights.dta")
+```
+
+Depuracion de datos
+
+```{r}
+heights <- heights %>%
+  mutate(
+    age = 90 - yearbn,
+    age = ifelse(age < 18, NA, age),
+    age_category = case_when(
+      age < 35 ~ 1,
+      age < 50 ~ 2,
+      TRUE ~ 3
+    ),
+    eth = case_when(
+      race == 2 ~ 1,
+      hisp == 1 ~ 2,
+      race == 1 ~ 3,
+      TRUE ~ 4
+    ),
+    male = 2 - sex
+  )
+
+heights_clean <- heights %>%
+  filter(!is.na(earn) & !is.na(height) & !is.na(sex) & earn > 0 & yearbn > 25) %>%
+  dplyr::select(earn, height, sex, race, hisp, ed, age, age_category, eth, male)
+```
+
+Algunas correcciones posteriores y variables adicionales:
+
+```{r}
+heights_clean <- heights_clean %>%
+  mutate(height_jitter_add = runif(n(), -.2, .2))
+
+heights_clean <- heights_clean %>%
+  mutate(
+    y = log(earn),
+    x = height
+  )
+
+y <- heights_clean$y
+x <- heights_clean$x
+age <- heights_clean$age_category
+
+n <- nrow(heights_clean)
+n_age <- 3
+n_eth <- 4
+```
+
+Ajuste log-ingresos vs altura por etnia (Modelo anidado):
+
+```{r}
+M1 <- lmer (y ~ x + (1 + x | eth),data = heights_clean)
+display (M1)
+```
+
+Ajuste del modelo mixto usando nlme con interceptos y pendientes aleatorios:
+
+```{r}
+M1_nlme <- nlme::lme(
+  fixed = y ~ x, 
+  random = ~ x | eth, 
+  data = heights_clean
+)
+summary(M1_nlme)
+```
+
+Corrección para reducir correlación:
+
+```{r}
+x.centered <- x - mean(x)
+
+M2 <- lmer (y ~ x.centered + (1 + x.centered | eth),data = heights_clean)
+display (M2)
+```
+
+Ajuste de un modelo mixto con nlme (comentado porque da error):
+
+```{r}
+#M2_nlme <- nlme::lme(
+#  fixed = y ~ x.centered, 
+#  random = ~ x.centered | eth, 
+#  data = heights_clean
+#)
+```
+
+Inclusión de la categoría de edad:
+
+```{r}
+M3 <- lmer (y ~ x.centered + (1 + x.centered | eth) + (1 + x.centered | age) +  
+              (1 + x.centered | eth:age),data = heights_clean)
+display (M3)
+```
+
+Ajuste del modelo con nlme (con error):
+
+```{r}
+#M3_nlme <- nlme::lme(
+#  fixed = y ~ x.centered, 
+#  random = ~ x.centered | eth + age + eth:age, 
+#  data = heights_clean
+#)
+```
+
+Modelo reducido sin interacción (también da error):
+
+```{r}
+#M4_nlme <- nlme::lme(
+#  fixed = y ~ x, 
+#  random = ~ x | eth + age + eth:age, 
+#  data = heights_clean
+#)
+```
+
+### Tarea 1
+
+Carga de datos
+
+```{r, warning=FALSE,message=FALSE}
+library(ggplot2)
+library(readr)
+
+cd4_data <- read_csv("data/ARM_Data/cd4/allvar.csv")
+```
+
+Depuración de datos:
+
+```{r}
+cd4_data$VDATE <- as.Date(cd4_data$VDATE, format="%m/%d/%Y")
+cd4_data_filtered <- na.omit(cd4_data[, c("newpid", "visage", "CD4PCT", "baseage", "treatmnt")])
+cd4_data_filtered$time_since_baseage <- cd4_data_filtered$visage - cd4_data_filtered$baseage
+
+cd4_data_filtered$sqrt_CD4PCT <- sqrt(cd4_data_filtered$CD4PCT)
+```
+
+Gráfico del porcentaje transformado de CD4 como función del tiempo:
+
+```{r}
+ggplot(cd4_data_filtered, aes(x=time_since_baseage, y=sqrt_CD4PCT, group=newpid, color=factor(newpid))) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Time since Base Age (Years)", y = "Square Root of CD4 Percentage", 
+       title = "Square Root of CD4 Percentage over Time for Each Child") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+
+Ajuste de un modelo lineal para cada niño, usando solamente aquellos niños con más de dos visitas: 
+
+```{r, warning=FALSE,message=FALSE}
+cd4_data_filtered <- cd4_data_filtered %>%
+  group_by(newpid) %>%
+  filter(n() > 2) %>%
+  ungroup()
+
+linear_models <- cd4_data_filtered %>%
+  group_by(newpid) %>%
+  do(model = lm(sqrt_CD4PCT ~ time_since_baseage, data = .))
+
+cd4_fits <- linear_models %>%
+  rowwise() %>%
+  do(data.frame(newpid = .$newpid, time_since_baseage = cd4_data_filtered$time_since_baseage, 
+                pred = predict(.$model, newdata = cd4_data_filtered)))
+
+cd4_fits <- left_join(cd4_fits, cd4_data_filtered, by = c("newpid", "time_since_baseage"))
+```
+
+Gráfico de los ajustes lineales para una muestra de 30 niños: 
+
+```{r, warning=FALSE,message=FALSE}
+set.seed(123)
+sampled_children <- cd4_data_filtered %>%
+  distinct(newpid) %>%
+  sample_n(30) %>%
+  pull(newpid)
+
+cd4_data_sampled <- cd4_fits %>%
+  filter(newpid %in% sampled_children)
+
+ggplot(cd4_data_sampled, aes(x=time_since_baseage, y=sqrt_CD4PCT)) +
+  geom_point(aes(y=sqrt_CD4PCT), alpha=0.6) +  # Original data points
+  geom_line(aes(y=pred), size=1, color="blue") +  # Linear fits
+  facet_wrap(~newpid, scales = "free_y") +    # Facet by patient ID
+  labs(x = "Tiempo desde edad base", y = "Raíz de CD4 (%)", 
+       title = "") +
+  theme_minimal()
+```
+
+Ajuste de un modelo con interceptos y pendientes como función del tratamiento y la edad base, a través de un procedimiento de dos pasos. Paso 1:
+
+```{r}
+child_models <- cd4_data_filtered %>%
+  group_by(newpid) %>%
+  summarize(
+    intercept = coef(lm(sqrt(CD4PCT) ~ time_since_baseage))[1],  # Intercept
+    slope = coef(lm(sqrt(CD4PCT) ~ time_since_baseage))[2]       # Slope
+  )
+```
+
+Merge de los datos de los modelos con los datos originales:
+
+```{r}
+child_models <- child_models %>%
+  left_join(cd4_data_filtered %>% distinct(newpid, treatmnt, baseage), by = "newpid")
+```
+
+
+Paso 2:
+```{r}
+intercept_model <- lm(intercept ~ treatmnt + baseage, data = child_models)
+slope_model <- lm(slope ~ treatmnt + baseage, data = child_models)
+
+summary(intercept_model)
+summary(slope_model)
+```
+
+Ajuste de un modelo mixto con intercepto aleatorio por niño:
+```{r}
+cd4_model <- lmer(sqrt_CD4PCT ~ time_since_baseage + (1 | newpid), data = cd4_data_filtered)
+
+summary(cd4_model)
+```
+
+Ajuste del modelo extendido con covariables por niño:
+```{r}
+cd4_model_extended <- lmer(sqrt_CD4PCT ~ time_since_baseage + treatmnt + baseage + 
+                           (1 | newpid), data = cd4_data_filtered)
+
+summary(cd4_model_extended)
+```
+
+Extrae la edad del niño en la última visita:
+
+```{r}
+last_time <- cd4_data_filtered %>%
+  group_by(newpid) %>%
+  summarize(last_visage = max(visage), baseage = first(baseage), treatmnt = first(treatmnt))
+```
+
+Calcula la edad en la siguiente visita, asumiendo que esta se realiza un año después de la última visita:
+
+
+```{r}
+next_time_data <- last_time %>%
+  mutate(
+    next_visage = last_visage + 1,  # Hypothetical next time point: 1 year later
+    time_since_baseage = next_visage - baseage  # Recalculate time since base age
+  )
+```
+
+Predicción del CD4 un año después, usando predict (sin simular)
+
+```{r}
+next_time_data$sqrt_predicted_CD4PCT <- predict(cd4_model_extended, newdata = next_time_data, re.form = ~(1 | newpid))
+
+next_time_data$predicted_CD4PCT <- (next_time_data$sqrt_predicted_CD4PCT)^2
+```
+
+
+Predicción de CD4 para un niño nuevo de 4 años, en incrementos de 1 año hasta los 10 años, usando predict (sin simular)
+
+```{r}
+new_child_data <- data.frame(
+  newpid = "new_child",  # Placeholder for new child ID
+  baseage = 4,           # Baseline age is 4 years
+  next_visage = seq(4, 10, by = 1),  # Time points: 4, 5, 6, ..., 10 years
+  treatmnt = 1           # Assume the child is receiving treatment (can change to 0 if no treatment)
+)
+
+new_child_data$time_since_baseage = new_child_data$next_visage - new_child_data$baseage
+
+new_child_data$sqrt_predicted_CD4PCT <- predict(cd4_model_extended, newdata = new_child_data, re.form = NA)
+
+new_child_data$predicted_CD4PCT <- (new_child_data$sqrt_predicted_CD4PCT)^2
+
+new_child_data %>% dplyr::select(next_visage, predicted_CD4PCT)
+```
+

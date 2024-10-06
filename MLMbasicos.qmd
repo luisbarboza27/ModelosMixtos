@@ -31,7 +31,6 @@ radon_data <- radon %>%
 
 ```
 
-
 Boxplot de los niveles de radon por ciudad:
 
 ```{r}
@@ -200,18 +199,20 @@ tabla_se <- radon_data %>% group_by(county_name) %>% summarise(n = n()) %>%
 ```
 
 Intervalos de confianza para los coeficientes fijos:
-  
+
 ```{r}
 fixef(M1)[1]+c(-1,1)*qnorm(0.975)*se.fixef(M1)[1]
 fixef(M1)[2]+c(-1,1)*qnorm(0.975)*se.fixef(M1)[2]
 ```
-  
+
 Intervalos de confianza para los coeficientes por condado. Intercepto total:
+
 ```{r}
 coef(M1)$county[26,1]+c(-1,1)*qnorm(0.975)*se.ranef(M1)$county[26]
 ```
 
 Solo efecto aleatorio sobre intercepto fijo
+
 ```{r}
 as.matrix(ranef(M1)$county)[26]+c(-1,1)*qnorm(0.975)*se.ranef(M1)$county[26]
 ```
@@ -245,12 +246,14 @@ radon_data <- radon_data %>%
 ```
 
 Modelo con intercepto variable por condado y piso y Uranio
+
 ```{r}
 M2 <- lmer (log_radon ~ floor + u + (1 | county_name),data = radon_data)
 display (M2)
 ```
 
 Resultados:
+
 ```{r, warning=FALSE,message=FALSE}
 #coef(M2)
 #fixef(M2)
@@ -258,7 +261,6 @@ Resultados:
 ```
 
 Relación coeficientes aleatorios por condado vs uranio:
-
 
 ```{r}
 # Summarize the data
@@ -296,7 +298,7 @@ ggplot(plot_data, aes(x = u, y = a_hat)) +
 ```
 
 ## Predicción de un modelo multinivel
- 
+
 ```{r}
 n.sims <- 1000
 
@@ -341,5 +343,3 @@ print(mean_radon_nobasement)
 print(mean_radon)
 
 ```
-
-
