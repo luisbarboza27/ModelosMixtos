@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>No-Pooling Regression with No Constant Term – Modelos Mixtos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./MLMavanzados.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cap16.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">No-Pooling Regression with No Constant Term</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Modelos Mixtos</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMbasicos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel básicos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMavanzados.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel avanzados</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap16.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">No-Pooling Regression with No Constant Term</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-multilevel-modeling-in-r-and-bugs" id="toc-introduction-to-multilevel-modeling-in-r-and-bugs" class="nav-link active" data-scroll-target="#introduction-to-multilevel-modeling-in-r-and-bugs"><span class="header-section-number">4.1</span> Introduction to Multilevel Modeling in R and Bugs</a>
+  <ul class="collapse">
+  <li><a href="#key-steps-in-multilevel-modeling" id="toc-key-steps-in-multilevel-modeling" class="nav-link" data-scroll-target="#key-steps-in-multilevel-modeling"><span class="header-section-number">4.1.1</span> Key Steps in Multilevel Modeling:</a></li>
+  </ul></li>
+  <li><a href="#bayesian-inference-and-prior-distributions" id="toc-bayesian-inference-and-prior-distributions" class="nav-link" data-scroll-target="#bayesian-inference-and-prior-distributions"><span class="header-section-number">4.2</span> Bayesian inference and prior distributions</a>
+  <ul class="collapse">
+  <li><a href="#classical-regression-and-generalized-linear-models" id="toc-classical-regression-and-generalized-linear-models" class="nav-link" data-scroll-target="#classical-regression-and-generalized-linear-models"><span class="header-section-number">4.2.1</span> Classical Regression and Generalized Linear Models</a></li>
+  <li><a href="#simplest-varying-intercept-model" id="toc-simplest-varying-intercept-model" class="nav-link" data-scroll-target="#simplest-varying-intercept-model"><span class="header-section-number">4.2.2</span> Simplest Varying-Intercept Model</a></li>
+  <li><a href="#varying-intercept-varying-slope-model" id="toc-varying-intercept-varying-slope-model" class="nav-link" data-scroll-target="#varying-intercept-varying-slope-model"><span class="header-section-number">4.2.3</span> Varying-Intercept, Varying-Slope Model</a></li>
+  <li><a href="#multilevel-model-with-group-level-predictors-exchangeability-and-prior-distributions" id="toc-multilevel-model-with-group-level-predictors-exchangeability-and-prior-distributions" class="nav-link" data-scroll-target="#multilevel-model-with-group-level-predictors-exchangeability-and-prior-distributions"><span class="header-section-number">4.2.4</span> Multilevel Model with Group-Level Predictors: Exchangeability and Prior Distributions</a></li>
+  </ul></li>
+  <li><a href="#fitting-and-understanding-a-varying-intercept-multilevel-model" id="toc-fitting-and-understanding-a-varying-intercept-multilevel-model" class="nav-link" data-scroll-target="#fitting-and-understanding-a-varying-intercept-multilevel-model"><span class="header-section-number">4.3</span> Fitting and Understanding a Varying-Intercept Multilevel Model</a>
+  <ul class="collapse">
+  <li><a href="#loading-data-in-r" id="toc-loading-data-in-r" class="nav-link" data-scroll-target="#loading-data-in-r"><span class="header-section-number">4.3.1</span> Loading Data in R</a></li>
+  <li><a href="#classical-complete-pooling-regression-in-r" id="toc-classical-complete-pooling-regression-in-r" class="nav-link" data-scroll-target="#classical-complete-pooling-regression-in-r"><span class="header-section-number">4.3.2</span> Classical Complete-Pooling Regression in R</a></li>
+  <li><a href="#classical-no-pooling-regression-in-r" id="toc-classical-no-pooling-regression-in-r" class="nav-link" data-scroll-target="#classical-no-pooling-regression-in-r"><span class="header-section-number">4.3.3</span> Classical No-Pooling Regression in R</a></li>
+  <li><a href="#no-pooling-regression-with-no-constant-term" id="toc-no-pooling-regression-with-no-constant-term" class="nav-link" data-scroll-target="#no-pooling-regression-with-no-constant-term"><span class="header-section-number">4.3.4</span> No-Pooling Regression with No Constant Term</a></li>
+  </ul></li>
+  <li><a href="#setting-up-a-multilevel-regression-model-in-jags" id="toc-setting-up-a-multilevel-regression-model-in-jags" class="nav-link" data-scroll-target="#setting-up-a-multilevel-regression-model-in-jags"><span class="header-section-number">4.4</span> Setting up a Multilevel Regression Model in JAGS</a>
+  <ul class="collapse">
+  <li><a href="#jags-model-code" id="toc-jags-model-code" class="nav-link" data-scroll-target="#jags-model-code"><span class="header-section-number">4.4.1</span> JAGS Model Code:</a></li>
+  <li><a href="#running-jags-in-r" id="toc-running-jags-in-r" class="nav-link" data-scroll-target="#running-jags-in-r"><span class="header-section-number">4.4.2</span> Running JAGS in R:</a></li>
+  </ul></li>
+  <li><a href="#adding-individual--and-group-level-predictors-in-jags" id="toc-adding-individual--and-group-level-predictors-in-jags" class="nav-link" data-scroll-target="#adding-individual--and-group-level-predictors-in-jags"><span class="header-section-number">4.5</span> Adding Individual- and Group-Level Predictors in JAGS</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">No-Pooling Regression with No Constant Term</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-multilevel-modeling-in-r-and-bugs" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="introduction-to-multilevel-modeling-in-r-and-bugs"><span class="header-section-number">4.1</span> Introduction to Multilevel Modeling in R and Bugs</h2>
+<p>Multilevel models allow intercepts and slopes to vary across groups. These models are useful when there is hierarchical data (e.g., individuals nested within schools, or measurements within counties).</p>
+<p>R functions like lm() and lmer() can be used for classical and multilevel models, but they rely on point estimates and may have limitations, especially with small sample sizes or complicated models.</p>
+<p>Bugs is introduced as a solution for complex multilevel models, enabling full Bayesian inference which accounts for uncertainty in parameter estimates.</p>
+<section id="key-steps-in-multilevel-modeling" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="key-steps-in-multilevel-modeling"><span class="header-section-number">4.1.1</span> Key Steps in Multilevel Modeling:</h3>
+<ol type="1">
+<li>Start with classical regression using lm() or glm() in R.</li>
+<li>Add varying intercepts/slopes with lmer().</li>
+<li>Use JAGS or STAN to fit fully Bayesian models when needed.</li>
+<li>For very large models, further programming in R may be required.</li>
+</ol>
+</section>
+</section>
+<section id="bayesian-inference-and-prior-distributions" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="bayesian-inference-and-prior-distributions"><span class="header-section-number">4.2</span> Bayesian inference and prior distributions</h2>
+<p>The main challenge in fitting a multilevel model is estimating both the data-level regression (which includes the coefficients for all group indicators) and the group-level model. The most direct approach is through Bayesian inference, which uses the group-level model as “prior information” to help estimate individual-level coefficients.</p>
+<p>In Bayesian multilevel models, prior distributions are required for all parameters. These priors typically fall into two categories:</p>
+<ul>
+<li><p>Group-level models, often represented by normal distributions, where the mean and standard deviation are assigned noninformative priors.</p></li>
+<li><p>Noninformative uniform distributions, used when there is little prior information about the parameters.</p></li>
+</ul>
+<section id="classical-regression-and-generalized-linear-models" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="classical-regression-and-generalized-linear-models"><span class="header-section-number">4.2.1</span> Classical Regression and Generalized Linear Models</h3>
+<p>In <strong>classical regression</strong> and <strong>generalized linear models (GLMs)</strong>, these models can be seen as special cases of multilevel modeling, where <strong>no group-level model</strong> is specified, meaning there is <strong>no prior information</strong> in the Bayesian sense. The key points are:</p>
+<section id="classical-regression-model" class="level4" data-number="4.2.1.1">
+<h4 data-number="4.2.1.1" class="anchored" data-anchor-id="classical-regression-model"><span class="header-section-number">4.2.1.1</span> Classical Regression Model</h4>
+<p>In classical regression, the model is represented as:</p>
+<p><span class="math display">\[
+y_i = X_i \beta + \epsilon_i
+\]</span></p>
+<p>with independent errors:</p>
+<p><span class="math display">\[
+\epsilon_i \sim N(0, \sigma_y^2)
+\]</span></p>
+<p>The classical model assumes <strong>no prior structure</strong> on the parameters, where:</p>
+<ul>
+<li>The <strong>coefficients</strong> <span class="math inline">\(\beta\)</span> have a uniform prior distribution over the entire real number range <span class="math inline">\((-\infty, \infty)\)</span>.</li>
+<li>The <strong>error variance</strong> <span class="math inline">\(\sigma_y\)</span> has a uniform prior distribution on <span class="math inline">\((0, \infty)\)</span>.</li>
+</ul>
+</section>
+<section id="classical-logistic-regression-model" class="level4" data-number="4.2.1.2">
+<h4 data-number="4.2.1.2" class="anchored" data-anchor-id="classical-logistic-regression-model"><span class="header-section-number">4.2.1.2</span> Classical Logistic Regression Model</h4>
+<p>In <strong>classical logistic regression</strong>, the probability that <span class="math inline">\(y_i = 1\)</span> is given by:</p>
+<p><span class="math display">\[
+\text{Pr}(y_i = 1) = \text{logit}^{-1}(X_i \beta)
+\]</span></p>
+<p>Again, the prior on the components of <span class="math inline">\(\beta\)</span> is uniform, meaning there is no assumption or restriction on the parameter values.</p>
+</section>
+</section>
+<section id="simplest-varying-intercept-model" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="simplest-varying-intercept-model"><span class="header-section-number">4.2.2</span> Simplest Varying-Intercept Model</h3>
+<p>The simplest form of multilevel regression is the <strong>varying-intercept model</strong>, where both individual and group-level errors are normally distributed. The model can be expressed as:</p>
+<p><span class="math display">\[
+y_i \sim N(\alpha_{j[i]} + \beta x_i, \sigma_y^2)
+\]</span></p>
+<p>and:</p>
+<p><span class="math display">\[
+\alpha_j \sim N(\mu_\alpha, \sigma_\alpha^2)
+\]</span></p>
+<section id="interpretation" class="level4" data-number="4.2.2.1">
+<h4 data-number="4.2.2.1" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">4.2.2.1</span> Interpretation:</h4>
+<ul>
+<li>The group-specific intercepts <span class="math inline">\(\alpha_j\)</span> follow a normal distribution, which can be thought of as a <strong>prior distribution</strong> for the intercepts in a Bayesian framework.</li>
+<li>The parameters <span class="math inline">\(\mu_\alpha\)</span> and <span class="math inline">\(\sigma_\alpha\)</span> are <strong>hyperparameters</strong> that describe the distribution of the group-level intercepts and are estimated from the data.</li>
+</ul>
+</section>
+<section id="prior-distributions-in-bayesian-inference" class="level4" data-number="4.2.2.2">
+<h4 data-number="4.2.2.2" class="anchored" data-anchor-id="prior-distributions-in-bayesian-inference"><span class="header-section-number">4.2.2.2</span> Prior Distributions in Bayesian Inference:</h4>
+<ul>
+<li>In <strong>Bayesian inference</strong>, all parameters, including hyperparameters <span class="math inline">\(\mu_\alpha\)</span>, <span class="math inline">\(\sigma_\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\sigma_y\)</span>, must have prior distributions.</li>
+<li>Typically, these priors are set to <strong>noninformative uniform distributions</strong> when there is little prior knowledge about the parameters.</li>
+</ul>
+<p>The complete prior distribution is written as:</p>
+<p><span class="math display">\[
+p(\alpha, \beta, \mu_\alpha, \sigma_y, \sigma_\alpha) \propto \prod_{j=1}^{J} N(\alpha_j | \mu_\alpha, \sigma_\alpha^2)
+\]</span></p>
+<p>This indicates that the intercepts ( _j ) are modeled independently, following normal distributions, and their probability densities are multiplied to form the <strong>joint prior density</strong>.</p>
+</section>
+</section>
+<section id="varying-intercept-varying-slope-model" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="varying-intercept-varying-slope-model"><span class="header-section-number">4.2.3</span> Varying-Intercept, Varying-Slope Model</h3>
+<p>A more complex form of multilevel modeling is the <strong>varying-intercept, varying-slope model</strong>, where both the intercepts and slopes vary across groups. The model is expressed as:</p>
+<p><span class="math display">\[
+y_i = \alpha_{j[i]} + \beta_{j[i]} x_i + \epsilon_i
+\]</span></p>
+<section id="model-parameters" class="level4" data-number="4.2.3.1">
+<h4 data-number="4.2.3.1" class="anchored" data-anchor-id="model-parameters"><span class="header-section-number">4.2.3.1</span> Model Parameters:</h4>
+<ul>
+<li>This model has <span class="math inline">\(2J\)</span> parameters, represented by <span class="math inline">\(J\)</span> pairs: <span class="math inline">\((\alpha_j, \beta_j)\)</span>.</li>
+<li>Each group <span class="math inline">\(j\)</span> has its own <strong>intercept</strong> <span class="math inline">\(\alpha_j\)</span> and <strong>slope</strong> <span class="math inline">\(\beta_j\)</span>, which vary across groups.</li>
+</ul>
+</section>
+<section id="prior-distributions" class="level4" data-number="4.2.3.2">
+<h4 data-number="4.2.3.2" class="anchored" data-anchor-id="prior-distributions"><span class="header-section-number">4.2.3.2</span> Prior Distributions:</h4>
+<ul>
+<li>The prior distribution for the pairs <span class="math inline">\((\alpha_j, \beta_j)\)</span> is a <strong>bivariate normal distribution</strong>, allowing for correlation between the intercept and slope within each group.</li>
+<li>The <strong>hyperparameters</strong> governing the distribution of <span class="math inline">\(\alpha_j\)</span> and <span class="math inline">\(\beta_j\)</span> (such as the means and variances) are typically assigned <strong>independent uniform prior distributions</strong> when no prior knowledge is available.</li>
+</ul>
+</section>
+<section id="joint-prior-distribution" class="level4" data-number="4.2.3.3">
+<h4 data-number="4.2.3.3" class="anchored" data-anchor-id="joint-prior-distribution"><span class="header-section-number">4.2.3.3</span> Joint Prior Distribution:</h4>
+<p>The joint prior for the intercepts and slopes across all groups can be expressed as a bivariate normal distribution, which captures the relationship between the group-level intercepts and slopes:</p>
+<p><span class="math display">\[
+(\alpha_j, \beta_j) \sim \text{Bivariate Normal}(\mu_{\alpha}, \mu_{\beta}, \Sigma)
+\]</span></p>
+<p>Where: - <span class="math inline">\(\mu_{\alpha}\)</span> and <span class="math inline">\(\mu_{\beta}\)</span> are the means of the intercepts and slopes. - <span class="math inline">\(\Sigma\)</span> is the covariance matrix, which captures the variances of the intercepts and slopes and the correlation between them.</p>
+</section>
+</section>
+<section id="multilevel-model-with-group-level-predictors-exchangeability-and-prior-distributions" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="multilevel-model-with-group-level-predictors-exchangeability-and-prior-distributions"><span class="header-section-number">4.2.4</span> Multilevel Model with Group-Level Predictors: Exchangeability and Prior Distributions</h3>
+<p>In multilevel models, we typically <strong>do not assign models to the coefficients</strong> of group-level or individual-level predictors that do not vary by group. In Bayesian terminology, we often assign <strong>noninformative uniform prior distributions</strong> to these coefficients.</p>
+<section id="group-level-regression-and-prior-distributions" class="level4" data-number="4.2.4.1">
+<h4 data-number="4.2.4.1" class="anchored" data-anchor-id="group-level-regression-and-prior-distributions"><span class="header-section-number">4.2.4.1</span> Group-Level Regression and Prior Distributions:</h4>
+<p>A <strong>group-level regression</strong> induces different prior distributions on the group-level coefficients. Consider the following simple varying-intercept model with one predictor at the individual level and one at the group level:</p>
+<p><span class="math display">\[
+y_i = \alpha_{j[i]} + \beta x_i + \epsilon_i, \ \epsilon_i \sim N(0, \sigma_y^2), \ \text{for} \ i = 1, \ldots, n
+\]</span></p>
+<p><span class="math display">\[
+\alpha_j = \gamma_0 + \gamma_1 u_j + \eta_j, \ \eta_j \sim N(0, \sigma_\alpha^2), \ \text{for} \ j = 1, \ldots, J
+\]</span></p>
+</section>
+<section id="model-interpretation" class="level4" data-number="4.2.4.2">
+<h4 data-number="4.2.4.2" class="anchored" data-anchor-id="model-interpretation"><span class="header-section-number">4.2.4.2</span> Model Interpretation:</h4>
+<ul>
+<li>The first equation is the <strong>data model</strong> or <strong>likelihood</strong>.</li>
+<li>The second equation is the <strong>group-level model</strong> or <strong>prior model</strong> for the intercepts <span class="math inline">\(\alpha_j\)</span>.</li>
+<li>The intercepts <span class="math inline">\(\alpha_j\)</span> have different <strong>prior distributions</strong> based on the group-level predictor <span class="math inline">\(u_j\)</span>. The mean of <span class="math inline">\(\alpha_j\)</span> is <span class="math inline">\(\hat{\alpha_j} = \gamma_0 + \gamma_1 u_j\)</span>, and the standard deviation is <span class="math inline">\(\sigma_\alpha\)</span>.</li>
+</ul>
+</section>
+<section id="exchangeability-of-the-group-level-errors" class="level4" data-number="4.2.4.3">
+<h4 data-number="4.2.4.3" class="anchored" data-anchor-id="exchangeability-of-the-group-level-errors"><span class="header-section-number">4.2.4.3</span> Exchangeability of the Group-Level Errors:</h4>
+<p>An equivalent way to think of this model is that the <strong>group-level errors</strong> <span class="math inline">\(\eta_j\)</span> are exchangeable:</p>
+<p><span class="math display">\[
+\alpha_j = \gamma_0 + \gamma_1 u_j + \eta_j, \ \eta_j \sim N(0, \sigma_\alpha^2)
+\]</span></p>
+<p>In this view, the <span class="math inline">\(\alpha_j\)</span>’s are determined by the group-level predictor <span class="math inline">\(u_j\)</span> and the group-level error <span class="math inline">\(\eta_j\)</span>, with <span class="math inline">\(\eta_j\)</span> assigned a common prior distribution.</p>
+</section>
+<section id="key-insights" class="level4" data-number="4.2.4.4">
+<h4 data-number="4.2.4.4" class="anchored" data-anchor-id="key-insights"><span class="header-section-number">4.2.4.4</span> Key Insights:</h4>
+<ul>
+<li>The <strong>prior distribution</strong> in a multilevel model can be viewed in two ways:
+<ol type="1">
+<li>As a model representing a <strong>group-level estimate</strong> for each <span class="math inline">\(\alpha_j\)</span>.</li>
+<li>As a single model representing the distribution of the <strong>group-level errors</strong> <span class="math inline">\(\eta_j\)</span>.</li>
+</ol></li>
+</ul>
+<p>In practical applications, it is often more efficient to use the first approach when working with group-level predictors in software like <strong>Bugs</strong>, as this reduces the number of variables and speeds up the computation.</p>
+</section>
+</section>
+</section>
+<section id="fitting-and-understanding-a-varying-intercept-multilevel-model" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="fitting-and-understanding-a-varying-intercept-multilevel-model"><span class="header-section-number">4.3</span> Fitting and Understanding a Varying-Intercept Multilevel Model</h2>
+<section id="loading-data-in-r" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="loading-data-in-r"><span class="header-section-number">4.3.1</span> Loading Data in R</h3>
+<p>We use radon measurements and floor indicators (basement or first floor) for 919 homes in 85 counties in Minnesota. Since we assume multiplicative effects, we work with the <strong>logarithms of radon levels</strong>. Any radon measurements recorded as 0.0 are corrected to 0.1 before taking the logarithm.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>srrs2 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"./data/ARM_Data/radon/srrs2.dat"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mn <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"MN"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>radon <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>activity[mn]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="fu">ifelse</span>(radon <span class="sc">==</span> <span class="dv">0</span>, <span class="fl">0.1</span>, radon))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(radon)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>floor[mn]  <span class="co"># 0 for basement, 1 for first floor</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To account for county-specific effects, we create a county-level indicator for each observation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>srrs2.fips <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>stfips <span class="sc">*</span> <span class="dv">1000</span> <span class="sc">+</span> srrs2<span class="sc">$</span>cntyfips</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>county.name <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(srrs2<span class="sc">$</span>county[mn])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>uniq.name <span class="ot">&lt;-</span> <span class="fu">unique</span>(county.name)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> <span class="fu">length</span>(uniq.name)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>county <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, J)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  county[county.name <span class="sc">==</span> uniq.name[i]] <span class="ot">&lt;-</span> i</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="classical-complete-pooling-regression-in-r" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="classical-complete-pooling-regression-in-r"><span class="header-section-number">4.3.2</span> Classical Complete-Pooling Regression in R</h3>
+<p>We start by fitting a <strong>classical regression model</strong> that ignores county-level differences, treating the entire dataset as if it comes from a single population. This approach is known as <strong>complete pooling</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Complete-pooling model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>lm.pooled <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.pooled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.6293 -0.5383  0.0342  0.5603  2.5486 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.32674    0.02972  44.640   &lt;2e-16 ***
+x           -0.61339    0.07284  -8.421   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.8226 on 917 degrees of freedom
+Multiple R-squared:  0.07178,   Adjusted R-squared:  0.07077 
+F-statistic: 70.91 on 1 and 917 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="classical-no-pooling-regression-in-r" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="classical-no-pooling-regression-in-r"><span class="header-section-number">4.3.3</span> Classical No-Pooling Regression in R</h3>
+<p>In the <strong>no-pooling model</strong>, we include <strong>county-specific indicators</strong> to allow each county to have its own intercept. This model includes 85 counties but uses 84 indicators since we already have a constant term.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No-pooling model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>lm.unpooled<span class="fl">.0</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">factor</span>(county))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.unpooled<span class="fl">.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + factor(county))
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-3.14595 -0.45405  0.00065  0.45376  2.65987 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.84054    0.37866   2.220  0.02670 *  
+x                -0.72054    0.07352  -9.800  &lt; 2e-16 ***
+factor(county)2   0.03428    0.39274   0.087  0.93047    
+factor(county)3   0.68816    0.57854   1.189  0.23459    
+factor(county)4   0.71218    0.47470   1.500  0.13392    
+factor(county)5   0.59203    0.53487   1.107  0.26867    
+factor(county)6   0.67247    0.57802   1.163  0.24500    
+factor(county)7   1.17162    0.42892   2.732  0.00644 ** 
+factor(county)8   1.14904    0.53519   2.147  0.03208 *  
+factor(county)9   0.16250    0.44764   0.363  0.71669    
+factor(county)10  0.72336    0.48861   1.480  0.13913    
+factor(county)11  0.56059    0.50775   1.104  0.26988    
+factor(county)12  0.88971    0.53519   1.662  0.09680 .  
+factor(county)13  0.19818    0.48861   0.406  0.68514    
+factor(county)14  1.14784    0.42886   2.677  0.00759 ** 
+factor(county)15  0.49743    0.53519   0.929  0.35292    
+factor(county)16 -0.17568    0.65534  -0.268  0.78871    
+factor(county)17  0.43426    0.53613   0.810  0.41818    
+factor(county)18  0.28101    0.43672   0.643  0.52011    
+factor(county)19  0.49777    0.39027   1.275  0.20251    
+factor(county)20  0.95977    0.57802   1.660  0.09720 .  
+factor(county)21  0.89345    0.45467   1.965  0.04974 *  
+factor(county)22 -0.20375    0.48831  -0.417  0.67660    
+factor(county)23  0.55945    0.65534   0.854  0.39353    
+factor(county)24  1.26108    0.45456   2.774  0.00566 ** 
+factor(county)25  1.11018    0.42892   2.588  0.00981 ** 
+factor(county)26  0.52004    0.38549   1.349  0.17770    
+factor(county)27  0.93282    0.48831   1.910  0.05644 .  
+factor(county)28  0.40105    0.50807   0.789  0.43013    
+factor(county)29  0.21546    0.57802   0.373  0.70942    
+factor(county)30  0.08522    0.44204   0.193  0.84718    
+factor(county)31  1.18003    0.50775   2.324  0.02036 *  
+factor(county)32  0.39575    0.53519   0.739  0.45983    
+factor(county)33  1.22133    0.53519   2.282  0.02274 *  
+factor(county)34  0.74990    0.57854   1.296  0.19527    
+factor(county)35 -0.02134    0.47470  -0.045  0.96415    
+factor(county)36  2.11842    0.65534   3.233  0.00128 ** 
+factor(county)37 -0.43845    0.45467  -0.964  0.33516    
+factor(county)38  1.02717    0.53519   1.919  0.05529 .  
+factor(county)39  0.90752    0.50743   1.788  0.07407 .  
+factor(county)40  1.47526    0.53487   2.758  0.00594 ** 
+factor(county)41  1.12661    0.46330   2.432  0.01524 *  
+factor(county)42  0.52044    0.84590   0.615  0.53856    
+factor(county)43  0.76170    0.45511   1.674  0.09457 .  
+factor(county)44  0.20045    0.47418   0.423  0.67261    
+factor(county)45  0.45487    0.43252   1.052  0.29325    
+factor(county)46  0.37407    0.50775   0.737  0.46150    
+factor(county)47  0.04339    0.65534   0.066  0.94723    
+factor(county)48  0.30758    0.45467   0.676  0.49892    
+factor(county)49  0.86157    0.43256   1.992  0.04672 *  
+factor(county)50  1.65266    0.84590   1.954  0.05107 .  
+factor(county)51  1.32450    0.53519   2.475  0.01353 *  
+factor(county)52  1.08715    0.57802   1.881  0.06034 .  
+factor(county)53  0.41026    0.57776   0.710  0.47784    
+factor(county)54  0.46621    0.40987   1.137  0.25567    
+factor(county)55  0.77745    0.46330   1.678  0.09371 .  
+factor(county)56  0.26056    0.57854   0.450  0.65256    
+factor(county)57 -0.07836    0.48831  -0.160  0.87255    
+factor(county)58  1.02038    0.53487   1.908  0.05677 .  
+factor(county)59  0.88124    0.53519   1.647  0.10002    
+factor(county)60  0.43885    0.65534   0.670  0.50327    
+factor(county)61  0.31819    0.40132   0.793  0.42809    
+factor(county)62  1.14247    0.50743   2.251  0.02462 *  
+factor(county)63  0.83016    0.57776   1.437  0.15113    
+factor(county)64  1.00729    0.44181   2.280  0.02286 *  
+factor(county)65  0.45858    0.65534   0.700  0.48427    
+factor(county)66  0.82520    0.42950   1.921  0.05503 .  
+factor(county)67  0.96258    0.43252   2.226  0.02631 *  
+factor(county)68  0.24948    0.46357   0.538  0.59060    
+factor(county)69  0.40191    0.53519   0.751  0.45288    
+factor(county)70  0.02709    0.38476   0.070  0.94388    
+factor(county)71  0.65130    0.40740   1.599  0.11027    
+factor(county)72  0.73936    0.44788   1.651  0.09916 .  
+factor(county)73  0.95122    0.65534   1.451  0.14702    
+factor(county)74  0.14650    0.53519   0.274  0.78436    
+factor(county)75  0.88318    0.57776   1.529  0.12674    
+factor(county)76  1.16790    0.53487   2.184  0.02928 *  
+factor(county)77  0.98114    0.47418   2.069  0.03884 *  
+factor(county)78  0.44515    0.50754   0.877  0.38070    
+factor(county)79 -0.22566    0.53487  -0.422  0.67321    
+factor(county)80  0.48898    0.39445   1.240  0.21545    
+factor(county)81  1.86899    0.57854   3.231  0.00128 ** 
+factor(county)82  1.38947    0.84590   1.643  0.10084    
+factor(county)83  0.78238    0.43250   1.809  0.07082 .  
+factor(county)84  0.80481    0.43269   1.860  0.06323 .  
+factor(county)85  0.34598    0.65534   0.528  0.59768    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.7564 on 833 degrees of freedom
+Multiple R-squared:  0.287, Adjusted R-squared:  0.2142 
+F-statistic: 3.945 on 85 and 833 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<ul>
+<li>County-specific intercepts represent differences from the reference (County 1).</li>
+<li>For instance, log radon levels in County 2 are <span class="math inline">\(0.03\)</span> higher than County 1.</li>
+<li>This model fits better than the complete-pooling model (with a lower residual SD and higher <span class="math inline">\(R^2\)</span>).</li>
+<li>However, estimates for individual counties may be uncertain, especially for smaller counties.</li>
+</ul>
+</section>
+<section id="no-pooling-regression-with-no-constant-term" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="no-pooling-regression-with-no-constant-term"><span class="header-section-number">4.3.4</span> No-Pooling Regression with No Constant Term</h3>
+<p>To fit a model where each county has its own intercept without a constant term, we use the <code>-1</code> in the formula. This allows each county to have its own intercept, making predictions for individual counties more convenient.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No-pooling model with no constant term</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lm.unpooled <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">factor</span>(county) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.unpooled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + factor(county) - 1)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-3.14595 -0.45405  0.00065  0.45376  2.65987 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+x                -0.72054    0.07352  -9.800  &lt; 2e-16 ***
+factor(county)1   0.84054    0.37866   2.220 0.026701 *  
+factor(county)2   0.87482    0.10498   8.333 3.23e-16 ***
+factor(county)3   1.52870    0.43946   3.479 0.000530 ***
+factor(county)4   1.55272    0.28897   5.373 1.00e-07 ***
+factor(county)5   1.43257    0.37866   3.783 0.000166 ***
+factor(county)6   1.51301    0.43672   3.464 0.000558 ***
+factor(county)7   2.01216    0.20243   9.940  &lt; 2e-16 ***
+factor(county)8   1.98958    0.37999   5.236 2.08e-07 ***
+factor(county)9   1.00304    0.23931   4.191 3.07e-05 ***
+factor(county)10  1.56391    0.31099   5.029 6.04e-07 ***
+factor(county)11  1.40113    0.33828   4.142 3.80e-05 ***
+factor(county)12  1.73025    0.37821   4.575 5.49e-06 ***
+factor(county)13  1.03872    0.30881   3.364 0.000804 ***
+factor(county)14  1.98838    0.20325   9.783  &lt; 2e-16 ***
+factor(county)15  1.33797    0.37999   3.521 0.000453 ***
+factor(county)16  0.66486    0.53487   1.243 0.214204    
+factor(county)17  1.27480    0.38221   3.335 0.000890 ***
+factor(county)18  1.12155    0.21913   5.118 3.83e-07 ***
+factor(county)19  1.33831    0.09541  14.026  &lt; 2e-16 ***
+factor(county)20  1.80032    0.43672   4.122 4.13e-05 ***
+factor(county)21  1.73399    0.25227   6.873 1.23e-11 ***
+factor(county)22  0.63679    0.30905   2.060 0.039663 *  
+factor(county)23  1.39999    0.53613   2.611 0.009183 ** 
+factor(county)24  2.10162    0.25267   8.318 3.64e-16 ***
+factor(county)25  1.95072    0.20243   9.636  &lt; 2e-16 ***
+factor(county)26  1.36058    0.07422  18.332  &lt; 2e-16 ***
+factor(county)27  1.77336    0.30978   5.725 1.45e-08 ***
+factor(county)28  1.24159    0.34115   3.639 0.000290 ***
+factor(county)29  1.05600    0.43672   2.418 0.015818 *  
+factor(county)30  0.92576    0.22807   4.059 5.39e-05 ***
+factor(county)31  2.02057    0.33828   5.973 3.45e-09 ***
+factor(county)32  1.23629    0.37821   3.269 0.001124 ** 
+factor(county)33  2.06187    0.37821   5.452 6.58e-08 ***
+factor(county)34  1.59044    0.43946   3.619 0.000314 ***
+factor(county)35  0.81920    0.28897   2.835 0.004695 ** 
+factor(county)36  2.95897    0.53613   5.519 4.55e-08 ***
+factor(county)37  0.40209    0.25227   1.594 0.111345    
+factor(county)38  1.86772    0.37999   4.915 1.07e-06 ***
+factor(county)39  1.74807    0.33860   5.163 3.05e-07 ***
+factor(county)40  2.31580    0.37866   6.116 1.48e-09 ***
+factor(county)41  1.96715    0.26759   7.351 4.69e-13 ***
+factor(county)42  1.36098    0.75642   1.799 0.072343 .  
+factor(county)43  1.60224    0.25543   6.273 5.69e-10 ***
+factor(county)44  1.04099    0.28609   3.639 0.000291 ***
+factor(county)45  1.29541    0.21101   6.139 1.28e-09 ***
+factor(county)46  1.21461    0.33828   3.591 0.000349 ***
+factor(county)47  0.88393    0.53613   1.649 0.099583 .  
+factor(county)48  1.14812    0.25227   4.551 6.13e-06 ***
+factor(county)49  1.70211    0.21010   8.102 1.93e-15 ***
+factor(county)50  2.49321    0.75642   3.296 0.001022 ** 
+factor(county)51  2.16504    0.37821   5.724 1.45e-08 ***
+factor(county)52  1.92769    0.43672   4.414 1.15e-05 ***
+factor(county)53  1.25080    0.43741   2.860 0.004348 ** 
+factor(county)54  1.30676    0.15802   8.270 5.28e-16 ***
+factor(county)55  1.61799    0.26885   6.018 2.64e-09 ***
+factor(county)56  1.10110    0.43946   2.506 0.012415 *  
+factor(county)57  0.76218    0.30905   2.466 0.013855 *  
+factor(county)58  1.86092    0.37866   4.915 1.07e-06 ***
+factor(county)59  1.72178    0.37999   4.531 6.73e-06 ***
+factor(county)60  1.27939    0.53487   2.392 0.016979 *  
+factor(county)61  1.15873    0.13389   8.654  &lt; 2e-16 ***
+factor(county)62  1.98301    0.33860   5.856 6.80e-09 ***
+factor(county)63  1.67070    0.43741   3.820 0.000144 ***
+factor(county)64  1.84784    0.22817   8.099 1.97e-15 ***
+factor(county)65  1.29912    0.53487   2.429 0.015357 *  
+factor(county)66  1.66574    0.20648   8.067 2.50e-15 ***
+factor(county)67  1.80312    0.21101   8.545  &lt; 2e-16 ***
+factor(county)68  1.09002    0.26743   4.076 5.02e-05 ***
+factor(county)69  1.24245    0.37821   3.285 0.001062 ** 
+factor(county)70  0.86763    0.07096  12.227  &lt; 2e-16 ***
+factor(county)71  1.49184    0.15174   9.832  &lt; 2e-16 ***
+factor(county)72  1.57990    0.23920   6.605 7.08e-11 ***
+factor(county)73  1.79176    0.53487   3.350 0.000845 ***
+factor(county)74  0.98704    0.37821   2.610 0.009223 ** 
+factor(county)75  1.72372    0.43741   3.941 8.80e-05 ***
+factor(county)76  2.00844    0.37866   5.304 1.45e-07 ***
+factor(county)77  1.82168    0.28609   6.367 3.17e-10 ***
+factor(county)78  1.28569    0.33956   3.786 0.000164 ***
+factor(county)79  0.61488    0.37866   1.624 0.104785    
+factor(county)80  1.32952    0.11181  11.890  &lt; 2e-16 ***
+factor(county)81  2.70953    0.43946   6.166 1.09e-09 ***
+factor(county)82  2.23001    0.75642   2.948 0.003286 ** 
+factor(county)83  1.62292    0.21048   7.711 3.57e-14 ***
+factor(county)84  1.64535    0.20987   7.840 1.38e-14 ***
+factor(county)85  1.18652    0.53487   2.218 0.026801 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.7564 on 833 degrees of freedom
+Multiple R-squared:  0.7671,    Adjusted R-squared:  0.7431 
+F-statistic: 31.91 on 86 and 833 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<ul>
+<li>County-specific intercepts are provided for all 85 counties.</li>
+<li>The R-squared appears inflated (<span class="math inline">\(0.77\)</span>) compared to the no-pooling model (<span class="math inline">\(0.29\)</span>), but this is due to how the lm() function calculates explained variance without a constant term.</li>
+<li>The estimates for intercepts are consistent with the previous parameterization.</li>
+</ul>
+</section>
+</section>
+<section id="setting-up-a-multilevel-regression-model-in-jags" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="setting-up-a-multilevel-regression-model-in-jags"><span class="header-section-number">4.4</span> Setting up a Multilevel Regression Model in JAGS</h2>
+<p>We can set up the multilevel model for the radon problem using <strong>JAGS</strong> (Just Another Gibbs Sampler) instead of <strong>Bugs</strong>. Below is the JAGS model code for a varying-intercept multilevel model.</p>
+<section id="jags-model-code" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="jags-model-code"><span class="header-section-number">4.4.1</span> JAGS Model Code:</h3>
+<p>See radon_model.jags for the JAGS model code.</p>
+<p>Explanation:</p>
+<ul>
+<li>Likelihood: Each observation’s radon level, y[i], is modeled as normally distributed with mean y.hat[i], where y.hat[i] = a[county[i]] + b * x[i].</li>
+<li>Priors:
+<ul>
+<li>The slope b is given a noninformative prior (dnorm(0, 0.0001)).</li>
+<li>The group-level intercepts a[j] are also normally distributed with mean mu.a and precision tau.a.</li>
+<li>sigma.y and sigma.a are assigned uniform priors.</li>
+</ul></li>
+</ul>
+</section>
+<section id="running-jags-in-r" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="running-jags-in-r"><span class="header-section-number">4.4.2</span> Running JAGS in R:</h3>
+<p>Once the model is set up, we can run it in R using the rjags package. Below is the R code to load the data, initialize the model, and run it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the rjags package</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data list for JAGS</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values for JAGS</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">a =</span> <span class="fu">rnorm</span>(J), <span class="at">b =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">mu.a =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sigma.y =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.a =</span> <span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Run JAGS</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>jags_model <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(<span class="st">"codigoJAGS/radon_model.jags"</span>, <span class="at">data =</span> data_jags, <span class="at">inits =</span> inits, <span class="at">n.chains =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 89
+   Total graph size: 3002
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">update</span>(jags_model, <span class="dv">1000</span>)  <span class="co"># Burn-in</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">coda.samples</span>(jags_model, <span class="at">variable.names =</span> params, <span class="at">n.iter =</span> <span class="dv">5000</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 2001:7000
+Thinning interval = 1 
+Number of chains = 3 
+Sample size per chain = 5000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+           Mean      SD  Naive SE Time-series SE
+a[1]     1.1902 0.25472 0.0020798      0.0022215
+a[2]     0.9291 0.10083 0.0008233      0.0008361
+a[3]     1.4779 0.26628 0.0021741      0.0022989
+a[4]     1.5040 0.21745 0.0017755      0.0018811
+a[5]     1.4417 0.25021 0.0020430      0.0021261
+a[6]     1.4753 0.26535 0.0021666      0.0022232
+a[7]     1.8558 0.17646 0.0014408      0.0015735
+a[8]     1.6801 0.25668 0.0020958      0.0025060
+a[9]     1.1598 0.19610 0.0016012      0.0016943
+a[10]    1.5108 0.22785 0.0018603      0.0020350
+a[11]    1.4321 0.23965 0.0019567      0.0020334
+a[12]    1.5790 0.25278 0.0020639      0.0020942
+a[13]    1.2366 0.22850 0.0018657      0.0019578
+a[14]    1.8342 0.17615 0.0014382      0.0016110
+a[15]    1.3986 0.25350 0.0020699      0.0021287
+a[16]    1.2385 0.28770 0.0023490      0.0026070
+a[17]    1.3694 0.25055 0.0020457      0.0021395
+a[18]    1.2192 0.18212 0.0014870      0.0015150
+a[19]    1.3461 0.09248 0.0007551      0.0007736
+a[20]    1.5849 0.26686 0.0021789      0.0022508
+a[21]    1.6276 0.20239 0.0016525      0.0017372
+a[22]    1.0171 0.23156 0.0018907      0.0022331
+a[23]    1.4392 0.28458 0.0023236      0.0024335
+a[24]    1.8562 0.20497 0.0016736      0.0019966
+a[25]    1.8095 0.17553 0.0014332      0.0015704
+a[26]    1.3624 0.07267 0.0005934      0.0006025
+a[27]    1.6204 0.23127 0.0018883      0.0019514
+a[28]    1.3438 0.23752 0.0019393      0.0020924
+a[29]    1.3131 0.26548 0.0021676      0.0022049
+a[30]    1.1020 0.19058 0.0015561      0.0017287
+a[31]    1.7283 0.23986 0.0019585      0.0022789
+a[32]    1.3642 0.25134 0.0020522      0.0020832
+a[33]    1.7203 0.25707 0.0020989      0.0023097
+a[34]    1.5033 0.26680 0.0021784      0.0022938
+a[35]    1.0838 0.22364 0.0018260      0.0020182
+a[36]    1.8703 0.29707 0.0024256      0.0032681
+a[37]    0.7936 0.21445 0.0017510      0.0023798
+a[38]    1.6329 0.25119 0.0020510      0.0021798
+a[39]    1.5971 0.23590 0.0019261      0.0019550
+a[40]    1.8253 0.25812 0.0021075      0.0025912
+a[41]    1.7623 0.21274 0.0017370      0.0019427
+a[42]    1.4419 0.30713 0.0025077      0.0026002
+a[43]    1.5380 0.20427 0.0016678      0.0017839
+a[44]    1.2196 0.21911 0.0017890      0.0018555
+a[45]    1.3364 0.17767 0.0014506      0.0014270
+a[46]    1.3385 0.23553 0.0019231      0.0019231
+a[47]    1.2946 0.28614 0.0023364      0.0024909
+a[48]    1.2608 0.20065 0.0016383      0.0016896
+a[49]    1.6276 0.17944 0.0014651      0.0015340
+a[50]    1.6267 0.30971 0.0025288      0.0027133
+a[51]    1.7625 0.25521 0.0020837      0.0023811
+a[52]    1.6295 0.26640 0.0021751      0.0023139
+a[53]    1.3777 0.26518 0.0021652      0.0022612
+a[54]    1.3338 0.14199 0.0011593      0.0012428
+a[55]    1.5501 0.21048 0.0017185      0.0017661
+a[56]    1.3250 0.26667 0.0021773      0.0022911
+a[57]    1.0880 0.23122 0.0018879      0.0020944
+a[58]    1.6279 0.25056 0.0020458      0.0021275
+a[59]    1.5659 0.25447 0.0020777      0.0022161
+a[60]    1.4085 0.28435 0.0023217      0.0023231
+a[61]    1.2007 0.12456 0.0010170      0.0010335
+a[62]    1.7110 0.24075 0.0019657      0.0022969
+a[63]    1.5365 0.26591 0.0021712      0.0023192
+a[64]    1.7182 0.19152 0.0015637      0.0016741
+a[65]    1.4170 0.28323 0.0023125      0.0023126
+a[66]    1.5952 0.17630 0.0014395      0.0016465
+a[67]    1.6960 0.17954 0.0014660      0.0015156
+a[68]    1.2403 0.20919 0.0017080      0.0017733
+a[69]    1.3655 0.25088 0.0020484      0.0020736
+a[70]    0.8914 0.06985 0.0005704      0.0005969
+a[71]    1.4823 0.13819 0.0011283      0.0011263
+a[72]    1.5365 0.19189 0.0015668      0.0015925
+a[73]    1.5496 0.28372 0.0023166      0.0024045
+a[74]    1.2546 0.25044 0.0020448      0.0021601
+a[75]    1.5512 0.26872 0.0021941      0.0022134
+a[76]    1.6948 0.25301 0.0020658      0.0022551
+a[77]    1.6615 0.21668 0.0017692      0.0018926
+a[78]    1.3706 0.23622 0.0019287      0.0019288
+a[79]    1.0938 0.25453 0.0020782      0.0023901
+a[80]    1.3384 0.10633 0.0008682      0.0008753
+a[81]    1.9058 0.27815 0.0022711      0.0030650
+a[82]    1.5851 0.30864 0.0025200      0.0028872
+a[83]    1.5699 0.17585 0.0014358      0.0014512
+a[84]    1.5885 0.17833 0.0014560      0.0014561
+a[85]    1.3834 0.28339 0.0023138      0.0023463
+b       -0.6915 0.07081 0.0005782      0.0008687
+mu.a     1.4602 0.05286 0.0004316      0.0008124
+sigma.a  0.3320 0.04579 0.0003739      0.0010311
+sigma.y  0.7571 0.01862 0.0001520      0.0002177
+
+2. Quantiles for each variable:
+
+           2.5%     25%     50%     75%   97.5%
+a[1]     0.6794  1.0235  1.1934  1.3614  1.6854
+a[2]     0.7315  0.8611  0.9290  0.9962  1.1281
+a[3]     0.9499  1.2999  1.4778  1.6562  1.9969
+a[4]     1.0825  1.3584  1.4985  1.6525  1.9342
+a[5]     0.9487  1.2743  1.4435  1.6085  1.9302
+a[6]     0.9583  1.2960  1.4732  1.6549  2.0011
+a[7]     1.5162  1.7359  1.8544  1.9731  2.2087
+a[8]     1.1888  1.5048  1.6799  1.8496  2.1956
+a[9]     0.7728  1.0304  1.1600  1.2918  1.5419
+a[10]    1.0681  1.3577  1.5092  1.6641  1.9606
+a[11]    0.9614  1.2736  1.4325  1.5911  1.9003
+a[12]    1.0854  1.4083  1.5750  1.7494  2.0859
+a[13]    0.7813  1.0842  1.2389  1.3920  1.6774
+a[14]    1.5001  1.7153  1.8326  1.9523  2.1820
+a[15]    0.8938  1.2289  1.3992  1.5681  1.8972
+a[16]    0.6653  1.0495  1.2410  1.4347  1.7942
+a[17]    0.8743  1.2012  1.3688  1.5336  1.8628
+a[18]    0.8578  1.0977  1.2195  1.3421  1.5763
+a[19]    1.1659  1.2840  1.3458  1.4075  1.5274
+a[20]    1.0688  1.4044  1.5849  1.7626  2.1138
+a[21]    1.2353  1.4919  1.6254  1.7634  2.0293
+a[22]    0.5577  0.8622  1.0211  1.1744  1.4678
+a[23]    0.8850  1.2510  1.4385  1.6305  1.9999
+a[24]    1.4619  1.7179  1.8557  1.9920  2.2610
+a[25]    1.4693  1.6907  1.8083  1.9288  2.1580
+a[26]    1.2190  1.3126  1.3622  1.4113  1.5067
+a[27]    1.1663  1.4673  1.6189  1.7754  2.0695
+a[28]    0.8700  1.1859  1.3459  1.5049  1.8031
+a[29]    0.7887  1.1354  1.3110  1.4942  1.8335
+a[30]    0.7301  0.9727  1.1037  1.2328  1.4731
+a[31]    1.2623  1.5682  1.7253  1.8859  2.2066
+a[32]    0.8647  1.1961  1.3653  1.5330  1.8538
+a[33]    1.2278  1.5451  1.7154  1.8891  2.2415
+a[34]    0.9817  1.3236  1.5006  1.6832  2.0325
+a[35]    0.6399  0.9347  1.0862  1.2367  1.5173
+a[36]    1.3117  1.6684  1.8618  2.0657  2.4694
+a[37]    0.3713  0.6494  0.7966  0.9381  1.2078
+a[38]    1.1509  1.4616  1.6299  1.8016  2.1318
+a[39]    1.1389  1.4383  1.5953  1.7565  2.0657
+a[40]    1.3261  1.6504  1.8218  1.9941  2.3474
+a[41]    1.3471  1.6189  1.7613  1.9039  2.1866
+a[42]    0.8267  1.2393  1.4397  1.6441  2.0480
+a[43]    1.1393  1.3997  1.5376  1.6748  1.9437
+a[44]    0.7846  1.0757  1.2175  1.3688  1.6471
+a[45]    0.9909  1.2158  1.3369  1.4582  1.6848
+a[46]    0.8712  1.1821  1.3422  1.4948  1.7994
+a[47]    0.7193  1.1089  1.2970  1.4847  1.8542
+a[48]    0.8651  1.1270  1.2606  1.3954  1.6510
+a[49]    1.2804  1.5083  1.6263  1.7491  1.9808
+a[50]    1.0248  1.4215  1.6219  1.8299  2.2455
+a[51]    1.2705  1.5900  1.7588  1.9335  2.2734
+a[52]    1.1089  1.4509  1.6254  1.8074  2.1572
+a[53]    0.8567  1.2015  1.3745  1.5546  1.9046
+a[54]    1.0551  1.2390  1.3338  1.4289  1.6157
+a[55]    1.1381  1.4099  1.5502  1.6900  1.9628
+a[56]    0.8011  1.1451  1.3257  1.5039  1.8453
+a[57]    0.6273  0.9345  1.0891  1.2468  1.5349
+a[58]    1.1423  1.4608  1.6272  1.7936  2.1265
+a[59]    1.0700  1.3951  1.5616  1.7354  2.0746
+a[60]    0.8516  1.2177  1.4063  1.6001  1.9700
+a[61]    0.9513  1.1178  1.2013  1.2847  1.4423
+a[62]    1.2502  1.5467  1.7079  1.8727  2.1904
+a[63]    1.0211  1.3583  1.5321  1.7113  2.0670
+a[64]    1.3415  1.5880  1.7180  1.8463  2.0955
+a[65]    0.8547  1.2286  1.4174  1.6052  1.9669
+a[66]    1.2484  1.4766  1.5963  1.7129  1.9421
+a[67]    1.3486  1.5741  1.6944  1.8169  2.0497
+a[68]    0.8298  1.0993  1.2408  1.3799  1.6476
+a[69]    0.8732  1.1958  1.3652  1.5347  1.8542
+a[70]    0.7545  0.8439  0.8914  0.9391  1.0277
+a[71]    1.2105  1.3891  1.4826  1.5756  1.7525
+a[72]    1.1601  1.4072  1.5367  1.6662  1.9099
+a[73]    0.9849  1.3608  1.5480  1.7387  2.1143
+a[74]    0.7584  1.0856  1.2575  1.4244  1.7446
+a[75]    1.0238  1.3699  1.5526  1.7308  2.0836
+a[76]    1.2048  1.5252  1.6928  1.8602  2.2013
+a[77]    1.2402  1.5171  1.6598  1.8066  2.0908
+a[78]    0.9055  1.2132  1.3714  1.5297  1.8284
+a[79]    0.5820  0.9274  1.0985  1.2637  1.5867
+a[80]    1.1311  1.2667  1.3379  1.4097  1.5474
+a[81]    1.3726  1.7159  1.8988  2.0865  2.4698
+a[82]    0.9885  1.3783  1.5823  1.7863  2.2022
+a[83]    1.2229  1.4521  1.5701  1.6883  1.9193
+a[84]    1.2354  1.4709  1.5885  1.7085  1.9355
+a[85]    0.8271  1.1961  1.3826  1.5721  1.9424
+b       -0.8293 -0.7397 -0.6919 -0.6433 -0.5532
+mu.a     1.3572  1.4244  1.4601  1.4961  1.5644
+sigma.a  0.2491  0.3004  0.3296  0.3616  0.4285
+sigma.y  0.7214  0.7443  0.7568  0.7694  0.7944</code></pre>
+</div>
+</div>
+<p>Diagnósticos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>JAGS model:
+
+model {
+  for (i in 1:n) {
+    y[i] ~ dnorm(y.hat[i], tau.y)
+    y.hat[i] &lt;- a[county[i]] + b * x[i]
+  }
+
+  # Priors
+  b ~ dnorm(0, 0.0001)
+  tau.y &lt;- pow(sigma.y, -2)
+  sigma.y ~ dunif(0, 100)
+
+  for (j in 1:J) {
+    a[j] ~ dnorm(mu.a, tau.a)
+  }
+
+  mu.a ~ dnorm(0, 0.0001)
+  tau.a &lt;- pow(sigma.a, -2)
+  sigma.a ~ dunif(0, 100)
+}
+Fully observed variables:
+ J county n x y </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R2jags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'R2jags'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:coda':
+
+    traceplot</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>jags_model2 <span class="ot">&lt;-</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">jags</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model.jags"</span>, <span class="at">data =</span> data_jags,<span class="at">parameters.to.save =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>),<span class="at">n.iter =</span> <span class="dv">10000</span>, <span class="at">n.burnin =</span> <span class="dv">3000</span>,<span class="at">n.thin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>module glm loaded</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 89
+   Total graph size: 3002
+
+Initializing model</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>jags_model2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model.jags", fit using jags,
+ 3 chains, each with 10000 iterations (first 3000 discarded), n.thin = 2
+ n.sims = 10500 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.189   0.255    0.677    1.021    1.193    1.360    1.677 1.001
+a[2]        0.927   0.101    0.727    0.859    0.928    0.995    1.125 1.001
+a[3]        1.478   0.269    0.947    1.300    1.478    1.658    2.008 1.001
+a[4]        1.502   0.218    1.066    1.355    1.501    1.647    1.931 1.001
+a[5]        1.448   0.254    0.958    1.277    1.448    1.619    1.939 1.001
+a[6]        1.486   0.267    0.971    1.308    1.483    1.665    2.014 1.001
+a[7]        1.859   0.177    1.516    1.738    1.858    1.977    2.211 1.001
+a[8]        1.685   0.257    1.189    1.516    1.680    1.856    2.199 1.001
+a[9]        1.162   0.198    0.770    1.031    1.164    1.296    1.539 1.001
+a[10]       1.511   0.226    1.064    1.358    1.511    1.664    1.963 1.001
+a[11]       1.430   0.239    0.969    1.269    1.429    1.591    1.904 1.001
+a[12]       1.577   0.252    1.086    1.407    1.572    1.746    2.080 1.001
+a[13]       1.238   0.229    0.782    1.083    1.239    1.391    1.687 1.001
+a[14]       1.836   0.177    1.491    1.716    1.833    1.953    2.191 1.001
+a[15]       1.401   0.252    0.908    1.232    1.404    1.572    1.897 1.001
+a[16]       1.236   0.287    0.657    1.048    1.239    1.426    1.793 1.001
+a[17]       1.372   0.254    0.876    1.201    1.372    1.540    1.874 1.001
+a[18]       1.220   0.184    0.867    1.096    1.218    1.342    1.584 1.002
+a[19]       1.346   0.092    1.166    1.285    1.346    1.408    1.529 1.001
+a[20]       1.584   0.268    1.055    1.404    1.583    1.761    2.109 1.001
+a[21]       1.630   0.202    1.232    1.494    1.630    1.765    2.028 1.001
+a[22]       1.020   0.236    0.550    0.865    1.024    1.181    1.464 1.001
+a[23]       1.441   0.287    0.879    1.254    1.439    1.633    2.010 1.001
+a[24]       1.864   0.207    1.463    1.722    1.864    2.002    2.272 1.001
+a[25]       1.813   0.175    1.467    1.697    1.813    1.932    2.160 1.001
+a[26]       1.364   0.073    1.223    1.314    1.363    1.414    1.510 1.001
+a[27]       1.619   0.229    1.178    1.464    1.620    1.770    2.077 1.001
+a[28]       1.351   0.239    0.879    1.193    1.352    1.510    1.824 1.001
+a[29]       1.310   0.269    0.762    1.134    1.310    1.489    1.839 1.002
+a[30]       1.100   0.191    0.728    0.970    1.098    1.230    1.471 1.001
+a[31]       1.735   0.242    1.263    1.572    1.734    1.894    2.222 1.001
+a[32]       1.363   0.250    0.867    1.196    1.365    1.534    1.849 1.001
+a[33]       1.721   0.253    1.229    1.552    1.715    1.887    2.224 1.001
+a[34]       1.499   0.266    0.975    1.320    1.498    1.677    2.020 1.001
+a[35]       1.082   0.223    0.642    0.932    1.085    1.235    1.505 1.002
+a[36]       1.883   0.304    1.300    1.682    1.875    2.078    2.511 1.001
+a[37]       0.792   0.214    0.372    0.648    0.795    0.937    1.203 1.001
+a[38]       1.630   0.258    1.120    1.458    1.629    1.800    2.149 1.001
+a[39]       1.600   0.241    1.127    1.439    1.597    1.759    2.078 1.001
+a[40]       1.832   0.258    1.341    1.658    1.828    1.999    2.357 1.001
+a[41]       1.764   0.210    1.369    1.624    1.760    1.903    2.182 1.001
+a[42]       1.441   0.313    0.823    1.235    1.440    1.647    2.059 1.001
+a[43]       1.539   0.206    1.134    1.398    1.539    1.678    1.937 1.001
+a[44]       1.219   0.220    0.779    1.074    1.219    1.368    1.649 1.001
+a[45]       1.337   0.180    0.983    1.216    1.338    1.459    1.692 1.001
+a[46]       1.343   0.239    0.876    1.184    1.345    1.501    1.808 1.001
+a[47]       1.293   0.286    0.727    1.105    1.293    1.487    1.849 1.002
+a[48]       1.261   0.202    0.867    1.127    1.263    1.399    1.657 1.001
+a[49]       1.630   0.180    1.280    1.510    1.629    1.747    1.980 1.001
+a[50]       1.627   0.312    1.027    1.411    1.624    1.831    2.248 1.001
+a[51]       1.762   0.254    1.270    1.587    1.759    1.930    2.272 1.001
+a[52]       1.634   0.265    1.130    1.452    1.629    1.812    2.170 1.001
+a[53]       1.380   0.267    0.863    1.203    1.380    1.560    1.895 1.001
+a[54]       1.331   0.142    1.054    1.235    1.329    1.428    1.609 1.001
+a[55]       1.548   0.213    1.134    1.407    1.547    1.691    1.970 1.001
+a[56]       1.320   0.268    0.783    1.142    1.320    1.500    1.844 1.001
+a[57]       1.087   0.234    0.622    0.931    1.088    1.243    1.537 1.001
+a[58]       1.627   0.251    1.138    1.460    1.627    1.795    2.124 1.001
+a[59]       1.566   0.255    1.068    1.395    1.563    1.737    2.067 1.001
+a[60]       1.409   0.286    0.839    1.219    1.413    1.597    1.968 1.001
+a[61]       1.200   0.124    0.954    1.117    1.201    1.283    1.441 1.001
+a[62]       1.715   0.242    1.241    1.550    1.714    1.874    2.200 1.001
+a[63]       1.536   0.272    1.007    1.353    1.533    1.719    2.072 1.001
+a[64]       1.721   0.190    1.350    1.593    1.722    1.846    2.094 1.001
+a[65]       1.411   0.283    0.854    1.221    1.413    1.600    1.966 1.001
+a[66]       1.595   0.176    1.247    1.478    1.596    1.714    1.943 1.001
+a[67]       1.701   0.179    1.353    1.579    1.702    1.822    2.055 1.002
+a[68]       1.240   0.209    0.826    1.100    1.241    1.379    1.654 1.001
+a[69]       1.367   0.255    0.861    1.199    1.370    1.537    1.865 1.001
+a[70]       0.891   0.070    0.752    0.844    0.891    0.939    1.028 1.001
+a[71]       1.482   0.138    1.215    1.390    1.482    1.575    1.752 1.001
+a[72]       1.536   0.194    1.155    1.405    1.537    1.667    1.914 1.001
+a[73]       1.554   0.286    0.993    1.360    1.550    1.743    2.122 1.001
+a[74]       1.256   0.251    0.756    1.091    1.256    1.423    1.750 1.001
+a[75]       1.557   0.269    1.031    1.377    1.556    1.738    2.097 1.001
+a[76]       1.698   0.255    1.205    1.527    1.694    1.866    2.207 1.001
+a[77]       1.665   0.222    1.232    1.515    1.664    1.810    2.109 1.001
+a[78]       1.369   0.238    0.901    1.210    1.369    1.528    1.841 1.001
+a[79]       1.091   0.257    0.578    0.922    1.094    1.265    1.583 1.001
+a[80]       1.339   0.107    1.128    1.269    1.340    1.411    1.546 1.001
+a[81]       1.910   0.280    1.382    1.716    1.905    2.095    2.476 1.001
+a[82]       1.585   0.311    0.972    1.376    1.585    1.788    2.195 1.001
+a[83]       1.571   0.179    1.229    1.449    1.570    1.693    1.925 1.001
+a[84]       1.591   0.177    1.243    1.471    1.593    1.707    1.943 1.001
+a[85]       1.380   0.284    0.819    1.193    1.379    1.568    1.939 1.001
+b          -0.692   0.071   -0.831   -0.741   -0.693   -0.645   -0.551 1.001
+mu.a        1.461   0.052    1.361    1.426    1.460    1.496    1.565 1.001
+sigma.a     0.335   0.047    0.250    0.302    0.332    0.364    0.433 1.002
+sigma.y     0.756   0.019    0.721    0.744    0.756    0.769    0.794 1.001
+deviance 2094.588  12.926 2070.831 2085.533 2094.154 2103.304 2120.918 1.001
+         n.eff
+a[1]      4800
+a[2]     10000
+a[3]      7900
+a[4]     10000
+a[5]     10000
+a[6]     10000
+a[7]      5600
+a[8]     10000
+a[9]     10000
+a[10]    10000
+a[11]     4600
+a[12]    10000
+a[13]     7200
+a[14]    10000
+a[15]     4000
+a[16]    10000
+a[17]     5400
+a[18]     2900
+a[19]     5300
+a[20]     9600
+a[21]    10000
+a[22]    10000
+a[23]    10000
+a[24]     9600
+a[25]    10000
+a[26]    10000
+a[27]    10000
+a[28]    10000
+a[29]     2400
+a[30]    10000
+a[31]     6700
+a[32]    10000
+a[33]     5600
+a[34]     6300
+a[35]     8700
+a[36]     9600
+a[37]     8100
+a[38]     4900
+a[39]     7700
+a[40]     8000
+a[41]    10000
+a[42]    10000
+a[43]     5100
+a[44]    10000
+a[45]     6400
+a[46]    10000
+a[47]     2700
+a[48]    10000
+a[49]     6800
+a[50]     5600
+a[51]     4400
+a[52]    10000
+a[53]    10000
+a[54]    10000
+a[55]     8300
+a[56]    10000
+a[57]    10000
+a[58]     6100
+a[59]    10000
+a[60]     3600
+a[61]    10000
+a[62]    10000
+a[63]    10000
+a[64]    10000
+a[65]    10000
+a[66]    10000
+a[67]     3100
+a[68]    10000
+a[69]    10000
+a[70]    10000
+a[71]    10000
+a[72]     8600
+a[73]    10000
+a[74]    10000
+a[75]     4400
+a[76]    10000
+a[77]    10000
+a[78]    10000
+a[79]    10000
+a[80]    10000
+a[81]     4100
+a[82]    10000
+a[83]    10000
+a[84]     3800
+a[85]    10000
+b        10000
+mu.a     10000
+sigma.a   2800
+sigma.y   5500
+deviance 10000
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 83.6 and DIC = 2178.1
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CalvinBayes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: dplyr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggformula</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: scales</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggridges</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+New to ggformula?  Try the tutorials: 
+    learnr::run_tutorial("introduction", package = "ggformula")
+    learnr::run_tutorial("refining", package = "ggformula")</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: bayesplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is bayesplot version 1.11.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- Online documentation and vignettes at mc-stan.org/bayesplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- bayesplot theme set to bayesplot::theme_default()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>   * Does _not_ affect other ggplot2 plots</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>   * See ?bayesplot_theme_set for details on theme setting</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'CalvinBayes'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:bayesplot':
+
+    rhat</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:datasets':
+
+    HairEyeColor</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diagMCMC</span>(samples , <span class="at">parName=</span><span class="st">"a[1]"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap16_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diagMCMC</span>(samples , <span class="at">parName=</span><span class="st">"sigma.a"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap16_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In a Bayesian analysis run using Bugs or JAGS, the <strong>summary</strong> typically includes the <strong>means, standard deviations, and quantiles</strong> of all parameters, along with two key diagnostics for convergence:</p>
+<ol type="1">
+<li><p><strong>R-hat</strong> (Potential Scale Reduction Factor): This measures how much the parameter estimates would improve if the model were run indefinitely. <strong>R-hat ≤ 1.1</strong> indicates good convergence.</p></li>
+<li><p><strong>Effective Sample Size (n_eff)</strong>: This metric reflects how many independent samples the Markov Chain Monte Carlo (MCMC) has effectively produced. A high <strong>n_eff</strong> value means the parameter estimates are reliable and not highly autocorrelated, leading to better precision. We usually like to have <strong>n_eff</strong> to be at least 100 for typical estimates and confidence intervals.</p></li>
+</ol>
+<p>In JAGS, after running your model, the simulations (posterior samples) can be accessed in R. The saved MCMC object contains simulation draws for each parameter. For example, scalar parameters like b, mu.a, sigma.y, and sigma.a are vectors of length corresponding to the number of saved draws (e.g., 750). Parameters like a (which varies by county) will be represented as matrices.</p>
+<p>Example code for accessing and summarizing parameter estimates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#samples &lt;- coda.samples(jags_model2, variable.names = #params, n.iter = 5000)</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Quantiles for b</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(<span class="fu">as.numeric</span>(samples[[<span class="dv">1</span>]][,<span class="st">"b"</span>]), <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        5%        95% 
+-0.8070339 -0.5766632 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Probability that radon levels in county 36 are higher than in county 26</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(samples[[<span class="dv">1</span>]][,<span class="st">'a[36]'</span>] <span class="sc">&gt;</span> samples[[<span class="dv">1</span>]][,<span class="st">'a[26]'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9554</code></pre>
+</div>
+</div>
+<p>Fitted Values, Residuals, and Other Calculations in JAGS</p>
+<p>In JAGS, you can calculate fitted values and residuals after running the model by combining parameter samples with the observed data. For instance:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate fitted values and residuals</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="do">## y.hat &lt;- a.multilevel[county] + b.multilevel * x</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="do">## y.resid &lt;- y - y.hat</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot residuals</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="do">## plot(y.hat, y.resid)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can also add y.hat as a monitored parameter during the JAGS run. For predictive checks, such as comparing radon levels between two counties:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>b_samples <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(samples[[<span class="dv">1</span>]][,<span class="st">"b"</span>])</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>a36_samples <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(samples[[<span class="dv">1</span>]][,<span class="st">"a[36]"</span>])</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>a26_samples <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(samples[[<span class="dv">1</span>]][,<span class="st">"a[26]"</span>])</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>sigma.y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(samples[[<span class="dv">1</span>]][,<span class="st">"sigma.y"</span>])</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictive distribution for radon levels</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>lqp.radon <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">5000</span>, a36_samples <span class="sc">+</span> b_samples, sigma.y))</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>hennepin.radon <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">5000</span>, <span class="fu">rnorm</span>(<span class="dv">1</span>, a26_samples <span class="sc">+</span> b_samples, sigma.y)))</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>radon.diff <span class="ot">&lt;-</span> lqp.radon <span class="sc">-</span> hennepin.radon</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(radon.diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap16_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="adding-individual--and-group-level-predictors-in-jags" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="adding-individual--and-group-level-predictors-in-jags"><span class="header-section-number">4.5</span> Adding Individual- and Group-Level Predictors in JAGS</h2>
+<p>In JAGS, we can add both individual- and group-level predictors to the model. For complete-pooling regression, where no group-level variation is considered, a simple linear regression can be fit using the following JAGS model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="do">## JAGS model for complete pooling</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model {</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (i in 1:n) {</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     y[i] ~ dnorm(y.hat[i], tau.y)</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     y.hat[i] &lt;- a + b * x[i]  # Complete-pooling regression</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Priors</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   a ~ dnorm(0, 0.0001)</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   b ~ dnorm(0, 0.0001)</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   tau.y &lt;- pow(sigma.y, -2)</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   sigma.y ~ dunif(0, 100)</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Explanation:</p>
+<ul>
+<li>y[i] is the radon level for house i.</li>
+<li>x[i] is the basement status (individual-level predictor).</li>
+<li>a is the intercept, and b is the slope.</li>
+</ul>
+<p>No-Pooling Model in JAGS</p>
+<p>In a no-pooling model, the intercepts for each county are allowed to vary, but no information is shared between them (i.e., no hierarchical structure). The JAGS model allows for county-specific intercepts (a[county[i]]) while maintaining a common slope (b).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # JAGS model for no-pooling</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model {</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (i in 1:n) {</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     y[i] ~ dnorm(y.hat[i], tau.y)</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     y.hat[i] &lt;- a[county[i]] + b * x[i]  # No-pooling model</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Priors</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   b ~ dnorm(0, 0.0001)</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   tau.y &lt;- pow(sigma.y, -2)</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   sigma.y ~ dunif(0, 100)</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (j in 1:J) {</span></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     a[j] ~ dnorm(0, 0.0001)  # County-specific intercepts</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Explanation:</p>
+<ul>
+<li>a[j]: intercept for county j.</li>
+<li>b: common slope for the basement status.</li>
+</ul>
+<p>Classical Regression with Multiple Predictors in JAGS</p>
+<p>In a classical regression with multiple predictors, you can extend the model to include additional covariates like whether the radon measurement was taken in winter. The model can also include interaction terms.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # JAGS model for classical regression with multiple predictors</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model {</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (i in 1:n) {</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     y[i] ~ dnorm(y.hat[i], tau.y)</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     y.hat[i] &lt;- a + b[1]*x[i] + b[2]*winter[i] + b[3]*x[i]*winter[i]  # Multiple predictors and interaction</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Priors for regression coefficients</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (k in 1:K) {</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     b[k] ~ dnorm(0, 0.0001)</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Other priors</span></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   a ~ dnorm(0, 0.0001)</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   tau.y &lt;- pow(sigma.y, -2)</span></span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   sigma.y ~ dunif(0, 100)</span></span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Explanation:</p>
+<ul>
+<li>b[1], b[2], b[3]: coefficients for x, winter, and their interaction.</li>
+<li>a: intercept.</li>
+<li>winter[i]: an indicator for whether the measurement was taken in winter.</li>
+</ul>
+<p>Vector-Matrix Notation in JAGS</p>
+<p>To efficiently handle multiple predictors in JAGS, you can use vector-matrix notation. First, in R, create a matrix of predictors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Create a matrix of predictors in R</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co"># X &lt;- cbind(x, winter, x * winter)</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co"># K &lt;- ncol(X)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, in the JAGS model, use the inner-product function for the linear predictor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # JAGS model with vector-matrix notation</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model {</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (i in 1:n) {</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     y[i] ~ dnorm(y.hat[i], tau.y)</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     y.hat[i] &lt;- a + inprod(b[], X[i,])</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Priors for regression coefficients</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   for (k in 1:K) {</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     b[k] ~ dnorm(0, 0.0001)</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Other priors</span></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   a ~ dnorm(0, 0.0001)</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   tau.y &lt;- pow(sigma.y, -2)</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   sigma.y ~ dunif(0, 100)</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you want to include the intercept in the matrix, prepend a vector of ones to the predictor matrix:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Include intercept in the predictor matrix</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ones &lt;- rep(1, n)</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="co"># X &lt;- cbind(ones, x, winter, x * winter)</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co"># K &lt;- ncol(X)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the JAGS model, simplify y.hat by using inprod(b[], X[i,]), where the coefficients b[1], …, b[4] correspond to the intercept and other predictors. This approach makes handling multiple predictors more efficient.</p>
+<p>Multilevel Model with a Group-Level Predictor in JAGS</p>
+<p>In this multilevel model, a group-level predictor (such as uranium levels) influences the county-specific intercepts. Here’s the equivalent JAGS model:</p>
+<p>Preparación de datos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>srrs2.fips <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>stfips<span class="sc">*</span><span class="dv">1000</span> <span class="sc">+</span> srrs2<span class="sc">$</span>cntyfips</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>cty <span class="ot">&lt;-</span> <span class="fu">read.table</span> (<span class="st">"data/ARM_Data/radon/cty.dat"</span>, <span class="at">header=</span>T, <span class="at">sep=</span><span class="st">","</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>usa.fips <span class="ot">&lt;-</span> <span class="dv">1000</span><span class="sc">*</span>cty[,<span class="st">"stfips"</span>] <span class="sc">+</span> cty[,<span class="st">"ctfips"</span>]</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>usa.rows <span class="ot">&lt;-</span> <span class="fu">match</span> (<span class="fu">unique</span>(srrs2.fips[mn]), usa.fips)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>uranium <span class="ot">&lt;-</span> cty[usa.rows,<span class="st">"Uppm"</span>]</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">log</span> (uranium)</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>u.full <span class="ot">&lt;-</span> u[county]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>data_jags<span class="sc">$</span>u <span class="ot">&lt;-</span> u.full</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>jags_model2_u <span class="ot">&lt;-</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">jags</span>(</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_u.jags"</span>, <span class="at">data =</span> data_jags,<span class="at">parameters.to.save =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>,<span class="st">"g.0"</span>,<span class="st">"g.1"</span>),<span class="at">n.iter =</span> <span class="dv">3000</span>, <span class="at">n.burnin =</span> <span class="dv">1000</span>,<span class="at">n.thin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 90
+   Total graph size: 3936
+
+Initializing model</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>jags_model2_u</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model_u.jags", fit using jags,
+ 3 chains, each with 3000 iterations (first 1000 discarded), n.thin = 2
+ n.sims = 3000 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.175   0.256    0.670    1.005    1.178    1.349    1.676 1.002
+a[2]        0.929   0.102    0.730    0.858    0.927    0.999    1.129 1.001
+a[3]        1.479   0.271    0.947    1.303    1.477    1.656    2.013 1.001
+a[4]        1.506   0.224    1.054    1.360    1.507    1.654    1.938 1.001
+a[5]        1.432   0.256    0.932    1.257    1.432    1.603    1.939 1.001
+a[6]        1.475   0.268    0.943    1.295    1.474    1.650    2.009 1.001
+a[7]        1.861   0.177    1.524    1.739    1.861    1.978    2.207 1.001
+a[8]        1.683   0.256    1.193    1.504    1.680    1.853    2.172 1.001
+a[9]        1.148   0.201    0.742    1.013    1.151    1.281    1.546 1.001
+a[10]       1.499   0.233    1.046    1.345    1.495    1.661    1.952 1.001
+a[11]       1.427   0.241    0.947    1.266    1.431    1.587    1.892 1.002
+a[12]       1.580   0.258    1.088    1.408    1.575    1.754    2.091 1.001
+a[13]       1.226   0.234    0.757    1.070    1.228    1.385    1.671 1.001
+a[14]       1.835   0.178    1.480    1.713    1.837    1.953    2.182 1.001
+a[15]       1.391   0.250    0.895    1.222    1.396    1.560    1.867 1.001
+a[16]       1.219   0.300    0.586    1.030    1.225    1.419    1.785 1.002
+a[17]       1.363   0.255    0.867    1.190    1.361    1.538    1.867 1.001
+a[18]       1.214   0.190    0.828    1.092    1.215    1.339    1.581 1.001
+a[19]       1.347   0.093    1.165    1.284    1.346    1.408    1.532 1.002
+a[20]       1.585   0.274    1.034    1.402    1.583    1.767    2.131 1.001
+a[21]       1.627   0.204    1.228    1.489    1.628    1.765    2.034 1.001
+a[22]       1.012   0.235    0.546    0.857    1.010    1.165    1.475 1.001
+a[23]       1.433   0.293    0.839    1.244    1.430    1.628    1.990 1.001
+a[24]       1.859   0.212    1.454    1.716    1.855    2.004    2.266 1.002
+a[25]       1.811   0.178    1.460    1.688    1.810    1.930    2.168 1.002
+a[26]       1.364   0.071    1.223    1.317    1.362    1.413    1.498 1.003
+a[27]       1.621   0.234    1.156    1.469    1.620    1.778    2.081 1.001
+a[28]       1.338   0.238    0.883    1.179    1.341    1.492    1.806 1.002
+a[29]       1.306   0.267    0.767    1.128    1.308    1.491    1.824 1.001
+a[30]       1.094   0.189    0.725    0.968    1.093    1.217    1.475 1.002
+a[31]       1.734   0.244    1.275    1.572    1.723    1.893    2.217 1.003
+a[32]       1.357   0.251    0.852    1.190    1.360    1.525    1.852 1.001
+a[33]       1.723   0.260    1.236    1.543    1.719    1.893    2.242 1.001
+a[34]       1.497   0.271    0.964    1.312    1.499    1.669    2.026 1.002
+a[35]       1.079   0.230    0.634    0.933    1.079    1.235    1.534 1.001
+a[36]       1.883   0.295    1.329    1.672    1.881    2.095    2.474 1.001
+a[37]       0.787   0.218    0.343    0.648    0.791    0.934    1.208 1.002
+a[38]       1.636   0.260    1.127    1.463    1.634    1.812    2.150 1.001
+a[39]       1.589   0.243    1.111    1.429    1.590    1.753    2.066 1.001
+a[40]       1.826   0.260    1.322    1.641    1.829    1.999    2.351 1.001
+a[41]       1.763   0.215    1.356    1.615    1.760    1.908    2.191 1.001
+a[42]       1.432   0.313    0.815    1.220    1.434    1.632    2.055 1.001
+a[43]       1.539   0.202    1.134    1.405    1.539    1.674    1.945 1.001
+a[44]       1.216   0.217    0.802    1.066    1.216    1.364    1.634 1.001
+a[45]       1.333   0.181    0.979    1.212    1.332    1.457    1.685 1.001
+a[46]       1.329   0.239    0.858    1.171    1.330    1.488    1.798 1.002
+a[47]       1.284   0.296    0.685    1.097    1.280    1.476    1.878 1.002
+a[48]       1.257   0.206    0.859    1.121    1.259    1.391    1.660 1.001
+a[49]       1.625   0.176    1.281    1.504    1.625    1.742    1.968 1.001
+a[50]       1.630   0.318    1.025    1.418    1.630    1.832    2.284 1.002
+a[51]       1.772   0.258    1.274    1.595    1.768    1.942    2.308 1.001
+a[52]       1.633   0.275    1.101    1.449    1.629    1.812    2.185 1.001
+a[53]       1.365   0.273    0.831    1.182    1.366    1.544    1.909 1.002
+a[54]       1.331   0.139    1.062    1.237    1.329    1.429    1.601 1.003
+a[55]       1.548   0.210    1.152    1.403    1.543    1.687    1.975 1.000
+a[56]       1.309   0.276    0.756    1.135    1.315    1.493    1.839 1.003
+a[57]       1.085   0.234    0.603    0.936    1.088    1.243    1.529 1.001
+a[58]       1.643   0.255    1.164    1.466    1.637    1.812    2.165 1.003
+a[59]       1.577   0.256    1.083    1.405    1.580    1.747    2.086 1.003
+a[60]       1.409   0.287    0.841    1.216    1.402    1.606    1.971 1.001
+a[61]       1.201   0.123    0.962    1.115    1.201    1.286    1.435 1.001
+a[62]       1.718   0.239    1.269    1.555    1.705    1.874    2.212 1.001
+a[63]       1.533   0.265    0.998    1.349    1.533    1.707    2.062 1.001
+a[64]       1.721   0.186    1.359    1.597    1.723    1.842    2.094 1.001
+a[65]       1.416   0.286    0.871    1.218    1.414    1.607    1.988 1.001
+a[66]       1.602   0.173    1.269    1.483    1.603    1.719    1.941 1.001
+a[67]       1.702   0.183    1.353    1.575    1.697    1.826    2.072 1.001
+a[68]       1.242   0.210    0.823    1.105    1.241    1.382    1.658 1.002
+a[69]       1.373   0.255    0.882    1.202    1.379    1.540    1.865 1.001
+a[70]       0.890   0.070    0.756    0.841    0.889    0.938    1.026 1.001
+a[71]       1.484   0.137    1.209    1.394    1.488    1.576    1.743 1.001
+a[72]       1.550   0.194    1.182    1.423    1.551    1.678    1.926 1.002
+a[73]       1.567   0.302    0.980    1.370    1.564    1.768    2.141 1.001
+a[74]       1.268   0.263    0.742    1.090    1.267    1.449    1.766 1.001
+a[75]       1.572   0.275    1.034    1.392    1.564    1.754    2.120 1.001
+a[76]       1.713   0.273    1.181    1.528    1.714    1.898    2.246 1.001
+a[77]       1.680   0.220    1.241    1.536    1.683    1.830    2.105 1.001
+a[78]       1.383   0.241    0.922    1.218    1.390    1.543    1.856 1.001
+a[79]       1.093   0.268    0.571    0.914    1.099    1.277    1.603 1.002
+a[80]       1.345   0.106    1.129    1.272    1.348    1.415    1.551 1.001
+a[81]       1.943   0.292    1.381    1.747    1.937    2.134    2.538 1.001
+a[82]       1.622   0.329    0.966    1.400    1.624    1.836    2.260 1.001
+a[83]       1.584   0.184    1.232    1.458    1.584    1.706    1.948 1.001
+a[84]       1.597   0.181    1.239    1.478    1.596    1.717    1.957 1.001
+a[85]       1.397   0.288    0.846    1.197    1.404    1.590    1.958 1.001
+b          -0.691   0.070   -0.830   -0.739   -0.691   -0.644   -0.554 1.003
+g.0         1.477   0.081    1.320    1.424    1.477    1.530    1.637 1.001
+g.1         0.029   0.111   -0.188   -0.047    0.028    0.104    0.250 1.002
+sigma.a     0.340   0.048    0.253    0.305    0.338    0.371    0.439 1.001
+sigma.y     0.756   0.019    0.721    0.743    0.756    0.769    0.794 1.004
+deviance 2094.198  12.884 2070.618 2085.284 2093.794 2102.373 2120.783 1.001
+         n.eff
+a[1]      1200
+a[2]      3000
+a[3]      2900
+a[4]      2900
+a[5]      3000
+a[6]      2800
+a[7]      3000
+a[8]      3000
+a[9]      3000
+a[10]     2200
+a[11]     1900
+a[12]     3000
+a[13]     3000
+a[14]     3000
+a[15]     3000
+a[16]     1600
+a[17]     2200
+a[18]     3000
+a[19]     1700
+a[20]     3000
+a[21]     3000
+a[22]     2300
+a[23]     2900
+a[24]     1400
+a[25]     1900
+a[26]      970
+a[27]     2400
+a[28]     1900
+a[29]     3000
+a[30]     1300
+a[31]      790
+a[32]     3000
+a[33]     3000
+a[34]     1400
+a[35]     3000
+a[36]     3000
+a[37]     2500
+a[38]     3000
+a[39]     2700
+a[40]     3000
+a[41]     2900
+a[42]     3000
+a[43]     3000
+a[44]     3000
+a[45]     2900
+a[46]     1700
+a[47]     3000
+a[48]     2300
+a[49]     3000
+a[50]     1300
+a[51]     3000
+a[52]     3000
+a[53]     1200
+a[54]      910
+a[55]     3000
+a[56]      850
+a[57]     3000
+a[58]      950
+a[59]      850
+a[60]     2200
+a[61]     3000
+a[62]     3000
+a[63]     2700
+a[64]     3000
+a[65]     3000
+a[66]     3000
+a[67]     3000
+a[68]     1700
+a[69]     2300
+a[70]     3000
+a[71]     3000
+a[72]     1800
+a[73]     3000
+a[74]     3000
+a[75]     2900
+a[76]     3000
+a[77]     3000
+a[78]     3000
+a[79]     1900
+a[80]     3000
+a[81]     3000
+a[82]     2600
+a[83]     3000
+a[84]     3000
+a[85]     3000
+b          850
+g.0       2600
+g.1       1400
+sigma.a   3000
+sigma.y    570
+deviance  3000
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 83.0 and DIC = 2177.2
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+<p>Explanation:</p>
+<ul>
+<li>u[j]: group-level predictor (e.g., county-level uranium).</li>
+<li>a[j]: county-specific intercept influenced by the group-level predictor.</li>
+<li>g.0, g.1: regression coefficients for the group-level predictor.</li>
+</ul>
+<p>This model accounts for both individual- and group-level variations.</p>
+<p>Predictions for New Observations and New Groups in JAGS</p>
+<p>Predicting a New Unit in an Existing Group:</p>
+<p>To predict for a new house in an existing group, extend the dataset in R by adding an NA for the new observation. For example, to predict radon levels in a new house in county 26 without a basement:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extend dataset</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> n <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="cn">NA</span>)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>county <span class="ot">&lt;-</span> <span class="fu">c</span>(county, <span class="dv">26</span>)</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(x, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Add the following line in the JAGS model to flag the predicted value:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># y.tilde &lt;- y[n]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then run the model, saving the predicted value:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>data_jags_pred <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>jags_model3 <span class="ot">&lt;-</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">jags</span>(</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_pred1.jags"</span>, <span class="at">data =</span> data_jags_pred,<span class="at">parameters.to.save =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>,<span class="st">"y.tilde"</span>),<span class="at">n.iter =</span> <span class="dv">3000</span>, <span class="at">n.burnin =</span> <span class="dv">1000</span>,<span class="at">n.thin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 90
+   Total graph size: 3005
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># radon.parameters &lt;- c(radon.parameters, "y.tilde")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To summarize predictions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>jags_model3_mcmc <span class="ot">&lt;-</span> <span class="fu">as.mcmc</span>(jags_model3)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">diag_mcmc</span>(jags_model3_mcmc, <span class="at">parName =</span> <span class="st">"y.tilde"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap16_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(<span class="fu">exp</span>(jags_model3_mcmc[,<span class="st">"y.tilde"</span>][[<span class="dv">1</span>]]), <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>))  <span class="co"># 50% confidence interval</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     25%      75% 
+1.158621 3.196751 </code></pre>
+</div>
+</div>
+<p>Predicting a New Unit in a New Group:</p>
+<p>For predictions in a new group (e.g., a new county with no previous radon data), you can add a new county to the dataset. First, define the group-level predictor (e.g., average uranium level):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>u.tilde <span class="ot">&lt;-</span> <span class="fu">mean</span>(u)  <span class="co"># Group-level predictor for new county</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then extend the dataset for the new group:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> n <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="cn">NA</span>)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>county <span class="ot">&lt;-</span> <span class="fu">c</span>(county, J <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(x, <span class="dv">1</span>)</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> J <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">c</span>(u, u.tilde)</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>data_jags_pred2 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J, <span class="at">u =</span> u)</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>jags_model4 <span class="ot">&lt;-</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">jags</span>(</span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_pred2.jags"</span>, <span class="at">data =</span> data_jags_pred2,<span class="at">parameters.to.save =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>,<span class="st">"y.tilde"</span>,<span class="st">"y.tilde2"</span>),<span class="at">n.iter =</span> <span class="dv">3000</span>, <span class="at">n.burnin =</span> <span class="dv">1000</span>,<span class="at">n.thin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in jags.model(model.file, data = data, inits = init.values, n.chains =
+n.chains, : Unused variable "u" in data</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 92
+   Total graph size: 3010
+
+Initializing model</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>jags_model4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model_pred2.jags", fit using jags,
+ 3 chains, each with 3000 iterations (first 1000 discarded), n.thin = 2
+ n.sims = 3000 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.192   0.257    0.686    1.020    1.194    1.363    1.683 1.001
+a[2]        0.926   0.099    0.733    0.860    0.927    0.992    1.121 1.001
+a[3]        1.477   0.280    0.939    1.292    1.475    1.666    2.028 1.001
+a[4]        1.506   0.217    1.082    1.361    1.506    1.645    1.943 1.001
+a[5]        1.454   0.250    0.963    1.289    1.454    1.618    1.952 1.001
+a[6]        1.486   0.268    0.948    1.313    1.484    1.665    2.001 1.002
+a[7]        1.859   0.176    1.517    1.737    1.859    1.980    2.206 1.001
+a[8]        1.686   0.257    1.193    1.511    1.687    1.853    2.195 1.001
+a[9]        1.167   0.195    0.777    1.033    1.169    1.298    1.534 1.001
+a[10]       1.515   0.233    1.065    1.358    1.516    1.674    1.977 1.001
+a[11]       1.430   0.240    0.952    1.272    1.429    1.595    1.891 1.001
+a[12]       1.581   0.253    1.089    1.414    1.580    1.745    2.096 1.001
+a[13]       1.239   0.229    0.776    1.087    1.241    1.395    1.682 1.001
+a[14]       1.837   0.177    1.480    1.720    1.838    1.953    2.180 1.001
+a[15]       1.395   0.255    0.903    1.224    1.399    1.560    1.898 1.001
+a[16]       1.230   0.289    0.650    1.045    1.236    1.422    1.772 1.003
+a[17]       1.371   0.253    0.865    1.207    1.369    1.538    1.856 1.003
+a[18]       1.222   0.185    0.863    1.098    1.221    1.346    1.576 1.001
+a[19]       1.345   0.092    1.165    1.283    1.345    1.408    1.522 1.002
+a[20]       1.592   0.277    1.055    1.403    1.584    1.778    2.158 1.001
+a[21]       1.629   0.202    1.223    1.492    1.628    1.767    2.035 1.001
+a[22]       1.012   0.234    0.536    0.854    1.012    1.172    1.469 1.001
+a[23]       1.450   0.288    0.881    1.262    1.452    1.633    2.024 1.001
+a[24]       1.864   0.202    1.472    1.728    1.859    1.999    2.269 1.002
+a[25]       1.817   0.174    1.471    1.702    1.816    1.933    2.156 1.001
+a[26]       1.362   0.074    1.215    1.311    1.359    1.410    1.514 1.001
+a[27]       1.632   0.235    1.159    1.476    1.638    1.788    2.084 1.003
+a[28]       1.346   0.242    0.886    1.186    1.344    1.510    1.831 1.002
+a[29]       1.305   0.269    0.779    1.128    1.315    1.487    1.833 1.001
+a[30]       1.098   0.191    0.729    0.968    1.098    1.228    1.476 1.001
+a[31]       1.738   0.243    1.268    1.577    1.731    1.904    2.207 1.001
+a[32]       1.358   0.250    0.861    1.190    1.361    1.530    1.845 1.002
+a[33]       1.721   0.251    1.232    1.547    1.721    1.888    2.233 1.001
+a[34]       1.503   0.265    0.969    1.329    1.504    1.681    2.007 1.001
+a[35]       1.084   0.223    0.638    0.941    1.088    1.237    1.515 1.001
+a[36]       1.879   0.308    1.295    1.670    1.866    2.083    2.511 1.001
+a[37]       0.783   0.211    0.367    0.647    0.783    0.925    1.189 1.002
+a[38]       1.633   0.249    1.146    1.470    1.624    1.798    2.146 1.002
+a[39]       1.601   0.240    1.123    1.438    1.597    1.758    2.078 1.001
+a[40]       1.838   0.262    1.350    1.658    1.838    2.015    2.372 1.001
+a[41]       1.771   0.214    1.358    1.626    1.769    1.917    2.186 1.002
+a[42]       1.444   0.308    0.844    1.233    1.452    1.653    2.050 1.001
+a[43]       1.544   0.204    1.144    1.405    1.544    1.684    1.942 1.001
+a[44]       1.215   0.217    0.780    1.071    1.217    1.362    1.624 1.001
+a[45]       1.344   0.176    1.005    1.227    1.347    1.461    1.689 1.001
+a[46]       1.338   0.238    0.866    1.178    1.341    1.499    1.805 1.001
+a[47]       1.289   0.289    0.722    1.097    1.286    1.485    1.856 1.002
+a[48]       1.264   0.200    0.881    1.129    1.262    1.405    1.646 1.001
+a[49]       1.632   0.177    1.285    1.513    1.627    1.750    1.988 1.001
+a[50]       1.626   0.317    1.017    1.411    1.626    1.821    2.285 1.001
+a[51]       1.773   0.258    1.274    1.597    1.776    1.946    2.294 1.001
+a[52]       1.639   0.267    1.113    1.457    1.634    1.816    2.159 1.001
+a[53]       1.378   0.266    0.844    1.202    1.382    1.558    1.878 1.001
+a[54]       1.332   0.143    1.045    1.238    1.335    1.427    1.613 1.002
+a[55]       1.547   0.212    1.129    1.403    1.546    1.692    1.957 1.001
+a[56]       1.321   0.269    0.780    1.138    1.322    1.501    1.843 1.001
+a[57]       1.082   0.235    0.625    0.919    1.081    1.246    1.529 1.002
+a[58]       1.632   0.251    1.149    1.461    1.627    1.798    2.130 1.002
+a[59]       1.564   0.255    1.070    1.393    1.568    1.736    2.056 1.001
+a[60]       1.412   0.290    0.830    1.218    1.415    1.615    1.968 1.001
+a[61]       1.195   0.125    0.945    1.111    1.197    1.280    1.443 1.002
+a[62]       1.716   0.241    1.244    1.554    1.716    1.879    2.192 1.001
+a[63]       1.541   0.274    1.005    1.358    1.540    1.725    2.076 1.001
+a[64]       1.721   0.188    1.355    1.596    1.719    1.841    2.100 1.002
+a[65]       1.428   0.288    0.858    1.244    1.432    1.618    1.997 1.001
+a[66]       1.595   0.178    1.251    1.478    1.593    1.711    1.942 1.001
+a[67]       1.694   0.183    1.347    1.571    1.692    1.817    2.044 1.002
+a[68]       1.236   0.209    0.827    1.095    1.237    1.374    1.645 1.001
+a[69]       1.372   0.252    0.878    1.203    1.367    1.539    1.879 1.001
+a[70]       0.890   0.070    0.751    0.841    0.889    0.935    1.028 1.001
+a[71]       1.478   0.136    1.208    1.387    1.476    1.570    1.751 1.001
+a[72]       1.542   0.197    1.154    1.411    1.542    1.671    1.927 1.001
+a[73]       1.549   0.287    0.988    1.362    1.545    1.738    2.122 1.001
+a[74]       1.253   0.249    0.745    1.093    1.256    1.422    1.726 1.001
+a[75]       1.560   0.271    1.037    1.382    1.564    1.738    2.096 1.001
+a[76]       1.701   0.257    1.213    1.521    1.698    1.874    2.214 1.001
+a[77]       1.670   0.221    1.238    1.514    1.672    1.820    2.095 1.001
+a[78]       1.377   0.241    0.910    1.219    1.375    1.535    1.854 1.001
+a[79]       1.089   0.259    0.569    0.912    1.091    1.268    1.581 1.001
+a[80]       1.334   0.105    1.135    1.264    1.333    1.404    1.540 1.001
+a[81]       1.930   0.289    1.382    1.729    1.926    2.121    2.522 1.002
+a[82]       1.595   0.316    0.987    1.381    1.592    1.801    2.227 1.001
+a[83]       1.576   0.182    1.204    1.460    1.579    1.698    1.928 1.001
+a[84]       1.593   0.179    1.237    1.474    1.590    1.712    1.948 1.001
+a[85]       1.376   0.287    0.799    1.183    1.379    1.571    1.929 1.002
+a[86]       1.466   0.344    0.795    1.235    1.467    1.695    2.157 1.001
+b          -0.693   0.070   -0.829   -0.738   -0.692   -0.646   -0.557 1.001
+mu.a        1.463   0.054    1.356    1.427    1.463    1.499    1.570 1.002
+sigma.a     0.338   0.047    0.252    0.305    0.337    0.368    0.438 1.001
+sigma.y     0.756   0.018    0.721    0.744    0.756    0.769    0.794 1.001
+y.tilde     0.688   0.762   -0.842    0.189    0.687    1.191    2.177 1.001
+y.tilde2    0.751   0.843   -0.860    0.180    0.741    1.321    2.366 1.001
+deviance 2093.806  12.916 2070.191 2084.888 2093.284 2102.345 2120.004 1.001
+         n.eff
+a[1]      3000
+a[2]      3000
+a[3]      3000
+a[4]      3000
+a[5]      3000
+a[6]      3000
+a[7]      3000
+a[8]      3000
+a[9]      3000
+a[10]     3000
+a[11]     3000
+a[12]     3000
+a[13]     3000
+a[14]     2800
+a[15]     3000
+a[16]     3000
+a[17]      820
+a[18]     3000
+a[19]     1600
+a[20]     3000
+a[21]     3000
+a[22]     3000
+a[23]     2500
+a[24]     1900
+a[25]     3000
+a[26]     2700
+a[27]      780
+a[28]     1800
+a[29]     3000
+a[30]     3000
+a[31]     3000
+a[32]     2900
+a[33]     2900
+a[34]     3000
+a[35]     3000
+a[36]     3000
+a[37]     1300
+a[38]     1500
+a[39]     3000
+a[40]     3000
+a[41]     2000
+a[42]     3000
+a[43]     2300
+a[44]     3000
+a[45]     3000
+a[46]     3000
+a[47]     1100
+a[48]     2600
+a[49]     3000
+a[50]     3000
+a[51]     2600
+a[52]     3000
+a[53]     3000
+a[54]     3000
+a[55]     3000
+a[56]     3000
+a[57]     2000
+a[58]     1800
+a[59]     3000
+a[60]     3000
+a[61]     1100
+a[62]     3000
+a[63]     3000
+a[64]     1400
+a[65]     3000
+a[66]     2000
+a[67]     1900
+a[68]     2300
+a[69]     3000
+a[70]     3000
+a[71]     3000
+a[72]     3000
+a[73]     3000
+a[74]     3000
+a[75]     3000
+a[76]     2300
+a[77]     3000
+a[78]     2600
+a[79]     2600
+a[80]     3000
+a[81]     1900
+a[82]     3000
+a[83]     3000
+a[84]     3000
+a[85]     1200
+a[86]     3000
+b         3000
+mu.a      1500
+sigma.a   3000
+sigma.y   3000
+y.tilde   3000
+y.tilde2  3000
+deviance  3000
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 83.4 and DIC = 2177.2
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+<p>Now run the model and analyze the predicted radon level using the same approach as above.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./MLMavanzados.html" class="pagination-link" aria-label="Modelos Lineales Multinivel avanzados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel avanzados</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

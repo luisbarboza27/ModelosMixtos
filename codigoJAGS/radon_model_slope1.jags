@@ -1,0 +1,26 @@
+model {
+  for (i in 1:n) {
+    y[i] ~ dnorm(y.hat[i], tau.y)
+    y.hat[i] <- a[county[i]] + b[county[i]] * x[i]
+  }
+
+  # Priors for observation error
+  tau.y <- pow(sigma.y, -2)
+  sigma.y ~ dunif(0, 100)
+
+  # Priors for intercepts and slopes
+  for (j in 1:J) {
+    a[j] ~ dnorm(a.hat[j], tau.a)
+    b[j] ~ dnorm(b.hat[j], tau.b)
+    a.hat[j] <- mu.a
+    b.hat[j] <- mu.b
+  }
+
+  # Priors for group-level means and variances
+  mu.a ~ dnorm(0, 0.0001)
+  mu.b ~ dnorm(0, 0.0001)
+  tau.a <- pow(sigma.a, -2)
+  tau.b <- pow(sigma.b, -2)
+  sigma.a ~ dunif(0, 100)
+  sigma.b ~ dunif(0, 100)
+}

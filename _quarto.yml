@@ -10,6 +10,7 @@ book:
     - introduccion.qmd
     - MLMbasicos.qmd
     - MLMavanzados.qmd
+    - cap16.qmd
 
 bibliography: references.bib
 
