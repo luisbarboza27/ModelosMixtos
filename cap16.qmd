@@ -1,8 +1,4 @@
----
-title: "Capitulo 16"
----
-
-## Introduction to Multilevel Modeling in R and Bugs
+# Introduction to Multilevel Modeling in R and Bugs
 
 Multilevel models allow intercepts and slopes to vary across groups. These models are useful when there is hierarchical data (e.g., individuals nested within schools, or measurements within counties).
 
@@ -10,7 +6,7 @@ R functions like lm() and lmer() can be used for classical and multilevel models
 
 Bugs is introduced as a solution for complex multilevel models, enabling full Bayesian inference which accounts for uncertainty in parameter estimates.
 
-### Key Steps in Multilevel Modeling:
+**Key Steps in Multilevel Modeling:**
 
 1.  Start with classical regression using lm() or glm() in R.
 2.  Add varying intercepts/slopes with lmer().
@@ -221,10 +217,6 @@ Interpretation:
 -   This model fits better than the complete-pooling model (with a lower residual SD and higher $R^2$).
 -   However, estimates for individual counties may be uncertain, especially for smaller counties.
 
----
-title: "No-Pooling Regression with No Constant Term"
-output: html_document
----
 
 ### No-Pooling Regression with No Constant Term
 
