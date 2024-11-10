@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Chapter 17-Part A – Modelos Mixtos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./cap16.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cap17a.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Chapter 17-Part A</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Modelos Mixtos</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMbasicos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel básicos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMavanzados.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel avanzados</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Multilevel Modeling in R and Bugs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap17a.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Chapter 17-Part A</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#varying-intercepts-and-slopes" id="toc-varying-intercepts-and-slopes" class="nav-link active" data-scroll-target="#varying-intercepts-and-slopes"><span class="header-section-number">5.1</span> Varying intercepts and slopes</a>
+  <ul class="collapse">
+  <li><a href="#varying-intercept-varying-slope-model" id="toc-varying-intercept-varying-slope-model" class="nav-link" data-scroll-target="#varying-intercept-varying-slope-model"><span class="header-section-number">5.1.1</span> Varying-Intercept, Varying-Slope Model</a></li>
+  <li><a href="#simple-model-with-no-correlation-between-intercepts-and-slopes" id="toc-simple-model-with-no-correlation-between-intercepts-and-slopes" class="nav-link" data-scroll-target="#simple-model-with-no-correlation-between-intercepts-and-slopes"><span class="header-section-number">5.1.2</span> Simple Model with No Correlation Between Intercepts and Slopes</a></li>
+  <li><a href="#model-with-correlation-between-intercepts-and-slopes" id="toc-model-with-correlation-between-intercepts-and-slopes" class="nav-link" data-scroll-target="#model-with-correlation-between-intercepts-and-slopes"><span class="header-section-number">5.1.3</span> Model with Correlation Between Intercepts and Slopes</a></li>
+  <li><a href="#model-with-county-level-uranium-predictor" id="toc-model-with-county-level-uranium-predictor" class="nav-link" data-scroll-target="#model-with-county-level-uranium-predictor"><span class="header-section-number">5.1.4</span> Model with County-Level Uranium Predictor</a></li>
+  </ul></li>
+  <li><a href="#modelos-no-anidados" id="toc-modelos-no-anidados" class="nav-link" data-scroll-target="#modelos-no-anidados"><span class="header-section-number">5.2</span> Modelos no-anidados</a>
+  <ul class="collapse">
+  <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification"><span class="header-section-number">5.2.1</span> Model Specification</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Chapter 17-Part A</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="varying-intercepts-and-slopes" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="varying-intercepts-and-slopes"><span class="header-section-number">5.1</span> Varying intercepts and slopes</h2>
+<p>Carga de datos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>srrs2 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"./data/ARM_Data/radon/srrs2.dat"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mn <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"MN"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>radon <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>activity[mn]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="fu">ifelse</span>(radon <span class="sc">==</span> <span class="dv">0</span>, <span class="fl">0.1</span>, radon))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(radon)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>floor[mn]  <span class="co"># 0 for basement, 1 for first floor</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>srrs2.fips <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>stfips <span class="sc">*</span> <span class="dv">1000</span> <span class="sc">+</span> srrs2<span class="sc">$</span>cntyfips</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>county.name <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(srrs2<span class="sc">$</span>county[mn])</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>uniq.name <span class="ot">&lt;-</span> <span class="fu">unique</span>(county.name)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> <span class="fu">length</span>(uniq.name)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>county <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, J)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  county[county.name <span class="sc">==</span> uniq.name[i]] <span class="ot">&lt;-</span> i</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>srrs2.fips <span class="ot">&lt;-</span> srrs2<span class="sc">$</span>stfips<span class="sc">*</span><span class="dv">1000</span> <span class="sc">+</span> srrs2<span class="sc">$</span>cntyfips</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>cty <span class="ot">&lt;-</span> <span class="fu">read.table</span> (<span class="st">"data/ARM_Data/radon/cty.dat"</span>, <span class="at">header=</span>T, <span class="at">sep=</span><span class="st">","</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>usa.fips <span class="ot">&lt;-</span> <span class="dv">1000</span><span class="sc">*</span>cty[,<span class="st">"stfips"</span>] <span class="sc">+</span> cty[,<span class="st">"ctfips"</span>]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>usa.rows <span class="ot">&lt;-</span> <span class="fu">match</span> (<span class="fu">unique</span>(srrs2.fips[mn]), usa.fips)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>uranium <span class="ot">&lt;-</span> cty[usa.rows,<span class="st">"Uppm"</span>]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">log</span> (uranium)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>u.full <span class="ot">&lt;-</span> u[county]</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>data_jags<span class="sc">$</span>u <span class="ot">&lt;-</span> u.full</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="varying-intercept-varying-slope-model" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="varying-intercept-varying-slope-model"><span class="header-section-number">5.1.1</span> Varying-Intercept, Varying-Slope Model</h3>
+<p>We begin with a varying-intercept, varying-slope model that includes (x) but without the county-level uranium predictor. The model is structured as:</p>
+<p><span class="math display">\[
+y_i \sim N(\alpha_{j[i]} + \beta_{j[i]} x_i , \sigma_y^2), \quad \text{for} \ i = 1, \dots, n
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+\alpha_j \\
+\beta_j
+\end{pmatrix}
+\sim N\left(
+\begin{pmatrix}
+\mu_\alpha \\
+\mu_\beta
+\end{pmatrix},
+\begin{pmatrix}
+\sigma_\alpha^2 &amp; \rho\sigma_\alpha\sigma_\beta \\
+\rho\sigma_\alpha\sigma_\beta &amp; \sigma_\beta^2
+\end{pmatrix}\right), \quad \text{for} \ j = 1, \dots, J
+\]</span></p>
+<p>This model includes variation in both <span class="math inline">\(\alpha_j\)</span> and <span class="math inline">\(\beta_j\)</span> with a between-group correlation parameter <span class="math inline">\(\rho\)</span>.</p>
+</section>
+<section id="simple-model-with-no-correlation-between-intercepts-and-slopes" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="simple-model-with-no-correlation-between-intercepts-and-slopes"><span class="header-section-number">5.1.2</span> Simple Model with No Correlation Between Intercepts and Slopes</h3>
+<p>We begin with the varying-intercept, varying-slope radon model (from Section 13.1), simplified by ignoring the correlation between intercepts and slopes. This assumes independence between the intercepts and slopes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary library</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R2jags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: rjags</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'R2jags'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:coda':
+
+    traceplot</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data for JAGS</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J, <span class="at">u =</span> u.full)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">a =</span> <span class="fu">rnorm</span>(J), <span class="at">b =</span> <span class="fu">rnorm</span>(J), <span class="at">mu.a =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">mu.b =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sigma.y =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.a =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.b =</span> <span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"mu.b"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>, <span class="st">"sigma.b"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Run JAGS model</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(<span class="at">data =</span> data_jags, </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inits =</span> inits, </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_slope1.jags"</span>, </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.thin =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>module glm loaded</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in jags.model(model.file, data = data, inits = init.values, n.chains =
+n.chains, : Unused variable "u" in data</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 175
+   Total graph size: 3232
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the summary</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model_slope1.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.164   0.262    0.632    0.980    1.166    1.345    1.666 1.000
+a[2]        0.936   0.103    0.735    0.867    0.935    1.007    1.134 1.001
+a[3]        1.479   0.284    0.929    1.292    1.478    1.670    2.022 1.000
+a[4]        1.513   0.227    1.072    1.361    1.517    1.661    1.961 1.000
+a[5]        1.437   0.259    0.916    1.276    1.438    1.610    1.936 1.001
+a[6]        1.474   0.272    0.915    1.293    1.477    1.656    1.993 1.001
+a[7]        1.832   0.175    1.494    1.718    1.830    1.945    2.196 1.001
+a[8]        1.696   0.268    1.202    1.512    1.694    1.872    2.223 1.002
+a[9]        1.140   0.201    0.748    1.004    1.139    1.274    1.529 1.001
+a[10]       1.531   0.234    1.077    1.371    1.529    1.684    1.994 1.001
+a[11]       1.431   0.239    0.950    1.276    1.440    1.590    1.884 1.005
+a[12]       1.588   0.254    1.083    1.419    1.579    1.759    2.082 1.000
+a[13]       1.231   0.217    0.821    1.081    1.233    1.379    1.661 1.003
+a[14]       1.850   0.185    1.486    1.726    1.852    1.974    2.203 1.007
+a[15]       1.396   0.261    0.878    1.215    1.394    1.575    1.881 1.000
+a[16]       1.229   0.293    0.658    1.022    1.227    1.419    1.825 1.006
+a[17]       1.402   0.266    0.873    1.224    1.401    1.574    1.940 1.001
+a[18]       1.190   0.184    0.821    1.072    1.193    1.306    1.561 1.001
+a[19]       1.355   0.094    1.175    1.293    1.355    1.417    1.539 1.002
+a[20]       1.606   0.269    1.104    1.432    1.603    1.778    2.140 1.000
+a[21]       1.623   0.201    1.240    1.486    1.620    1.759    2.026 1.001
+a[22]       1.011   0.230    0.562    0.853    1.013    1.168    1.456 1.003
+a[23]       1.436   0.298    0.854    1.243    1.437    1.628    2.027 1.000
+a[24]       1.867   0.212    1.456    1.723    1.867    2.011    2.279 1.003
+a[25]       1.780   0.184    1.436    1.660    1.778    1.901    2.153 1.001
+a[26]       1.371   0.074    1.226    1.320    1.373    1.421    1.517 1.001
+a[27]       1.614   0.233    1.164    1.461    1.613    1.767    2.061 1.004
+a[28]       1.326   0.253    0.823    1.159    1.325    1.496    1.805 1.005
+a[29]       1.299   0.277    0.764    1.111    1.303    1.490    1.829 1.005
+a[30]       1.094   0.192    0.697    0.967    1.096    1.222    1.468 1.002
+a[31]       1.746   0.243    1.266    1.576    1.746    1.902    2.207 1.001
+a[32]       1.361   0.251    0.859    1.182    1.366    1.540    1.830 1.002
+a[33]       1.731   0.265    1.225    1.554    1.732    1.904    2.251 1.000
+a[34]       1.504   0.276    0.947    1.321    1.508    1.690    2.010 1.000
+a[35]       1.050   0.243    0.582    0.876    1.054    1.227    1.515 1.009
+a[36]       1.875   0.306    1.320    1.667    1.856    2.073    2.492 1.001
+a[37]       0.786   0.215    0.347    0.637    0.788    0.932    1.203 1.002
+a[38]       1.626   0.261    1.137    1.455    1.620    1.814    2.135 1.000
+a[39]       1.601   0.239    1.126    1.445    1.593    1.772    2.047 1.003
+a[40]       1.834   0.261    1.350    1.658    1.826    2.005    2.346 1.000
+a[41]       1.757   0.212    1.344    1.612    1.752    1.906    2.156 1.000
+a[42]       1.421   0.309    0.826    1.205    1.424    1.625    2.026 1.004
+a[43]       1.668   0.233    1.221    1.508    1.664    1.820    2.141 1.002
+a[44]       1.220   0.223    0.798    1.065    1.221    1.370    1.635 1.004
+a[45]       1.358   0.188    0.990    1.238    1.358    1.485    1.726 1.000
+a[46]       1.335   0.238    0.868    1.180    1.340    1.485    1.816 1.000
+a[47]       1.310   0.288    0.735    1.115    1.316    1.512    1.855 1.002
+a[48]       1.250   0.205    0.841    1.118    1.251    1.387    1.640 1.002
+a[49]       1.647   0.181    1.290    1.530    1.645    1.767    2.010 1.001
+a[50]       1.639   0.320    1.028    1.427    1.623    1.858    2.267 1.005
+a[51]       1.783   0.252    1.282    1.614    1.782    1.951    2.280 1.001
+a[52]       1.647   0.279    1.091    1.463    1.650    1.829    2.178 1.000
+a[53]       1.378   0.280    0.816    1.190    1.384    1.579    1.902 1.001
+a[54]       1.342   0.144    1.049    1.249    1.344    1.443    1.622 1.006
+a[55]       1.531   0.215    1.099    1.383    1.532    1.683    1.948 1.000
+a[56]       1.345   0.279    0.789    1.163    1.341    1.532    1.871 1.001
+a[57]       1.089   0.231    0.637    0.932    1.081    1.257    1.526 1.004
+a[58]       1.629   0.249    1.143    1.464    1.630    1.802    2.093 1.003
+a[59]       1.598   0.263    1.106    1.420    1.594    1.776    2.109 1.000
+a[60]       1.401   0.277    0.844    1.223    1.405    1.587    1.941 1.003
+a[61]       1.182   0.124    0.944    1.100    1.180    1.266    1.433 1.000
+a[62]       1.704   0.248    1.237    1.528    1.701    1.876    2.185 1.003
+a[63]       1.528   0.270    0.989    1.348    1.526    1.711    2.051 1.005
+a[64]       1.716   0.188    1.348    1.590    1.715    1.840    2.112 1.002
+a[65]       1.423   0.281    0.874    1.238    1.417    1.615    1.968 1.002
+a[66]       1.570   0.198    1.191    1.439    1.572    1.702    1.972 1.000
+a[67]       1.641   0.191    1.275    1.521    1.639    1.762    2.032 1.000
+a[68]       1.221   0.210    0.802    1.079    1.227    1.366    1.608 1.001
+a[69]       1.368   0.257    0.883    1.195    1.364    1.540    1.869 1.001
+a[70]       0.882   0.073    0.735    0.835    0.884    0.929    1.024 1.002
+a[71]       1.496   0.140    1.224    1.400    1.497    1.586    1.781 1.003
+a[72]       1.546   0.194    1.181    1.413    1.543    1.678    1.924 1.000
+a[73]       1.555   0.285    1.004    1.361    1.565    1.749    2.086 1.001
+a[74]       1.245   0.249    0.746    1.081    1.246    1.407    1.720 1.000
+a[75]       1.545   0.279    0.953    1.356    1.546    1.744    2.071 1.001
+a[76]       1.705   0.267    1.179    1.535    1.705    1.888    2.206 1.001
+a[77]       1.675   0.219    1.247    1.534    1.671    1.825    2.125 1.002
+a[78]       1.384   0.254    0.887    1.216    1.382    1.553    1.883 1.000
+a[79]       1.089   0.270    0.547    0.911    1.094    1.272    1.598 1.011
+a[80]       1.358   0.105    1.157    1.286    1.360    1.428    1.565 1.000
+a[81]       1.874   0.299    1.314    1.658    1.870    2.066    2.472 1.000
+a[82]       1.588   0.310    1.009    1.385    1.592    1.793    2.201 1.000
+a[83]       1.632   0.189    1.262    1.503    1.631    1.762    2.015 1.002
+a[84]       1.592   0.180    1.239    1.472    1.592    1.712    1.947 1.002
+a[85]       1.379   0.285    0.812    1.200    1.370    1.557    1.978 1.003
+b[1]       -0.628   0.298   -1.212   -0.790   -0.659   -0.472    0.072 1.002
+b[2]       -0.844   0.251   -1.405   -0.993   -0.802   -0.679   -0.415 1.003
+b[3]       -0.657   0.271   -1.223   -0.817   -0.667   -0.505   -0.077 1.002
+b[4]       -0.724   0.234   -1.213   -0.860   -0.727   -0.589   -0.263 1.000
+b[5]       -0.648   0.292   -1.203   -0.816   -0.681   -0.484   -0.048 1.000
+b[6]       -0.692   0.325   -1.351   -0.864   -0.698   -0.516   -0.037 1.005
+b[7]       -0.436   0.318   -0.922   -0.677   -0.489   -0.237    0.250 1.002
+b[8]       -0.641   0.283   -1.187   -0.809   -0.663   -0.489   -0.010 1.002
+b[9]       -0.511   0.318   -1.013   -0.731   -0.570   -0.329    0.232 1.004
+b[10]      -0.751   0.256   -1.301   -0.886   -0.743   -0.597   -0.258 1.002
+b[11]      -0.671   0.317   -1.338   -0.844   -0.690   -0.487   -0.005 1.000
+b[12]      -0.677   0.331   -1.307   -0.855   -0.697   -0.497    0.024 1.001
+b[13]      -0.680   0.329   -1.385   -0.844   -0.699   -0.509    0.008 1.000
+b[14]      -0.745   0.246   -1.267   -0.881   -0.736   -0.602   -0.262 1.000
+b[15]      -0.687   0.271   -1.202   -0.836   -0.696   -0.535   -0.101 1.005
+b[16]      -0.683   0.320   -1.376   -0.849   -0.701   -0.501   -0.012 1.001
+b[17]      -0.796   0.273   -1.450   -0.944   -0.761   -0.634   -0.289 1.003
+b[18]      -0.550   0.268   -1.035   -0.731   -0.585   -0.384    0.018 1.003
+b[19]      -0.772   0.228   -1.247   -0.912   -0.761   -0.631   -0.335 1.002
+b[20]      -0.689   0.331   -1.348   -0.857   -0.701   -0.515   -0.007 1.001
+b[21]      -0.620   0.304   -1.163   -0.803   -0.657   -0.439    0.032 1.002
+b[22]      -0.688   0.281   -1.272   -0.844   -0.702   -0.540   -0.053 1.003
+b[23]      -0.641   0.282   -1.160   -0.808   -0.665   -0.483   -0.060 1.005
+b[24]      -0.670   0.272   -1.227   -0.827   -0.675   -0.513   -0.096 1.002
+b[25]      -0.447   0.330   -0.927   -0.686   -0.515   -0.255    0.365 1.001
+b[26]      -0.775   0.181   -1.148   -0.888   -0.763   -0.665   -0.430 1.010
+b[27]      -0.629   0.275   -1.158   -0.793   -0.658   -0.469   -0.043 1.000
+b[28]      -0.657   0.265   -1.190   -0.816   -0.677   -0.507   -0.087 1.002
+b[29]      -0.685   0.333   -1.393   -0.842   -0.691   -0.509   -0.017 1.002
+b[30]      -0.673   0.325   -1.314   -0.845   -0.700   -0.500    0.087 1.001
+b[31]      -0.672   0.331   -1.332   -0.847   -0.695   -0.496    0.088 1.001
+b[32]      -0.665   0.326   -1.301   -0.841   -0.693   -0.500    0.074 1.000
+b[33]      -0.687   0.333   -1.362   -0.866   -0.705   -0.503    0.047 1.003
+b[34]      -0.706   0.278   -1.265   -0.868   -0.706   -0.555   -0.127 1.001
+b[35]      -0.639   0.251   -1.130   -0.789   -0.666   -0.494   -0.087 1.002
+b[36]      -0.520   0.330   -1.046   -0.734   -0.583   -0.339    0.237 1.000
+b[37]      -0.661   0.281   -1.193   -0.817   -0.682   -0.514   -0.020 1.008
+b[38]      -0.612   0.288   -1.140   -0.782   -0.649   -0.471    0.058 1.003
+b[39]      -0.610   0.301   -1.148   -0.793   -0.655   -0.446    0.098 1.002
+b[40]      -0.680   0.302   -1.319   -0.841   -0.697   -0.517   -0.047 1.006
+b[41]      -0.564   0.310   -1.129   -0.755   -0.602   -0.390    0.144 1.001
+b[42]      -0.688   0.330   -1.368   -0.849   -0.700   -0.513   -0.036 1.006
+b[43]      -1.038   0.319   -1.784   -1.230   -0.979   -0.790   -0.574 1.008
+b[44]      -0.847   0.308   -1.573   -1.006   -0.789   -0.659   -0.320 1.001
+b[45]      -0.790   0.249   -1.343   -0.926   -0.769   -0.639   -0.317 1.003
+b[46]      -0.694   0.314   -1.335   -0.856   -0.708   -0.533   -0.033 1.002
+b[47]      -0.867   0.321   -1.597   -1.046   -0.810   -0.664   -0.311 1.002
+b[48]      -0.609   0.297   -1.152   -0.785   -0.633   -0.453    0.068 1.002
+b[49]      -0.861   0.282   -1.487   -1.012   -0.817   -0.681   -0.365 1.002
+b[50]      -0.676   0.334   -1.370   -0.849   -0.691   -0.492    0.013 1.004
+b[51]      -0.673   0.324   -1.293   -0.855   -0.696   -0.505    0.052 1.000
+b[52]      -0.680   0.329   -1.331   -0.864   -0.703   -0.509    0.064 1.002
+b[53]      -0.711   0.308   -1.364   -0.861   -0.714   -0.532   -0.115 1.004
+b[54]      -0.869   0.270   -1.455   -1.030   -0.826   -0.698   -0.400 1.002
+b[55]      -0.603   0.262   -1.093   -0.765   -0.628   -0.443   -0.030 1.002
+b[56]      -0.831   0.288   -1.521   -0.993   -0.800   -0.656   -0.330 1.003
+b[57]      -0.712   0.291   -1.376   -0.870   -0.712   -0.546   -0.128 1.003
+b[58]      -0.603   0.304   -1.183   -0.784   -0.637   -0.425    0.046 1.001
+b[59]      -0.758   0.268   -1.345   -0.912   -0.747   -0.614   -0.182 1.003
+b[60]      -0.673   0.339   -1.369   -0.842   -0.690   -0.505    0.019 1.002
+b[61]      -0.456   0.297   -0.920   -0.676   -0.498   -0.274    0.210 1.002
+b[62]      -0.395   0.362   -0.902   -0.663   -0.459   -0.200    0.486 1.000
+b[63]      -0.550   0.295   -1.023   -0.747   -0.595   -0.389    0.111 1.001
+b[64]      -0.707   0.287   -1.342   -0.851   -0.714   -0.551   -0.098 1.003
+b[65]      -0.669   0.325   -1.308   -0.843   -0.685   -0.501    0.061 1.007
+b[66]      -0.623   0.223   -1.059   -0.763   -0.642   -0.493   -0.135 1.001
+b[67]      -0.439   0.295   -0.909   -0.660   -0.477   -0.252    0.197 1.002
+b[68]      -0.672   0.330   -1.380   -0.844   -0.688   -0.491    0.035 1.003
+b[69]      -0.673   0.334   -1.346   -0.838   -0.694   -0.497    0.054 1.002
+b[70]      -0.636   0.171   -0.963   -0.754   -0.642   -0.519   -0.303 1.001
+b[71]      -0.779   0.240   -1.311   -0.920   -0.759   -0.632   -0.337 1.000
+b[72]      -0.685   0.327   -1.390   -0.854   -0.696   -0.503    0.031 1.005
+b[73]      -0.673   0.325   -1.299   -0.850   -0.696   -0.498    0.024 1.004
+b[74]      -0.670   0.349   -1.394   -0.854   -0.685   -0.491    0.084 1.003
+b[75]      -0.566   0.302   -1.079   -0.763   -0.602   -0.391    0.129 1.000
+b[76]      -0.672   0.295   -1.304   -0.841   -0.686   -0.506   -0.037 1.000
+b[77]      -0.806   0.305   -1.497   -0.962   -0.771   -0.628   -0.231 1.005
+b[78]      -0.750   0.276   -1.394   -0.899   -0.741   -0.594   -0.215 1.003
+b[79]      -0.756   0.280   -1.379   -0.916   -0.749   -0.598   -0.199 1.000
+b[80]      -0.823   0.228   -1.328   -0.955   -0.808   -0.674   -0.401 1.001
+b[81]      -0.476   0.319   -0.980   -0.700   -0.530   -0.289    0.258 1.002
+b[82]      -0.670   0.324   -1.378   -0.840   -0.694   -0.504    0.068 1.001
+b[83]      -1.009   0.317   -1.771   -1.202   -0.952   -0.768   -0.529 1.001
+b[84]      -0.688   0.284   -1.273   -0.842   -0.696   -0.519   -0.111 1.002
+b[85]      -0.687   0.332   -1.343   -0.863   -0.705   -0.514    0.048 1.004
+mu.a        1.461   0.052    1.363    1.426    1.460    1.497    1.563 1.000
+mu.b       -0.677   0.086   -0.833   -0.740   -0.680   -0.623   -0.506 1.003
+sigma.a     0.341   0.048    0.252    0.308    0.340    0.370    0.444 1.000
+sigma.b     0.282   0.138    0.038    0.174    0.288    0.383    0.553 1.017
+sigma.y     0.749   0.019    0.712    0.736    0.749    0.761    0.786 1.002
+deviance 2077.197  17.616 2044.019 2064.986 2076.773 2089.322 2110.707 1.004
+         n.eff
+a[1]      1200
+a[2]      1200
+a[3]      1200
+a[4]      1200
+a[5]      1200
+a[6]      1200
+a[7]      1200
+a[8]      1100
+a[9]      1200
+a[10]     1200
+a[11]      430
+a[12]     1200
+a[13]     1200
+a[14]      320
+a[15]     1200
+a[16]      580
+a[17]     1200
+a[18]     1200
+a[19]      870
+a[20]     1200
+a[21]     1200
+a[22]      810
+a[23]     1200
+a[24]      710
+a[25]     1200
+a[26]     1200
+a[27]      570
+a[28]      660
+a[29]     1200
+a[30]      870
+a[31]     1200
+a[32]     1200
+a[33]     1200
+a[34]     1200
+a[35]      270
+a[36]     1200
+a[37]     1000
+a[38]     1200
+a[39]      610
+a[40]     1200
+a[41]     1200
+a[42]      460
+a[43]     1200
+a[44]     1200
+a[45]     1200
+a[46]     1200
+a[47]     1100
+a[48]     1200
+a[49]     1200
+a[50]      390
+a[51]     1200
+a[52]     1200
+a[53]     1200
+a[54]      790
+a[55]     1200
+a[56]     1200
+a[57]      590
+a[58]      950
+a[59]     1200
+a[60]     1200
+a[61]     1200
+a[62]      720
+a[63]      450
+a[64]     1100
+a[65]     1200
+a[66]     1200
+a[67]     1200
+a[68]     1200
+a[69]     1200
+a[70]      940
+a[71]      620
+a[72]     1200
+a[73]     1200
+a[74]     1200
+a[75]     1200
+a[76]     1200
+a[77]     1200
+a[78]     1200
+a[79]      470
+a[80]     1200
+a[81]     1200
+a[82]     1200
+a[83]     1200
+a[84]     1200
+a[85]     1200
+b[1]       820
+b[2]       940
+b[3]      1100
+b[4]      1200
+b[5]      1200
+b[6]      1000
+b[7]       890
+b[8]      1100
+b[9]      1200
+b[10]     1200
+b[11]     1200
+b[12]     1200
+b[13]     1200
+b[14]     1200
+b[15]      370
+b[16]     1200
+b[17]     1100
+b[18]      630
+b[19]     1200
+b[20]     1200
+b[21]     1000
+b[22]      540
+b[23]      620
+b[24]     1200
+b[25]     1200
+b[26]      200
+b[27]     1200
+b[28]     1200
+b[29]     1200
+b[30]     1200
+b[31]     1200
+b[32]     1200
+b[33]     1200
+b[34]     1200
+b[35]      850
+b[36]     1200
+b[37]      370
+b[38]     1200
+b[39]     1200
+b[40]      600
+b[41]     1200
+b[42]     1200
+b[43]      430
+b[44]     1200
+b[45]      590
+b[46]     1200
+b[47]      730
+b[48]     1200
+b[49]     1100
+b[50]      470
+b[51]     1200
+b[52]     1100
+b[53]      440
+b[54]      930
+b[55]      820
+b[56]      550
+b[57]      590
+b[58]     1200
+b[59]      680
+b[60]      780
+b[61]      930
+b[62]     1200
+b[63]     1200
+b[64]     1200
+b[65]      290
+b[66]     1200
+b[67]      900
+b[68]     1200
+b[69]      860
+b[70]     1200
+b[71]     1200
+b[72]      420
+b[73]      460
+b[74]      590
+b[75]     1200
+b[76]     1200
+b[77]     1200
+b[78]      900
+b[79]     1200
+b[80]     1200
+b[81]      910
+b[82]     1200
+b[83]     1200
+b[84]     1200
+b[85]      510
+mu.a      1200
+mu.b       740
+sigma.a   1200
+sigma.b    700
+sigma.y   1100
+deviance   610
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 154.9 and DIC = 2232.1
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+</section>
+<section id="model-with-correlation-between-intercepts-and-slopes" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="model-with-correlation-between-intercepts-and-slopes"><span class="header-section-number">5.1.3</span> Model with Correlation Between Intercepts and Slopes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data for JAGS</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">B =</span> <span class="fu">array</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> J), <span class="at">dim =</span> <span class="fu">c</span>(J, <span class="dv">2</span>)), </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">mu.a =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">mu.b =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">sigma.y =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.a =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.b =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">rho =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"mu.a"</span>, <span class="st">"mu.b"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>, <span class="st">"sigma.b"</span>, <span class="st">"rho"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Run JAGS model</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(<span class="at">data =</span> data_jags, </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inits =</span> inits, </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_slope2.jags"</span>, </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.thin =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 91
+   Total graph size: 3408
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the summary</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model_slope2.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.148   0.275    0.583    0.971    1.156    1.333    1.663 1.007
+a[2]        0.931   0.106    0.723    0.854    0.934    0.999    1.129 1.001
+a[3]        1.471   0.287    0.917    1.283    1.474    1.652    2.033 1.005
+a[4]        1.519   0.243    1.061    1.352    1.530    1.681    2.004 1.002
+a[5]        1.438   0.260    0.931    1.258    1.432    1.611    1.991 1.006
+a[6]        1.475   0.259    0.959    1.296    1.485    1.644    1.957 1.006
+a[7]        1.831   0.177    1.479    1.717    1.830    1.954    2.180 1.005
+a[8]        1.697   0.285    1.156    1.504    1.697    1.881    2.260 1.004
+a[9]        1.120   0.205    0.734    0.981    1.122    1.257    1.525 1.014
+a[10]       1.520   0.258    1.029    1.343    1.521    1.692    2.028 1.006
+a[11]       1.431   0.253    0.951    1.263    1.428    1.593    1.929 1.000
+a[12]       1.595   0.258    1.111    1.418    1.595    1.773    2.116 1.003
+a[13]       1.221   0.232    0.743    1.068    1.230    1.373    1.671 1.001
+a[14]       1.869   0.186    1.532    1.741    1.865    1.991    2.249 1.011
+a[15]       1.391   0.281    0.853    1.196    1.384    1.576    1.954 1.006
+a[16]       1.220   0.315    0.576    1.014    1.216    1.451    1.821 1.004
+a[17]       1.417   0.280    0.896    1.228    1.406    1.600    2.001 1.002
+a[18]       1.180   0.199    0.773    1.052    1.186    1.314    1.569 1.006
+a[19]       1.348   0.092    1.158    1.290    1.352    1.411    1.518 1.001
+a[20]       1.600   0.274    1.078    1.410    1.600    1.779    2.153 1.000
+a[21]       1.627   0.206    1.224    1.488    1.627    1.758    2.033 1.003
+a[22]       0.988   0.245    0.475    0.822    0.991    1.156    1.449 1.006
+a[23]       1.429   0.307    0.820    1.235    1.420    1.618    2.027 1.000
+a[24]       1.879   0.210    1.479    1.738    1.879    2.014    2.300 1.001
+a[25]       1.790   0.184    1.426    1.671    1.791    1.914    2.176 1.000
+a[26]       1.367   0.073    1.223    1.317    1.365    1.417    1.508 1.000
+a[27]       1.626   0.249    1.168    1.457    1.623    1.792    2.121 1.001
+a[28]       1.321   0.275    0.762    1.145    1.324    1.504    1.840 1.007
+a[29]       1.298   0.280    0.716    1.126    1.306    1.488    1.820 1.005
+a[30]       1.082   0.192    0.709    0.953    1.084    1.208    1.463 1.007
+a[31]       1.753   0.254    1.267    1.591    1.750    1.906    2.293 1.001
+a[32]       1.361   0.258    0.869    1.190    1.357    1.544    1.851 1.003
+a[33]       1.741   0.261    1.254    1.564    1.738    1.919    2.255 1.001
+a[34]       1.532   0.289    0.978    1.344    1.523    1.720    2.118 1.005
+a[35]       1.032   0.251    0.523    0.855    1.046    1.209    1.478 1.008
+a[36]       1.885   0.322    1.273    1.668    1.874    2.091    2.495 1.002
+a[37]       0.755   0.220    0.294    0.609    0.761    0.907    1.160 1.007
+a[38]       1.612   0.269    1.112    1.423    1.608    1.802    2.136 1.007
+a[39]       1.596   0.251    1.124    1.431    1.586    1.765    2.104 1.001
+a[40]       1.860   0.272    1.327    1.677    1.851    2.056    2.413 1.003
+a[41]       1.766   0.228    1.325    1.617    1.754    1.921    2.215 1.003
+a[42]       1.440   0.320    0.857    1.224    1.432    1.634    2.118 1.005
+a[43]       1.692   0.268    1.213    1.505    1.667    1.869    2.298 1.046
+a[44]       1.237   0.226    0.786    1.089    1.239    1.392    1.675 1.000
+a[45]       1.353   0.196    0.971    1.226    1.352    1.481    1.745 1.005
+a[46]       1.351   0.241    0.884    1.180    1.353    1.501    1.818 1.000
+a[47]       1.338   0.300    0.778    1.141    1.336    1.535    1.941 1.027
+a[48]       1.242   0.203    0.834    1.104    1.239    1.378    1.641 1.001
+a[49]       1.666   0.186    1.313    1.540    1.665    1.791    2.041 1.004
+a[50]       1.652   0.322    1.069    1.433    1.652    1.845    2.343 1.000
+a[51]       1.770   0.250    1.297    1.604    1.767    1.934    2.263 1.001
+a[52]       1.645   0.281    1.103    1.459    1.642    1.826    2.216 1.000
+a[53]       1.390   0.279    0.814    1.215    1.390    1.575    1.942 1.003
+a[54]       1.353   0.153    1.049    1.248    1.357    1.457    1.649 1.004
+a[55]       1.539   0.227    1.098    1.392    1.542    1.684    1.975 1.005
+a[56]       1.353   0.304    0.762    1.152    1.350    1.562    1.934 1.003
+a[57]       1.069   0.235    0.595    0.912    1.075    1.223    1.516 1.008
+a[58]       1.625   0.261    1.126    1.444    1.627    1.804    2.131 1.000
+a[59]       1.588   0.278    1.052    1.402    1.580    1.776    2.122 1.002
+a[60]       1.408   0.286    0.820    1.222    1.418    1.587    1.960 1.000
+a[61]       1.171   0.127    0.910    1.084    1.171    1.257    1.407 1.025
+a[62]       1.669   0.259    1.176    1.498    1.674    1.836    2.175 1.004
+a[63]       1.512   0.287    0.959    1.315    1.508    1.704    2.059 1.004
+a[64]       1.726   0.192    1.347    1.602    1.725    1.850    2.117 1.001
+a[65]       1.408   0.299    0.789    1.210    1.411    1.616    1.980 1.000
+a[66]       1.586   0.203    1.196    1.446    1.587    1.721    1.991 1.014
+a[67]       1.634   0.200    1.260    1.499    1.632    1.774    2.003 1.025
+a[68]       1.229   0.218    0.820    1.081    1.228    1.373    1.653 1.001
+a[69]       1.369   0.257    0.827    1.198    1.379    1.538    1.857 1.002
+a[70]       0.877   0.071    0.737    0.831    0.876    0.921    1.021 1.012
+a[71]       1.501   0.140    1.236    1.410    1.497    1.591    1.788 1.000
+a[72]       1.542   0.190    1.170    1.419    1.543    1.668    1.906 1.002
+a[73]       1.564   0.299    0.993    1.365    1.563    1.771    2.129 1.007
+a[74]       1.246   0.257    0.742    1.072    1.254    1.426    1.710 1.002
+a[75]       1.525   0.271    0.999    1.343    1.521    1.707    2.046 1.002
+a[76]       1.721   0.268    1.216    1.547    1.717    1.900    2.280 1.000
+a[77]       1.702   0.224    1.280    1.545    1.698    1.860    2.120 1.005
+a[78]       1.389   0.259    0.866    1.219    1.391    1.563    1.913 1.002
+a[79]       1.086   0.266    0.540    0.913    1.089    1.272    1.581 1.001
+a[80]       1.354   0.106    1.151    1.280    1.354    1.427    1.566 1.001
+a[81]       1.875   0.316    1.291    1.653    1.868    2.089    2.496 1.002
+a[82]       1.615   0.347    0.945    1.396    1.620    1.828    2.293 1.002
+a[83]       1.652   0.198    1.299    1.516    1.646    1.780    2.065 1.013
+a[84]       1.603   0.182    1.248    1.479    1.604    1.722    1.974 1.002
+a[85]       1.396   0.293    0.802    1.202    1.410    1.596    1.927 1.006
+b[1]       -0.594   0.295   -1.070   -0.779   -0.645   -0.482    0.161 1.063
+b[2]       -0.743   0.243   -1.297   -0.863   -0.713   -0.608   -0.284 1.022
+b[3]       -0.683   0.271   -1.311   -0.812   -0.685   -0.572   -0.091 1.046
+b[4]       -0.725   0.242   -1.244   -0.849   -0.708   -0.612   -0.246 1.025
+b[5]       -0.654   0.279   -1.217   -0.796   -0.660   -0.536   -0.043 1.036
+b[6]       -0.688   0.278   -1.223   -0.820   -0.692   -0.582   -0.048 1.022
+b[7]       -0.559   0.294   -1.017   -0.760   -0.647   -0.397    0.164 1.051
+b[8]       -0.713   0.273   -1.321   -0.847   -0.705   -0.598   -0.108 1.048
+b[9]       -0.512   0.319   -0.965   -0.726   -0.614   -0.344    0.254 1.075
+b[10]      -0.743   0.255   -1.365   -0.846   -0.715   -0.621   -0.268 1.042
+b[11]      -0.678   0.298   -1.301   -0.818   -0.684   -0.581    0.021 1.028
+b[12]      -0.713   0.286   -1.306   -0.848   -0.702   -0.595   -0.106 1.021
+b[13]      -0.654   0.295   -1.282   -0.799   -0.659   -0.530    0.004 1.032
+b[14]      -0.800   0.237   -1.349   -0.917   -0.768   -0.652   -0.370 1.036
+b[15]      -0.676   0.262   -1.192   -0.816   -0.684   -0.574   -0.076 1.041
+b[16]      -0.645   0.310   -1.236   -0.803   -0.668   -0.511    0.094 1.037
+b[17]      -0.792   0.264   -1.425   -0.902   -0.752   -0.644   -0.325 1.028
+b[18]      -0.557   0.271   -0.987   -0.738   -0.622   -0.414    0.065 1.069
+b[19]      -0.748   0.207   -1.221   -0.849   -0.731   -0.638   -0.327 1.021
+b[20]      -0.716   0.302   -1.329   -0.847   -0.707   -0.598   -0.071 1.031
+b[21]      -0.676   0.282   -1.227   -0.829   -0.683   -0.561   -0.035 1.025
+b[22]      -0.619   0.279   -1.135   -0.793   -0.645   -0.493    0.034 1.052
+b[23]      -0.674   0.274   -1.275   -0.814   -0.676   -0.552   -0.067 1.024
+b[24]      -0.745   0.263   -1.320   -0.859   -0.724   -0.622   -0.214 1.038
+b[25]      -0.561   0.306   -1.025   -0.756   -0.649   -0.400    0.166 1.058
+b[26]      -0.755   0.161   -1.130   -0.848   -0.744   -0.649   -0.468 1.027
+b[27]      -0.682   0.262   -1.219   -0.818   -0.684   -0.571   -0.105 1.026
+b[28]      -0.660   0.254   -1.201   -0.800   -0.662   -0.553   -0.097 1.036
+b[29]      -0.664   0.278   -1.248   -0.810   -0.664   -0.543   -0.015 1.039
+b[30]      -0.623   0.301   -1.150   -0.796   -0.651   -0.489    0.094 1.028
+b[31]      -0.750   0.301   -1.459   -0.868   -0.729   -0.630   -0.133 1.029
+b[32]      -0.675   0.296   -1.328   -0.818   -0.672   -0.549   -0.020 1.031
+b[33]      -0.746   0.321   -1.437   -0.885   -0.726   -0.624   -0.049 1.047
+b[34]      -0.732   0.268   -1.297   -0.852   -0.715   -0.611   -0.152 1.022
+b[35]      -0.600   0.256   -1.024   -0.769   -0.642   -0.483    0.007 1.038
+b[36]      -0.629   0.309   -1.249   -0.793   -0.659   -0.493    0.068 1.041
+b[37]      -0.555   0.316   -1.103   -0.749   -0.621   -0.387    0.221 1.054
+b[38]      -0.655   0.272   -1.184   -0.802   -0.673   -0.546    0.005 1.059
+b[39]      -0.659   0.260   -1.179   -0.803   -0.670   -0.545   -0.057 1.039
+b[40]      -0.753   0.291   -1.414   -0.871   -0.727   -0.618   -0.161 1.030
+b[41]      -0.648   0.271   -1.137   -0.812   -0.667   -0.530   -0.035 1.036
+b[42]      -0.690   0.282   -1.214   -0.826   -0.686   -0.571   -0.046 1.035
+b[43]      -1.017   0.361   -1.858   -1.239   -0.889   -0.722   -0.589 1.111
+b[44]      -0.793   0.291   -1.513   -0.917   -0.748   -0.633   -0.307 1.032
+b[45]      -0.758   0.221   -1.285   -0.861   -0.738   -0.634   -0.376 1.040
+b[46]      -0.661   0.299   -1.267   -0.817   -0.674   -0.539    0.040 1.029
+b[47]      -0.816   0.307   -1.580   -0.934   -0.772   -0.644   -0.267 1.031
+b[48]      -0.593   0.277   -1.082   -0.764   -0.643   -0.464    0.061 1.043
+b[49]      -0.864   0.286   -1.565   -1.008   -0.803   -0.662   -0.454 1.036
+b[50]      -0.744   0.316   -1.445   -0.866   -0.719   -0.606   -0.138 1.025
+b[51]      -0.757   0.293   -1.443   -0.874   -0.737   -0.628   -0.149 1.027
+b[52]      -0.738   0.299   -1.355   -0.862   -0.717   -0.616   -0.089 1.021
+b[53]      -0.695   0.277   -1.281   -0.830   -0.692   -0.575   -0.081 1.034
+b[54]      -0.832   0.251   -1.418   -0.960   -0.787   -0.653   -0.419 1.060
+b[55]      -0.648   0.244   -1.094   -0.791   -0.661   -0.540   -0.087 1.029
+b[56]      -0.794   0.265   -1.446   -0.911   -0.758   -0.641   -0.329 1.033
+b[57]      -0.655   0.282   -1.203   -0.800   -0.660   -0.537   -0.018 1.037
+b[58]      -0.654   0.264   -1.128   -0.804   -0.672   -0.541   -0.028 1.048
+b[59]      -0.761   0.269   -1.364   -0.876   -0.738   -0.632   -0.240 1.024
+b[60]      -0.692   0.290   -1.314   -0.835   -0.686   -0.569   -0.082 1.024
+b[61]      -0.478   0.291   -0.863   -0.672   -0.557   -0.313    0.234 1.135
+b[62]      -0.499   0.342   -0.981   -0.723   -0.618   -0.322    0.351 1.065
+b[63]      -0.589   0.296   -1.064   -0.773   -0.648   -0.438    0.117 1.057
+b[64]      -0.757   0.268   -1.332   -0.892   -0.736   -0.633   -0.190 1.038
+b[65]      -0.684   0.306   -1.260   -0.823   -0.683   -0.569    0.037 1.014
+b[66]      -0.657   0.222   -1.063   -0.796   -0.667   -0.544   -0.162 1.037
+b[67]      -0.508   0.292   -0.894   -0.712   -0.595   -0.330    0.183 1.113
+b[68]      -0.646   0.310   -1.259   -0.809   -0.658   -0.527    0.081 1.033
+b[69]      -0.668   0.291   -1.256   -0.817   -0.673   -0.555    0.004 1.019
+b[70]      -0.618   0.161   -0.892   -0.733   -0.634   -0.515   -0.283 1.074
+b[71]      -0.776   0.219   -1.274   -0.882   -0.753   -0.648   -0.338 1.029
+b[72]      -0.711   0.292   -1.354   -0.845   -0.706   -0.596   -0.040 1.040
+b[73]      -0.706   0.318   -1.386   -0.844   -0.702   -0.589   -0.048 1.014
+b[74]      -0.648   0.291   -1.254   -0.802   -0.664   -0.529    0.006 1.055
+b[75]      -0.605   0.292   -1.118   -0.782   -0.651   -0.480    0.110 1.037
+b[76]      -0.735   0.284   -1.395   -0.852   -0.708   -0.615   -0.142 1.035
+b[77]      -0.832   0.295   -1.543   -0.974   -0.775   -0.652   -0.352 1.057
+b[78]      -0.746   0.255   -1.328   -0.859   -0.723   -0.619   -0.223 1.017
+b[79]      -0.678   0.268   -1.218   -0.817   -0.669   -0.554   -0.060 1.025
+b[80]      -0.778   0.204   -1.249   -0.873   -0.757   -0.649   -0.404 1.019
+b[81]      -0.588   0.306   -1.096   -0.774   -0.650   -0.447    0.188 1.061
+b[82]      -0.734   0.304   -1.431   -0.858   -0.713   -0.610   -0.100 1.041
+b[83]      -0.982   0.328   -1.738   -1.196   -0.880   -0.719   -0.578 1.085
+b[84]      -0.709   0.266   -1.271   -0.843   -0.702   -0.582   -0.145 1.036
+b[85]      -0.681   0.286   -1.321   -0.816   -0.682   -0.555   -0.065 1.042
+mu.a        1.463   0.055    1.357    1.424    1.462    1.500    1.570 1.004
+mu.b       -0.692   0.086   -0.850   -0.753   -0.689   -0.639   -0.521 1.033
+rho        -0.296   0.380   -0.947   -0.555   -0.320   -0.083    0.629 1.028
+sigma.a     0.351   0.052    0.261    0.312    0.351    0.386    0.460 1.018
+sigma.b     0.236   0.173    0.005    0.042    0.244    0.371    0.564 1.661
+sigma.y     0.751   0.019    0.716    0.739    0.750    0.763    0.790 1.004
+deviance 2080.543  18.128 2043.587 2068.567 2081.551 2092.926 2114.104 1.108
+         n.eff
+a[1]       430
+a[2]      1200
+a[3]       730
+a[4]      1200
+a[5]       670
+a[6]       400
+a[7]       410
+a[8]      1200
+a[9]       180
+a[10]     1200
+a[11]     1200
+a[12]      670
+a[13]     1200
+a[14]      180
+a[15]      460
+a[16]     1000
+a[17]      790
+a[18]      320
+a[19]     1200
+a[20]     1200
+a[21]      640
+a[22]      520
+a[23]     1200
+a[24]     1200
+a[25]     1200
+a[26]     1200
+a[27]     1200
+a[28]      450
+a[29]      410
+a[30]      730
+a[31]     1200
+a[32]      810
+a[33]     1200
+a[34]      710
+a[35]      250
+a[36]     1200
+a[37]      360
+a[38]      270
+a[39]     1200
+a[40]      690
+a[41]      590
+a[42]      460
+a[43]       47
+a[44]     1200
+a[45]      380
+a[46]     1200
+a[47]     1200
+a[48]     1200
+a[49]      500
+a[50]     1200
+a[51]     1200
+a[52]     1200
+a[53]      610
+a[54]      420
+a[55]      410
+a[56]      680
+a[57]      400
+a[58]     1200
+a[59]      740
+a[60]     1200
+a[61]       82
+a[62]      430
+a[63]      530
+a[64]     1200
+a[65]     1200
+a[66]      150
+a[67]       83
+a[68]     1200
+a[69]     1000
+a[70]      170
+a[71]     1200
+a[72]     1200
+a[73]     1200
+a[74]     1200
+a[75]     1100
+a[76]     1200
+a[77]      760
+a[78]     1200
+a[79]     1200
+a[80]     1200
+a[81]     1000
+a[82]      900
+a[83]      170
+a[84]     1100
+a[85]      730
+b[1]        65
+b[2]       990
+b[3]       320
+b[4]       520
+b[5]       250
+b[6]       650
+b[7]        51
+b[8]       350
+b[9]        33
+b[10]      900
+b[11]      580
+b[12]     1100
+b[13]      440
+b[14]      140
+b[15]      250
+b[16]      150
+b[17]      250
+b[18]       36
+b[19]      600
+b[20]      920
+b[21]      270
+b[22]       71
+b[23]      480
+b[24]     1200
+b[25]       46
+b[26]      250
+b[27]      680
+b[28]      180
+b[29]      120
+b[30]      180
+b[31]      630
+b[32]      510
+b[33]      740
+b[34]     1200
+b[35]       65
+b[36]      170
+b[37]       50
+b[38]       78
+b[39]      140
+b[40]      450
+b[41]      150
+b[42]      280
+b[43]       23
+b[44]      230
+b[45]      290
+b[46]      260
+b[47]      190
+b[48]       76
+b[49]       84
+b[50]     1200
+b[51]     1200
+b[52]     1200
+b[53]      420
+b[54]       62
+b[55]      140
+b[56]      150
+b[57]      270
+b[58]      110
+b[59]      290
+b[60]      970
+b[61]       19
+b[62]       39
+b[63]       73
+b[64]      970
+b[65]      780
+b[66]      160
+b[67]       23
+b[68]      200
+b[69]      620
+b[70]       32
+b[71]      220
+b[72]      710
+b[73]      780
+b[74]      130
+b[75]       94
+b[76]      450
+b[77]       91
+b[78]      480
+b[79]      400
+b[80]      430
+b[81]       58
+b[82]     1200
+b[83]       29
+b[84]     1200
+b[85]      210
+mu.a       450
+mu.b        66
+rho        770
+sigma.a    110
+sigma.b      7
+sigma.y    430
+deviance    23
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 149.6 and DIC = 2230.1
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>jags_result <span class="ot">&lt;-</span> jags_fit<span class="sc">$</span>BUGSoutput<span class="sc">$</span>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-with-county-level-uranium-predictor" class="level3" data-number="5.1.4">
+<h3 data-number="5.1.4" class="anchored" data-anchor-id="model-with-county-level-uranium-predictor"><span class="header-section-number">5.1.4</span> Model with County-Level Uranium Predictor</h3>
+<p>We can add group-level predictors to the varying-intercept, varying-slope Bugs models of the previous section by replacing mu.a and mu.b by group-level regressions. Simplest varying-intercept, varying-slope model. For example, we can add a group- level predictor u to the very first model of this chapter by replacing the expressions for a.hat[j] and b.hat[j] with:</p>
+<ul>
+<li>a.hat[j] &lt;- g.a.0 + g.a.1*u[j]</li>
+<li>b.hat[j] &lt;- g.b.0 + g.b.1*u[j] and then removing the prior distributions for mu.a and mu.b and replacing with dnorm (0, .0001) prior distributions for each of g.a.0, g.a.1, g.b.0, and g.b.1.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data for JAGS</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">county =</span> county, <span class="at">n =</span> n, <span class="at">J =</span> J, <span class="at">u =</span> u.full)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">B =</span> <span class="fu">array</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> J), <span class="at">dim =</span> <span class="fu">c</span>(J, <span class="dv">2</span>)), </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">g.a.0 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">g.a.1 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">g.b.0 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">g.b.1 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">sigma.y =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.a =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.b =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">rho =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"g.a.0"</span>, <span class="st">"g.a.1"</span>, <span class="st">"g.b.0"</span>, <span class="st">"g.b.1"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.a"</span>, <span class="st">"sigma.b"</span>, <span class="st">"rho"</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run JAGS model</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(<span class="at">data =</span> data_jags, </span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inits =</span> inits, </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">model.file =</span> <span class="st">"codigoJAGS/radon_model_slope3.jags"</span>, </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.thin =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 919
+   Unobserved stochastic nodes: 93
+   Total graph size: 4357
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the summary</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/radon_model_slope3.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+          mu.vect sd.vect     2.5%      25%      50%      75%    97.5%  Rhat
+a[1]        1.142   0.275    0.583    0.955    1.148    1.334    1.666 1.012
+a[2]        0.930   0.099    0.725    0.870    0.930    0.995    1.127 1.001
+a[3]        1.466   0.309    0.835    1.257    1.465    1.677    2.070 1.001
+a[4]        1.511   0.253    1.030    1.340    1.515    1.670    2.022 1.001
+a[5]        1.427   0.267    0.900    1.245    1.435    1.602    1.967 1.005
+a[6]        1.461   0.282    0.892    1.284    1.471    1.641    2.018 1.013
+a[7]        1.825   0.180    1.457    1.706    1.824    1.942    2.162 1.000
+a[8]        1.677   0.275    1.135    1.494    1.682    1.855    2.229 1.002
+a[9]        1.105   0.206    0.691    0.966    1.107    1.248    1.484 1.008
+a[10]       1.529   0.247    1.045    1.361    1.524    1.695    2.004 1.004
+a[11]       1.423   0.243    0.937    1.250    1.420    1.590    1.889 1.004
+a[12]       1.574   0.264    1.035    1.398    1.570    1.744    2.085 1.002
+a[13]       1.204   0.235    0.752    1.049    1.202    1.359    1.663 1.001
+a[14]       1.859   0.196    1.491    1.728    1.856    1.986    2.244 1.005
+a[15]       1.360   0.273    0.839    1.182    1.352    1.544    1.892 1.001
+a[16]       1.206   0.311    0.580    1.005    1.217    1.420    1.788 1.003
+a[17]       1.400   0.290    0.854    1.203    1.398    1.580    1.981 1.001
+a[18]       1.159   0.194    0.793    1.027    1.165    1.288    1.531 1.004
+a[19]       1.347   0.095    1.156    1.287    1.345    1.409    1.532 1.000
+a[20]       1.591   0.280    1.017    1.408    1.596    1.779    2.145 1.007
+a[21]       1.627   0.207    1.239    1.479    1.631    1.771    2.024 1.003
+a[22]       0.977   0.239    0.514    0.813    0.989    1.144    1.431 1.001
+a[23]       1.412   0.305    0.826    1.195    1.420    1.628    1.986 1.000
+a[24]       1.873   0.217    1.449    1.730    1.868    2.015    2.302 1.004
+a[25]       1.780   0.184    1.432    1.650    1.782    1.914    2.117 1.000
+a[26]       1.363   0.073    1.227    1.311    1.366    1.412    1.502 1.006
+a[27]       1.606   0.245    1.136    1.443    1.600    1.772    2.108 1.009
+a[28]       1.304   0.268    0.766    1.124    1.314    1.489    1.813 1.009
+a[29]       1.288   0.288    0.710    1.096    1.282    1.475    1.856 1.005
+a[30]       1.092   0.189    0.723    0.968    1.091    1.221    1.452 1.004
+a[31]       1.745   0.253    1.244    1.578    1.746    1.920    2.236 1.002
+a[32]       1.339   0.262    0.799    1.165    1.342    1.514    1.855 1.001
+a[33]       1.744   0.262    1.271    1.564    1.731    1.915    2.271 1.000
+a[34]       1.503   0.295    0.902    1.299    1.496    1.706    2.075 1.002
+a[35]       1.008   0.266    0.451    0.837    1.020    1.192    1.466 1.007
+a[36]       1.858   0.317    1.222    1.642    1.852    2.070    2.488 1.005
+a[37]       0.746   0.224    0.313    0.592    0.755    0.890    1.162 1.001
+a[38]       1.599   0.286    1.046    1.410    1.598    1.793    2.188 1.006
+a[39]       1.581   0.248    1.077    1.422    1.577    1.748    2.074 1.001
+a[40]       1.849   0.280    1.312    1.661    1.844    2.033    2.417 1.003
+a[41]       1.750   0.215    1.346    1.608    1.754    1.889    2.186 1.003
+a[42]       1.438   0.333    0.778    1.224    1.435    1.663    2.102 1.002
+a[43]       1.696   0.264    1.226    1.502    1.684    1.870    2.264 1.044
+a[44]       1.218   0.234    0.748    1.069    1.218    1.369    1.681 1.000
+a[45]       1.353   0.194    0.949    1.231    1.347    1.481    1.742 1.005
+a[46]       1.319   0.241    0.832    1.166    1.326    1.482    1.806 1.002
+a[47]       1.309   0.312    0.694    1.103    1.306    1.515    1.952 1.003
+a[48]       1.235   0.216    0.806    1.090    1.241    1.391    1.653 1.001
+a[49]       1.669   0.193    1.282    1.542    1.663    1.791    2.063 1.005
+a[50]       1.656   0.328    0.984    1.450    1.658    1.867    2.290 1.005
+a[51]       1.785   0.264    1.287    1.613    1.772    1.962    2.304 1.006
+a[52]       1.648   0.272    1.126    1.475    1.645    1.823    2.206 1.001
+a[53]       1.377   0.287    0.837    1.181    1.379    1.566    1.948 1.002
+a[54]       1.354   0.150    1.061    1.250    1.355    1.454    1.653 1.005
+a[55]       1.519   0.223    1.054    1.372    1.516    1.663    1.963 1.002
+a[56]       1.362   0.310    0.765    1.155    1.358    1.570    1.963 1.006
+a[57]       1.082   0.254    0.552    0.917    1.088    1.242    1.571 1.014
+a[58]       1.615   0.273    1.076    1.425    1.625    1.807    2.128 1.004
+a[59]       1.620   0.283    1.065    1.425    1.612    1.812    2.185 1.001
+a[60]       1.402   0.287    0.841    1.210    1.403    1.585    1.988 1.001
+a[61]       1.162   0.129    0.913    1.072    1.159    1.250    1.422 1.006
+a[62]       1.668   0.261    1.142    1.490    1.666    1.840    2.173 1.005
+a[63]       1.496   0.290    0.883    1.299    1.494    1.698    2.046 1.002
+a[64]       1.744   0.191    1.381    1.605    1.738    1.873    2.128 1.004
+a[65]       1.400   0.292    0.788    1.221    1.394    1.591    1.964 1.005
+a[66]       1.571   0.209    1.164    1.432    1.569    1.724    1.981 1.001
+a[67]       1.649   0.199    1.248    1.516    1.654    1.782    2.046 1.004
+a[68]       1.234   0.215    0.838    1.089    1.228    1.387    1.660 1.002
+a[69]       1.355   0.257    0.804    1.202    1.358    1.523    1.831 1.003
+a[70]       0.881   0.069    0.744    0.835    0.879    0.927    1.021 1.007
+a[71]       1.511   0.145    1.226    1.409    1.513    1.613    1.788 1.003
+a[72]       1.552   0.205    1.147    1.414    1.547    1.683    1.967 1.003
+a[73]       1.590   0.309    1.035    1.382    1.583    1.777    2.203 1.003
+a[74]       1.253   0.265    0.715    1.072    1.262    1.442    1.767 1.012
+a[75]       1.553   0.294    0.960    1.356    1.554    1.743    2.130 1.001
+a[76]       1.742   0.269    1.223    1.565    1.740    1.922    2.268 1.000
+a[77]       1.716   0.234    1.273    1.557    1.706    1.873    2.166 1.005
+a[78]       1.421   0.269    0.903    1.225    1.427    1.604    1.950 1.001
+a[79]       1.108   0.273    0.559    0.921    1.115    1.295    1.633 1.031
+a[80]       1.364   0.107    1.162    1.296    1.366    1.434    1.574 1.001
+a[81]       1.910   0.312    1.327    1.704    1.899    2.122    2.549 1.001
+a[82]       1.630   0.342    1.009    1.398    1.635    1.841    2.362 1.006
+a[83]       1.668   0.204    1.260    1.534    1.671    1.806    2.062 1.009
+a[84]       1.613   0.191    1.218    1.493    1.612    1.742    1.990 1.002
+a[85]       1.386   0.304    0.757    1.196    1.386    1.585    1.979 1.003
+b[1]       -0.560   0.291   -1.103   -0.731   -0.606   -0.407    0.078 1.023
+b[2]       -0.723   0.252   -1.287   -0.870   -0.691   -0.573   -0.264 1.029
+b[3]       -0.650   0.270   -1.238   -0.779   -0.666   -0.526   -0.029 1.010
+b[4]       -0.707   0.250   -1.280   -0.824   -0.691   -0.563   -0.251 1.015
+b[5]       -0.599   0.276   -1.172   -0.757   -0.614   -0.460    0.014 1.019
+b[6]       -0.638   0.316   -1.275   -0.782   -0.638   -0.494    0.070 1.028
+b[7]       -0.503   0.290   -0.945   -0.705   -0.561   -0.346    0.214 1.022
+b[8]       -0.641   0.280   -1.213   -0.781   -0.651   -0.501   -0.063 1.016
+b[9]       -0.417   0.336   -0.912   -0.648   -0.505   -0.221    0.404 1.044
+b[10]      -0.717   0.254   -1.296   -0.844   -0.697   -0.571   -0.238 1.028
+b[11]      -0.630   0.300   -1.262   -0.772   -0.640   -0.495    0.014 1.012
+b[12]      -0.666   0.305   -1.304   -0.803   -0.668   -0.527    0.052 1.017
+b[13]      -0.581   0.316   -1.159   -0.751   -0.615   -0.441    0.184 1.014
+b[14]      -0.764   0.262   -1.368   -0.908   -0.727   -0.585   -0.294 1.022
+b[15]      -0.622   0.275   -1.156   -0.772   -0.629   -0.491    0.002 1.011
+b[16]      -0.583   0.320   -1.162   -0.750   -0.616   -0.429    0.135 1.015
+b[17]      -0.751   0.281   -1.413   -0.884   -0.709   -0.581   -0.253 1.020
+b[18]      -0.505   0.263   -0.919   -0.680   -0.560   -0.373    0.173 1.015
+b[19]      -0.716   0.227   -1.247   -0.837   -0.697   -0.571   -0.303 1.012
+b[20]      -0.668   0.307   -1.360   -0.804   -0.664   -0.516   -0.018 1.021
+b[21]      -0.627   0.278   -1.182   -0.777   -0.630   -0.497    0.037 1.011
+b[22]      -0.562   0.288   -1.093   -0.734   -0.595   -0.419    0.075 1.028
+b[23]      -0.613   0.287   -1.174   -0.759   -0.627   -0.489    0.022 1.018
+b[24]      -0.693   0.280   -1.308   -0.848   -0.678   -0.535   -0.131 1.021
+b[25]      -0.499   0.294   -0.946   -0.702   -0.554   -0.346    0.208 1.033
+b[26]      -0.725   0.171   -1.135   -0.813   -0.708   -0.606   -0.449 1.030
+b[27]      -0.630   0.258   -1.155   -0.766   -0.630   -0.505   -0.058 1.030
+b[28]      -0.617   0.251   -1.098   -0.755   -0.634   -0.486   -0.103 1.026
+b[29]      -0.608   0.293   -1.214   -0.755   -0.625   -0.482    0.045 1.020
+b[30]      -0.568   0.313   -1.186   -0.735   -0.598   -0.423    0.149 1.024
+b[31]      -0.676   0.305   -1.344   -0.824   -0.668   -0.524   -0.081 1.021
+b[32]      -0.616   0.310   -1.247   -0.763   -0.622   -0.467    0.049 1.020
+b[33]      -0.694   0.313   -1.364   -0.846   -0.686   -0.531   -0.091 1.019
+b[34]      -0.693   0.275   -1.298   -0.823   -0.677   -0.544   -0.139 1.021
+b[35]      -0.547   0.263   -1.003   -0.714   -0.586   -0.419    0.061 1.020
+b[36]      -0.574   0.313   -1.171   -0.757   -0.601   -0.427    0.129 1.015
+b[37]      -0.511   0.327   -1.069   -0.717   -0.573   -0.344    0.268 1.028
+b[38]      -0.605   0.289   -1.178   -0.764   -0.616   -0.472    0.061 1.009
+b[39]      -0.607   0.291   -1.185   -0.772   -0.629   -0.465    0.062 1.011
+b[40]      -0.683   0.306   -1.341   -0.828   -0.676   -0.525   -0.033 1.041
+b[41]      -0.607   0.291   -1.202   -0.775   -0.627   -0.479    0.057 1.023
+b[42]      -0.643   0.315   -1.252   -0.782   -0.642   -0.498    0.043 1.015
+b[43]      -0.999   0.365   -1.860   -1.241   -0.928   -0.709   -0.513 1.093
+b[44]      -0.739   0.286   -1.421   -0.888   -0.703   -0.570   -0.237 1.017
+b[45]      -0.739   0.246   -1.284   -0.866   -0.712   -0.578   -0.319 1.033
+b[46]      -0.615   0.301   -1.235   -0.760   -0.627   -0.484    0.067 1.016
+b[47]      -0.767   0.309   -1.499   -0.903   -0.725   -0.582   -0.261 1.045
+b[48]      -0.544   0.292   -1.068   -0.714   -0.581   -0.403    0.155 1.009
+b[49]      -0.820   0.306   -1.491   -0.997   -0.767   -0.620   -0.298 1.033
+b[50]      -0.688   0.329   -1.419   -0.835   -0.675   -0.527    0.017 1.015
+b[51]      -0.692   0.333   -1.404   -0.863   -0.683   -0.534    0.024 1.018
+b[52]      -0.670   0.313   -1.311   -0.818   -0.663   -0.533    0.025 1.022
+b[53]      -0.657   0.295   -1.306   -0.786   -0.656   -0.514   -0.019 1.031
+b[54]      -0.794   0.270   -1.417   -0.933   -0.749   -0.610   -0.361 1.037
+b[55]      -0.578   0.256   -1.054   -0.732   -0.604   -0.447    0.024 1.009
+b[56]      -0.776   0.311   -1.468   -0.946   -0.725   -0.576   -0.267 1.032
+b[57]      -0.684   0.283   -1.244   -0.836   -0.679   -0.562   -0.034 1.019
+b[58]      -0.688   0.272   -1.245   -0.840   -0.691   -0.552   -0.115 1.008
+b[59]      -0.802   0.293   -1.484   -0.944   -0.757   -0.644   -0.270 1.023
+b[60]      -0.651   0.286   -1.224   -0.785   -0.659   -0.528   -0.010 1.020
+b[61]      -0.457   0.290   -0.903   -0.668   -0.536   -0.271    0.190 1.052
+b[62]      -0.481   0.338   -0.988   -0.704   -0.570   -0.323    0.423 1.032
+b[63]      -0.561   0.296   -1.117   -0.740   -0.608   -0.420    0.156 1.023
+b[64]      -0.735   0.268   -1.370   -0.867   -0.714   -0.583   -0.245 1.018
+b[65]      -0.673   0.298   -1.361   -0.807   -0.673   -0.542   -0.023 1.034
+b[66]      -0.639   0.218   -1.096   -0.751   -0.647   -0.531   -0.165 1.016
+b[67]      -0.523   0.288   -0.972   -0.713   -0.595   -0.347    0.147 1.040
+b[68]      -0.671   0.303   -1.272   -0.824   -0.683   -0.552    0.035 1.007
+b[69]      -0.712   0.301   -1.336   -0.852   -0.697   -0.581   -0.047 1.019
+b[70]      -0.623   0.162   -0.936   -0.719   -0.643   -0.524   -0.265 1.033
+b[71]      -0.836   0.251   -1.364   -0.996   -0.809   -0.658   -0.372 1.015
+b[72]      -0.800   0.338   -1.580   -0.974   -0.775   -0.622   -0.104 1.023
+b[73]      -0.809   0.344   -1.579   -1.006   -0.777   -0.621   -0.134 1.020
+b[74]      -0.723   0.334   -1.447   -0.897   -0.716   -0.569    0.016 1.016
+b[75]      -0.660   0.321   -1.227   -0.846   -0.679   -0.516    0.147 1.018
+b[76]      -0.807   0.313   -1.499   -0.984   -0.771   -0.624   -0.183 1.029
+b[77]      -0.918   0.325   -1.681   -1.092   -0.853   -0.687   -0.418 1.035
+b[78]      -0.808   0.293   -1.417   -0.983   -0.769   -0.634   -0.259 1.017
+b[79]      -0.757   0.317   -1.440   -0.930   -0.731   -0.593   -0.129 1.021
+b[80]      -0.843   0.227   -1.323   -0.990   -0.810   -0.676   -0.483 1.013
+b[81]      -0.646   0.327   -1.246   -0.830   -0.670   -0.505    0.090 1.018
+b[82]      -0.805   0.346   -1.561   -0.987   -0.769   -0.621   -0.104 1.022
+b[83]      -1.055   0.366   -1.867   -1.297   -0.992   -0.756   -0.554 1.077
+b[84]      -0.803   0.295   -1.440   -0.958   -0.768   -0.633   -0.216 1.008
+b[85]      -0.754   0.332   -1.464   -0.930   -0.741   -0.597   -0.050 1.008
+g.a.0       1.482   0.084    1.318    1.425    1.484    1.534    1.645 1.005
+g.a.1       0.036   0.122   -0.203   -0.042    0.037    0.116    0.265 1.003
+g.b.0      -0.744   0.130   -0.998   -0.828   -0.736   -0.658   -0.491 1.010
+g.b.1      -0.126   0.189   -0.515   -0.252   -0.120   -0.003    0.237 1.008
+rho        -0.215   0.402   -0.851   -0.504   -0.281    0.016    0.715 1.062
+sigma.a     0.356   0.053    0.263    0.320    0.354    0.391    0.463 1.030
+sigma.b     0.251   0.163    0.013    0.089    0.263    0.372    0.555 1.465
+sigma.y     0.751   0.020    0.714    0.738    0.750    0.764    0.792 1.018
+deviance 2080.243  18.666 2042.978 2067.366 2081.228 2094.058 2113.524 1.065
+         n.eff
+a[1]       340
+a[2]      1200
+a[3]      1200
+a[4]      1200
+a[5]      1200
+a[6]       250
+a[7]      1200
+a[8]       900
+a[9]       320
+a[10]     1200
+a[11]      710
+a[12]      740
+a[13]     1200
+a[14]      350
+a[15]     1200
+a[16]     1200
+a[17]     1200
+a[18]      480
+a[19]     1200
+a[20]      300
+a[21]     1000
+a[22]     1200
+a[23]     1200
+a[24]      440
+a[25]     1200
+a[26]      330
+a[27]      770
+a[28]      350
+a[29]      700
+a[30]      620
+a[31]     1000
+a[32]     1200
+a[33]     1200
+a[34]     1200
+a[35]      340
+a[36]     1200
+a[37]     1200
+a[38]     1200
+a[39]     1200
+a[40]      590
+a[41]      640
+a[42]      880
+a[43]       50
+a[44]     1200
+a[45]      420
+a[46]     1000
+a[47]      750
+a[48]     1200
+a[49]      500
+a[50]      550
+a[51]      320
+a[52]     1200
+a[53]     1200
+a[54]      360
+a[55]     1200
+a[56]      420
+a[57]      730
+a[58]      690
+a[59]     1200
+a[60]     1200
+a[61]      900
+a[62]      550
+a[63]      750
+a[64]      450
+a[65]      440
+a[66]     1200
+a[67]      440
+a[68]     1200
+a[69]     1200
+a[70]      290
+a[71]      830
+a[72]     1200
+a[73]     1000
+a[74]      260
+a[75]     1200
+a[76]     1200
+a[77]      410
+a[78]     1200
+a[79]     1200
+a[80]     1200
+a[81]     1200
+a[82]      360
+a[83]      220
+a[84]      880
+a[85]     1200
+b[1]       170
+b[2]       170
+b[3]       610
+b[4]       620
+b[5]      1200
+b[6]       520
+b[7]       170
+b[8]       620
+b[9]        59
+b[10]      130
+b[11]     1200
+b[12]     1000
+b[13]      440
+b[14]      140
+b[15]     1200
+b[16]      530
+b[17]      160
+b[18]      140
+b[19]      270
+b[20]      240
+b[21]      450
+b[22]      160
+b[23]      540
+b[24]      190
+b[25]       92
+b[26]       84
+b[27]     1200
+b[28]     1000
+b[29]     1200
+b[30]      750
+b[31]     1200
+b[32]     1200
+b[33]     1200
+b[34]     1200
+b[35]      200
+b[36]     1200
+b[37]      140
+b[38]     1100
+b[39]     1200
+b[40]      200
+b[41]     1200
+b[42]      820
+b[43]       26
+b[44]      210
+b[45]      100
+b[46]     1200
+b[47]       81
+b[48]      610
+b[49]       72
+b[50]     1200
+b[51]      370
+b[52]     1200
+b[53]      290
+b[54]       66
+b[55]      840
+b[56]       97
+b[57]      480
+b[58]     1200
+b[59]      150
+b[60]      970
+b[61]       43
+b[62]      110
+b[63]      230
+b[64]      320
+b[65]      440
+b[66]      940
+b[67]       61
+b[68]     1200
+b[69]      770
+b[70]       74
+b[71]      210
+b[72]     1200
+b[73]      250
+b[74]     1200
+b[75]      290
+b[76]      190
+b[77]       69
+b[78]      410
+b[79]      350
+b[80]      220
+b[81]     1100
+b[82]      520
+b[83]       31
+b[84]      330
+b[85]     1200
+g.a.0      960
+g.a.1     1200
+g.b.0      280
+g.b.1      500
+rho         78
+sigma.a     69
+sigma.b      9
+sigma.y    120
+deviance    36
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 164.4 and DIC = 2244.6
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="modelos-no-anidados" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="modelos-no-anidados"><span class="header-section-number">5.2</span> Modelos no-anidados</h2>
+<p>This experiment includes <strong>n = 40</strong> data points with <strong>J = 5</strong> treatment conditions and <strong>K = 8</strong> airports. The response variable is modeled using a non-nested multilevel structure:</p>
+<section id="model-specification" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="model-specification"><span class="header-section-number">5.2.1</span> Model Specification</h3>
+<p>The model is defined as follows:</p>
+<p><span class="math display">\[
+y_i \sim N(\mu + \gamma_{j[i]} + \delta_{k[i]}, \sigma_y^2), \quad \text{for } i = 1, \dots, n
+\]</span></p>
+<p><span class="math display">\[
+\gamma_j \sim N(0, \sigma_\gamma^2), \quad \text{for } j = 1, \dots, J
+\]</span></p>
+<p><span class="math display">\[
+\delta_k \sim N(0, \sigma_\delta^2), \quad \text{for } k = 1, \dots, K
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\mu\)</span>: Overall intercept.</li>
+<li><span class="math inline">\(\gamma_j\)</span>: Treatment effect for each condition, centered at zero to avoid redundancy with <span class="math inline">\(\mu\)</span>.</li>
+<li><span class="math inline">\(\delta_k\)</span>: Airport effect, also centered at zero.</li>
+</ul>
+<p>This model incorporates treatment and airport effects independently to capture their individual contributions.</p>
+<p>Carga de datos:</p>
+<p>The data are grouped in two different ways (by treatment and airport in the flight simulator example):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"arm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: MASS</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lme4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+arm (Version 1.14-4, built: 2024-4-1)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Working directory is /home/lbarboza/Dropbox/Cursos/Actuales/SP1653/NotasClase/ModelosMixtos/ModelosMixtos</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'arm'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:R2jags':
+
+    traceplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:coda':
+
+    traceplot</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pilots <span class="ot">&lt;-</span> <span class="fu">read.table</span> (<span class="st">"data/ARM_Data/pilots/pilots.dat"</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span> (pilots)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>group.names <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unique</span>(group))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>scenario.names <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unique</span>(scenario))</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>n.group <span class="ot">&lt;-</span> <span class="fu">length</span>(group.names)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>n.scenario <span class="ot">&lt;-</span> <span class="fu">length</span>(scenario.names)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>successes <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>failures <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>group.id <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>scenario.id <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.group){</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.scenario){</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    ok <span class="ot">&lt;-</span> group<span class="sc">==</span>group.names[j] <span class="sc">&amp;</span> scenario<span class="sc">==</span>scenario.names[k]    </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    successes <span class="ot">&lt;-</span> <span class="fu">c</span> (successes, <span class="fu">sum</span>(recovered[ok]<span class="sc">==</span><span class="dv">1</span>,<span class="at">na.rm=</span>T))</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    failures <span class="ot">&lt;-</span> <span class="fu">c</span> (failures, <span class="fu">sum</span>(recovered[ok]<span class="sc">==</span><span class="dv">0</span>,<span class="at">na.rm=</span>T))</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    group.id <span class="ot">&lt;-</span> <span class="fu">c</span> (group.id, j)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    scenario.id <span class="ot">&lt;-</span> <span class="fu">c</span> (scenario.id, k)</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> successes<span class="sc">/</span>(successes<span class="sc">+</span>failures)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define treatment and airport group sizes</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>n.treatment <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(group.id))  <span class="co"># Number of unique treatment groups</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>n.airport <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(scenario.id))  <span class="co"># Number of unique airports</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data for JAGS</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> successes, <span class="at">treatment =</span> group.id, <span class="at">airport =</span> scenario.id, </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">n =</span> <span class="fu">length</span>(successes), <span class="at">n.treatment =</span> n.treatment, <span class="at">n.airport =</span> n.airport)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values for the parameters</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">mu =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sigma.y =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.gamma =</span> <span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma.delta =</span> <span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"gamma"</span>, <span class="st">"delta"</span>, <span class="st">"sigma.y"</span>, <span class="st">"sigma.gamma"</span>, <span class="st">"sigma.delta"</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the JAGS model</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(<span class="at">data =</span> data_jags, </span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inits =</span> inits, </span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">model.file =</span> <span class="st">"codigoJAGS/pilots.jags"</span>, </span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.thin =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 40
+   Unobserved stochastic nodes: 17
+   Total graph size: 188
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View the summary of the model fit</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/pilots.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+            mu.vect sd.vect    2.5%     25%     50%     75%   97.5%  Rhat n.eff
+delta[1]     -0.618   1.243  -3.031  -1.431  -0.593   0.175   1.810 1.001  1200
+delta[2]     -2.112   1.203  -4.581  -2.849  -2.074  -1.373   0.198 1.000  1200
+delta[3]      0.107   1.201  -2.216  -0.629   0.057   0.929   2.455 1.000  1200
+delta[4]     -1.517   1.248  -4.096  -2.315  -1.487  -0.704   1.041 1.001  1200
+delta[5]     -0.017   1.213  -2.415  -0.803  -0.023   0.749   2.414 1.000  1200
+delta[6]      3.617   1.219   1.291   2.843   3.615   4.362   6.098 1.000  1200
+delta[7]     -2.070   1.197  -4.666  -2.778  -2.041  -1.291   0.197 1.000  1200
+delta[8]      2.690   1.209   0.388   1.921   2.619   3.425   5.148 1.001  1200
+gamma[1]     -0.158   0.455  -1.246  -0.320  -0.069   0.047   0.620 1.015   570
+gamma[2]      0.069   0.436  -0.827  -0.122   0.026   0.255   0.995 1.002  1200
+gamma[3]     -0.080   0.435  -1.093  -0.252  -0.032   0.102   0.783 1.002   760
+gamma[4]     -0.059   0.415  -0.945  -0.233  -0.017   0.143   0.769 1.010   330
+gamma[5]      0.227   0.458  -0.477  -0.009   0.124   0.395   1.398 1.002   750
+mu            3.061   1.107   0.905   2.350   3.054   3.723   5.371 1.000  1200
+sigma.delta   2.756   1.013   1.459   2.071   2.538   3.217   5.156 1.001  1200
+sigma.gamma   0.491   0.482   0.014   0.163   0.361   0.664   1.787 1.002   930
+sigma.y       1.559   0.207   1.215   1.414   1.540   1.675   2.008 1.002  1100
+deviance    147.118   5.597 138.785 143.005 146.311 150.442 160.260 1.001  1200
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 15.7 and DIC = 162.8
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./cap16.html" class="pagination-link" aria-label="Introduction to Multilevel Modeling in R and Bugs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Multilevel Modeling in R and Bugs</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,257 @@
+---
+title: "Chapter 17-Part A"
+---
+
+## Varying intercepts and slopes
+
+Carga de datos:
+
+```{r}
+srrs2 <- read.table("./data/ARM_Data/radon/srrs2.dat", header=TRUE, sep=",")
+mn <- srrs2$state == "MN"
+radon <- srrs2$activity[mn]
+y <- log(ifelse(radon == 0, 0.1, radon))
+n <- length(radon)
+x <- srrs2$floor[mn]  # 0 for basement, 1 for first floor
+
+srrs2.fips <- srrs2$stfips * 1000 + srrs2$cntyfips
+county.name <- as.vector(srrs2$county[mn])
+uniq.name <- unique(county.name)
+J <- length(uniq.name)
+county <- rep(NA, J)
+for (i in 1:J) {
+  county[county.name == uniq.name[i]] <- i
+}
+
+srrs2.fips <- srrs2$stfips*1000 + srrs2$cntyfips
+cty <- read.table ("data/ARM_Data/radon/cty.dat", header=T, sep=",")
+usa.fips <- 1000*cty[,"stfips"] + cty[,"ctfips"]
+usa.rows <- match (unique(srrs2.fips[mn]), usa.fips)
+uranium <- cty[usa.rows,"Uppm"]
+u <- log (uranium)
+
+u.full <- u[county]
+
+data_jags <- list(y = y, x = x, county = county, n = n, J = J)
+
+data_jags$u <- u.full
+```
+
+### Varying-Intercept, Varying-Slope Model
+
+We begin with a varying-intercept, varying-slope model that includes (x) but without the county-level uranium predictor. The model is structured as:
+
+$$
+y_i \sim N(\alpha_{j[i]} + \beta_{j[i]} x_i , \sigma_y^2), \quad \text{for} \ i = 1, \dots, n
+$$
+
+Where:
+
+$$
+\begin{pmatrix}
+\alpha_j \\
+\beta_j
+\end{pmatrix}
+\sim N\left(
+\begin{pmatrix}
+\mu_\alpha \\
+\mu_\beta
+\end{pmatrix},
+\begin{pmatrix}
+\sigma_\alpha^2 & \rho\sigma_\alpha\sigma_\beta \\
+\rho\sigma_\alpha\sigma_\beta & \sigma_\beta^2
+\end{pmatrix}\right), \quad \text{for} \ j = 1, \dots, J
+$$
+
+This model includes variation in both $\alpha_j$ and $\beta_j$ with a between-group correlation parameter $\rho$.
+
+### Simple Model with No Correlation Between Intercepts and Slopes
+
+We begin with the varying-intercept, varying-slope radon model (from Section 13.1), simplified by ignoring the correlation between intercepts and slopes. This assumes independence between the intercepts and slopes.
+
+```{r}
+# Load necessary library
+library(R2jags)
+
+# Prepare the data for JAGS
+data_jags <- list(y = y, x = x, county = county, n = n, J = J, u = u.full)
+
+# Initial values
+inits <- function() {
+  list(a = rnorm(J), b = rnorm(J), mu.a = rnorm(1), mu.b = rnorm(1), sigma.y = runif(1), sigma.a = runif(1), sigma.b = runif(1))
+}
+
+# Parameters to monitor
+params <- c("a", "b", "mu.a", "mu.b", "sigma.y", "sigma.a", "sigma.b")
+
+# Run JAGS model
+jags_fit <- jags(data = data_jags, 
+                 inits = inits, 
+                 parameters.to.save = params, 
+                 model.file = "codigoJAGS/radon_model_slope1.jags", 
+                 n.chains = 3, 
+                 n.iter = 5000, 
+                 n.burnin = 1000, 
+                 n.thin = 10)
+
+# Check the summary
+print(jags_fit)
+```
+
+### Model with Correlation Between Intercepts and Slopes
+
+```{r}
+# Prepare the data for JAGS
+data_jags <- list(y = y, x = x, county = county, n = n, J = J)
+
+# Initial values
+inits <- function() {
+  list(B = array(rnorm(2 * J), dim = c(J, 2)), 
+       mu.a = rnorm(1), mu.b = rnorm(1), 
+       sigma.y = runif(1), sigma.a = runif(1), sigma.b = runif(1), rho = runif(1, -1, 1))
+}
+
+# Parameters to monitor
+params <- c("a", "b", "mu.a", "mu.b", "sigma.y", "sigma.a", "sigma.b", "rho")
+
+# Run JAGS model
+jags_fit <- jags(data = data_jags, 
+                 inits = inits, 
+                 parameters.to.save = params, 
+                 model.file = "codigoJAGS/radon_model_slope2.jags", 
+                 n.chains = 3, 
+                 n.iter = 5000, 
+                 n.burnin = 1000, 
+                 n.thin = 10)
+
+# Check the summary
+print(jags_fit)
+
+jags_result <- jags_fit$BUGSoutput$summary
+```
+
+### Model with County-Level Uranium Predictor
+
+We can add group-level predictors to the varying-intercept, varying-slope Bugs models of the previous section by replacing mu.a and mu.b by group-level regressions. Simplest varying-intercept, varying-slope model. For example, we can add a group- level predictor u to the very first model of this chapter by replacing the expressions for a.hat\[j\] and b.hat\[j\] with:
+
+-   a.hat\[j\] \<- g.a.0 + g.a.1\*u\[j\]
+-   b.hat\[j\] \<- g.b.0 + g.b.1\*u\[j\] and then removing the prior distributions for mu.a and mu.b and replacing with dnorm (0, .0001) prior distributions for each of g.a.0, g.a.1, g.b.0, and g.b.1.
+
+```{r}
+
+# Prepare the data for JAGS
+data_jags <- list(y = y, x = x, county = county, n = n, J = J, u = u.full)
+
+# Initial values
+inits <- function() {
+  list(B = array(rnorm(2 * J), dim = c(J, 2)), 
+       g.a.0 = rnorm(1), g.a.1 = rnorm(1), 
+       g.b.0 = rnorm(1), g.b.1 = rnorm(1), 
+       sigma.y = runif(1), sigma.a = runif(1), sigma.b = runif(1), rho = runif(1, -1, 1))
+}
+
+# Parameters to monitor
+params <- c("a", "b", "g.a.0", "g.a.1", "g.b.0", "g.b.1", "sigma.y", "sigma.a", "sigma.b", "rho")
+
+# Run JAGS model
+jags_fit <- jags(data = data_jags, 
+                 inits = inits, 
+                 parameters.to.save = params, 
+                 model.file = "codigoJAGS/radon_model_slope3.jags", 
+                 n.chains = 3, 
+                 n.iter = 5000, 
+                 n.burnin = 1000, 
+                 n.thin = 10)
+
+# Check the summary
+print(jags_fit)
+```
+
+## Modelos no-anidados
+
+This experiment includes **n = 40** data points with **J = 5** treatment conditions and **K = 8** airports. The response variable is modeled using a non-nested multilevel structure:
+
+### Model Specification
+
+The model is defined as follows:
+
+$$
+y_i \sim N(\mu + \gamma_{j[i]} + \delta_{k[i]}, \sigma_y^2), \quad \text{for } i = 1, \dots, n
+$$
+
+$$
+\gamma_j \sim N(0, \sigma_\gamma^2), \quad \text{for } j = 1, \dots, J
+$$
+
+$$
+\delta_k \sim N(0, \sigma_\delta^2), \quad \text{for } k = 1, \dots, K
+$$
+
+-   $\mu$: Overall intercept.
+-   $\gamma_j$: Treatment effect for each condition, centered at zero to avoid redundancy with $\mu$.
+-   $\delta_k$: Airport effect, also centered at zero.
+
+This model incorporates treatment and airport effects independently to capture their individual contributions.
+
+Carga de datos:
+
+The data are grouped in two different ways (by treatment and airport in the flight simulator example):
+
+```{r}
+library("arm")
+pilots <- read.table ("data/ARM_Data/pilots/pilots.dat", header=TRUE)
+attach (pilots)
+group.names <- as.vector(unique(group))
+scenario.names <- as.vector(unique(scenario))
+n.group <- length(group.names)
+n.scenario <- length(scenario.names)
+successes <- NULL
+failures <- NULL
+group.id <- NULL
+scenario.id <- NULL
+for (j in 1:n.group){
+  for (k in 1:n.scenario){
+    ok <- group==group.names[j] & scenario==scenario.names[k]    
+    successes <- c (successes, sum(recovered[ok]==1,na.rm=T))
+    failures <- c (failures, sum(recovered[ok]==0,na.rm=T))
+    group.id <- c (group.id, j)
+    scenario.id <- c (scenario.id, k)
+  }
+}
+
+y <- successes/(successes+failures)
+```
+
+```{r}
+
+# Define treatment and airport group sizes
+n.treatment <- length(unique(group.id))  # Number of unique treatment groups
+n.airport <- length(unique(scenario.id))  # Number of unique airports
+
+# Prepare the data for JAGS
+data_jags <- list(y = successes, treatment = group.id, airport = scenario.id, 
+                  n = length(successes), n.treatment = n.treatment, n.airport = n.airport)
+
+# Initial values for the parameters
+inits <- function() {
+  list(mu = rnorm(1), sigma.y = runif(1), sigma.gamma = runif(1), sigma.delta = runif(1))
+}
+
+# Parameters to monitor
+params <- c("mu", "gamma", "delta", "sigma.y", "sigma.gamma", "sigma.delta")
+
+# Run the JAGS model
+jags_fit <- jags(data = data_jags, 
+                 inits = inits, 
+                 parameters.to.save = params, 
+                 model.file = "codigoJAGS/pilots.jags", 
+                 n.chains = 3, 
+                 n.iter = 5000, 
+                 n.burnin = 1000, 
+                 n.thin = 10)
+
+# View the summary of the model fit
+print(jags_fit)
+
+
+```

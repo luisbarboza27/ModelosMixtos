@@ -11,6 +11,7 @@ book:
     - MLMbasicos.qmd
     - MLMavanzados.qmd
     - cap16.qmd
+    - cap17a.qmd
 
 bibliography: references.bib
 
