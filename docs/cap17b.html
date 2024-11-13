@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Chapter17-PartB – Modelos Mixtos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./cap17a.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cap17b.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Chapter17-PartB</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Modelos Mixtos</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMbasicos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel básicos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./MLMavanzados.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modelos Lineales Multinivel avanzados</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Multilevel Modeling in R and Bugs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap17a.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Chapter 17-Part A</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap17b.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Chapter17-PartB</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#multilevel-logistic-regression" id="toc-multilevel-logistic-regression" class="nav-link active" data-scroll-target="#multilevel-logistic-regression"><span class="header-section-number">6.1</span> Multilevel logistic regression</a>
+  <ul class="collapse">
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><span class="header-section-number">6.1.1</span> Data Preparation</a></li>
+  <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification"><span class="header-section-number">6.1.2</span> Model Specification</a></li>
+  <li><a href="#model-inputs" id="toc-model-inputs" class="nav-link" data-scroll-target="#model-inputs"><span class="header-section-number">6.1.3</span> Model Inputs</a></li>
+  <li><a href="#multilevel-logistic-regression-example" id="toc-multilevel-logistic-regression-example" class="nav-link" data-scroll-target="#multilevel-logistic-regression-example"><span class="header-section-number">6.1.4</span> Multilevel Logistic Regression Example</a></li>
+  </ul></li>
+  <li><a href="#fuller-model-including-non-nested-factors" id="toc-fuller-model-including-non-nested-factors" class="nav-link" data-scroll-target="#fuller-model-including-non-nested-factors"><span class="header-section-number">6.2</span> Fuller Model Including Non-Nested Factors</a>
+  <ul class="collapse">
+  <li><a href="#model-structure" id="toc-model-structure" class="nav-link" data-scroll-target="#model-structure"><span class="header-section-number">6.2.1</span> Model Structure</a></li>
+  <li><a href="#model-specification-1" id="toc-model-specification-1" class="nav-link" data-scroll-target="#model-specification-1"><span class="header-section-number">6.2.2</span> Model Specification</a></li>
+  <li><a href="#multilevel-coefficients" id="toc-multilevel-coefficients" class="nav-link" data-scroll-target="#multilevel-coefficients"><span class="header-section-number">6.2.3</span> Multilevel Coefficients</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">6.2.4</span> Summary</a></li>
+  <li><a href="#fitting-the-model" id="toc-fitting-the-model" class="nav-link" data-scroll-target="#fitting-the-model"><span class="header-section-number">6.2.5</span> Fitting the Model</a></li>
+  <li><a href="#plots" id="toc-plots" class="nav-link" data-scroll-target="#plots"><span class="header-section-number">6.2.6</span> Plots</a></li>
+  </ul></li>
+  <li><a href="#logistic-model-with-redundant-parameters-centered" id="toc-logistic-model-with-redundant-parameters-centered" class="nav-link" data-scroll-target="#logistic-model-with-redundant-parameters-centered"><span class="header-section-number">6.3</span> Logistic model with redundant parameters (centered)</a>
+  <ul class="collapse">
+  <li><a href="#plots-1" id="toc-plots-1" class="nav-link" data-scroll-target="#plots-1"><span class="header-section-number">6.3.1</span> Plots</a></li>
+  </ul></li>
+  <li><a href="#graphing-the-estimated-model-for-a-binary-outcome" id="toc-graphing-the-estimated-model-for-a-binary-outcome" class="nav-link" data-scroll-target="#graphing-the-estimated-model-for-a-binary-outcome"><span class="header-section-number">6.4</span> Graphing the Estimated Model for a Binary Outcome”</a>
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">6.4.1</span> Overview</a></li>
+  <li><a href="#r-code-for-computing-and-plotting-linpred" id="toc-r-code-for-computing-and-plotting-linpred" class="nav-link" data-scroll-target="#r-code-for-computing-and-plotting-linpred"><span class="header-section-number">6.4.2</span> R Code for Computing and Plotting <code>linpred</code></a></li>
+  <li><a href="#plotting-predicted-probabilities-by-state" id="toc-plotting-predicted-probabilities-by-state" class="nav-link" data-scroll-target="#plotting-predicted-probabilities-by-state"><span class="header-section-number">6.4.3</span> Plotting Predicted Probabilities by State</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">6.4.4</span> Interpretation</a></li>
+  </ul></li>
+  <li><a href="#estimating-average-opinion-by-state-using-model-inferences" id="toc-estimating-average-opinion-by-state-using-model-inferences" class="nav-link" data-scroll-target="#estimating-average-opinion-by-state-using-model-inferences"><span class="header-section-number">6.5</span> Estimating Average Opinion by State Using Model Inferences</a>
+  <ul class="collapse">
+  <li><a href="#overview-1" id="toc-overview-1" class="nav-link" data-scroll-target="#overview-1"><span class="header-section-number">6.5.1</span> Overview</a></li>
+  <li><a href="#estimating-average-support-by-state" id="toc-estimating-average-support-by-state" class="nav-link" data-scroll-target="#estimating-average-support-by-state"><span class="header-section-number">6.5.2</span> Estimating Average Support by State</a></li>
+  <li><a href="#summarizing-state-predictions" id="toc-summarizing-state-predictions" class="nav-link" data-scroll-target="#summarizing-state-predictions"><span class="header-section-number">6.5.3</span> Summarizing State Predictions</a></li>
+  <li><a href="#interpretation-1" id="toc-interpretation-1" class="nav-link" data-scroll-target="#interpretation-1"><span class="header-section-number">6.5.4</span> Interpretation</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Chapter17-PartB</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="multilevel-logistic-regression" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="multilevel-logistic-regression"><span class="header-section-number">6.1</span> Multilevel logistic regression</h2>
+<section id="data-preparation" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="data-preparation"><span class="header-section-number">6.1.1</span> Data Preparation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span> (<span class="st">"arm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: MASS
+
+Attaching package: 'MASS'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+Loading required package: Matrix
+
+Attaching package: 'Matrix'
+
+The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack
+
+Loading required package: lme4
+
+arm (Version 1.14-4, built: 2024-4-1)
+
+Working directory is /home/lbarboza/Dropbox/Cursos/Actuales/SP1653/NotasClase/ModelosMixtos/ModelosMixtos</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span> (state)                  <span class="co"># "state" is an R data file</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>state.abbr <span class="ot">&lt;-</span> <span class="fu">c</span> (state.abb[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>], <span class="st">"DC"</span>, state.abb[<span class="dv">9</span><span class="sc">:</span><span class="dv">50</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dc <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>not.dc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,<span class="dv">10</span><span class="sc">:</span><span class="dv">51</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>region <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>polls <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/ARM_Data/election88/polls.dta"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>polls.subset <span class="ot">&lt;-</span> polls <span class="sc">%&gt;%</span> <span class="fu">filter</span>(survey <span class="sc">==</span> <span class="dv">8</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>polls.subset <span class="ot">&lt;-</span> polls.subset <span class="sc">%&gt;%</span> <span class="fu">rename</span> (<span class="at">y =</span> bush)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>presvote <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">'data/ARM_Data/election88/presvote.dta'</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>v.prev <span class="ot">&lt;-</span> presvote<span class="sc">$</span>g76_84pr</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>not.dc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,<span class="dv">10</span><span class="sc">:</span><span class="dv">51</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>candidate.effects <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/ARM_Data/election88/candidate_effects.dat"</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                                <span class="at">header =</span> T)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>v.prev[not.dc] <span class="ot">&lt;-</span> v.prev[not.dc] <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  (candidate.effects<span class="sc">$</span>X76 <span class="sc">+</span> candidate.effects<span class="sc">$</span>X80 <span class="sc">+</span> candidate.effects<span class="sc">$</span>X84)<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>n.edu <span class="ot">&lt;-</span> <span class="fu">max</span>(polls.subset<span class="sc">$</span>edu)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Reparametrizacion de la interacción</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>polls.subset <span class="ot">&lt;-</span> polls.subset <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">age.edu =</span> n.edu<span class="sc">*</span>(age<span class="dv">-1</span>) <span class="sc">+</span> edu,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">v.prev.full =</span> v.prev[state],</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">region.full =</span> region[state])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-specification" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="model-specification"><span class="header-section-number">6.1.2</span> Model Specification</h3>
+<p>Simple Model with Demographic and Geographic Variation</p>
+<p>We model survey responses, where each response <span class="math inline">\(y_i\)</span> is coded as: - <span class="math inline">\(y_i = 1\)</span> for supporters of the Republican candidate - <span class="math inline">\(y_i = 0\)</span> for supporters of the Democrat</p>
+<p>Undecideds are excluded, and we assume the responses are independent, with: <span class="math display">\[
+\Pr(y_i = 1) = \text{logit}^{-1}(X_i \beta)
+\]</span></p>
+</section>
+<section id="model-inputs" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="model-inputs"><span class="header-section-number">6.1.3</span> Model Inputs</h3>
+<p>The input variables include: - <strong>State index</strong> <span class="math inline">\(j[i]\)</span>: to account for geographic variation. - <strong>Demographic predictors</strong>: categorical variables for <strong>sex</strong>, <strong>ethnicity</strong>, <strong>age</strong>, and <strong>education</strong> (used by CBS in survey weighting).</p>
+</section>
+<section id="multilevel-logistic-regression-example" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="multilevel-logistic-regression-example"><span class="header-section-number">6.1.4</span> Multilevel Logistic Regression Example</h3>
+<p>We demonstrate multilevel logistic regression with: - Two individual predictors: <code>female</code> and <code>black</code> - 51 states with varying intercepts</p>
+<p><span class="math display">\[
+\Pr(y_i = 1) = \text{logit}^{-1}(\alpha_{j[i]} + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i), \quad \text{for } i = 1, \dots, n
+\]</span></p>
+<p>where: - <span class="math inline">\(\alpha_j \sim N(\mu_\alpha, \sigma_{\text{state}}^2)\)</span> for each state <span class="math inline">\(j = 1, \dots, 51\)</span></p>
+<p>This model structure captures both individual demographic effects and state-level geographic variation in political support.</p>
+</section>
+</section>
+<section id="fuller-model-including-non-nested-factors" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="fuller-model-including-non-nested-factors"><span class="header-section-number">6.2</span> Fuller Model Including Non-Nested Factors</h2>
+<p>This expanded model incorporates a comprehensive set of demographic and geographic predictors used in CBS survey weighting.</p>
+<section id="model-structure" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="model-structure"><span class="header-section-number">6.2.1</span> Model Structure</h3>
+<p>We include: - <strong>Demographic Predictors</strong>: - <strong>Sex × Ethnicity</strong> and <strong>Age × Education</strong> interactions - Four age categories and four education categories with varying intercepts - A 16-level interaction between age and education - <strong>State-level Predictors</strong>: - Indicators for the 5 regions of the country (Northeast, Midwest, South, West, and D.C.) - <strong>v.prev</strong>: Average Republican vote share in the three previous elections, adjusted for home-state and home-region effects</p>
+<p>The model uses indices <span class="math inline">\(j\)</span>, <span class="math inline">\(k\)</span>, <span class="math inline">\(l\)</span>, and <span class="math inline">\(m\)</span> for state, age category, education category, and region, respectively.</p>
+</section>
+<section id="model-specification-1" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="model-specification-1"><span class="header-section-number">6.2.2</span> Model Specification</h3>
+<p>The probability of supporting the Republican candidate is given by:</p>
+<p><span class="math display">\[
+\Pr(y_i = 1) = \text{logit}^{-1}(\beta_0 + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i + \beta_{\text{female.black}} \cdot \text{female}_i \cdot \text{black}_i + \alpha^{\text{age}}_{k[i]} + \alpha^{\text{edu}}_{l[i]} + \alpha^{\text{age.edu}}_{k[i],l[i]} + \alpha^{\text{state}}_{j[i]})
+\]</span></p>
+<p>where: - <span class="math inline">\(\alpha^{\text{state}}_j \sim N(\alpha^{\text{region}}_{m[j]} + \beta_{\text{v.prev}} \cdot \text{v.prev}_j, \sigma_{\text{state}}^2)\)</span></p>
+</section>
+<section id="multilevel-coefficients" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="multilevel-coefficients"><span class="header-section-number">6.2.3</span> Multilevel Coefficients</h3>
+<p>The multilevel coefficients have the following distributions:</p>
+<p><span class="math display">\[
+\alpha^{\text{age}}_k \sim N(0, \sigma_{\text{age}}^2), \quad \text{for } k = 1, \dots, 4
+\]</span> <span class="math display">\[
+\alpha^{\text{edu}}_l \sim N(0, \sigma_{\text{edu}}^2), \quad \text{for } l = 1, \dots, 4
+\]</span> <span class="math display">\[
+\alpha^{\text{age.edu}}_{k,l} \sim N(0, \sigma_{\text{age.edu}}^2), \quad \text{for } k, l = 1, \dots, 4
+\]</span> <span class="math display">\[
+\alpha^{\text{region}}_m \sim N(0, \sigma_{\text{region}}^2), \quad \text{for } m = 1, \dots, 5
+\]</span></p>
+</section>
+<section id="summary" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="summary"><span class="header-section-number">6.2.4</span> Summary</h3>
+<p>This model captures a complex structure of individual and group-level interactions, enabling us to account for detailed demographic and geographic variations in voting behavior.</p>
+</section>
+<section id="fitting-the-model" class="level3" data-number="6.2.5">
+<h3 data-number="6.2.5" class="anchored" data-anchor-id="fitting-the-model"><span class="header-section-number">6.2.5</span> Fitting the Model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary library</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R2jags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: rjags</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'coda'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:arm':
+
+    traceplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'R2jags'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:coda':
+
+    traceplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:arm':
+
+    traceplot</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span>(polls.subset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from package:MASS:
+
+    survey</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust `state` to be within 1 to n.state if needed</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>state <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">factor</span>(state))  <span class="co"># Convert to consecutive integers starting from 1</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">female =</span> female,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">black =</span> black,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> age,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">edu =</span> edu,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> state,  <span class="co"># Adjusted state</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">region =</span> region,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">v.prev =</span> v.prev,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fu">length</span>(y),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.age =</span> <span class="fu">length</span>(<span class="fu">unique</span>(age)),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.edu =</span> <span class="fu">length</span>(<span class="fu">unique</span>(edu)),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.state =</span> <span class="fu">length</span>(<span class="fu">unique</span>(state)),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.region =</span> <span class="fu">length</span>(<span class="fu">unique</span>(region))</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values for the parameters</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.0 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.female =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.black =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.female.black =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.age =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.age),</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.edu =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.edu),</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.age.edu =</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.age <span class="sc">*</span> data_jags<span class="sc">$</span>n.edu), <span class="at">nrow =</span> data_jags<span class="sc">$</span>n.age),</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.state =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.state),</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.region =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.region),</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.v.prev =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.age =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.edu =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.age.edu =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.state =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.region =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"b.0"</span>, <span class="st">"b.female"</span>, <span class="st">"b.black"</span>, <span class="st">"b.female.black"</span>, <span class="st">"b.age"</span>, <span class="st">"b.edu"</span>, </span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>            <span class="st">"b.age.edu"</span>, <span class="st">"b.state"</span>, <span class="st">"b.region"</span>, <span class="st">"b.v.prev"</span>, </span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>            <span class="st">"sigma.age"</span>, <span class="st">"sigma.edu"</span>, <span class="st">"sigma.age.edu"</span>, <span class="st">"sigma.state"</span>, <span class="st">"sigma.region"</span>)</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model with JAGS</span></span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_jags, </span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">inits =</span> inits, </span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.file =</span> <span class="st">"codigoJAGS/logistic.jags"</span>, </span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.thin =</span> <span class="dv">10</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>module glm loaded</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 2015
+   Unobserved stochastic nodes: 266
+   Total graph size: 17210
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View summary of the model fit</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/logistic.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+                mu.vect sd.vect     2.5%      25%      50%      75%    97.5%
+b.0              -0.284   0.935   -2.336   -0.802   -0.147    0.405    1.096
+b.age[1]          0.062   0.144   -0.217   -0.009    0.039    0.137    0.365
+b.age[2]         -0.072   0.142   -0.401   -0.135   -0.049    0.004    0.183
+b.age[3]          0.036   0.139   -0.245   -0.025    0.022    0.105    0.323
+b.age[4]         -0.045   0.148   -0.364   -0.104   -0.023    0.025    0.214
+b.age.edu[1,1]   -0.041   0.165   -0.422   -0.116   -0.015    0.040    0.265
+b.age.edu[2,1]    0.083   0.165   -0.169   -0.010    0.045    0.162    0.501
+b.age.edu[3,1]    0.018   0.146   -0.267   -0.052    0.008    0.081    0.359
+b.age.edu[4,1]   -0.174   0.203   -0.679   -0.285   -0.120   -0.016    0.080
+b.age.edu[1,2]    0.067   0.132   -0.141   -0.011    0.044    0.136    0.393
+b.age.edu[2,2]   -0.102   0.143   -0.454   -0.186   -0.072   -0.003    0.128
+b.age.edu[3,2]    0.016   0.131   -0.257   -0.048    0.006    0.080    0.315
+b.age.edu[4,2]   -0.011   0.134   -0.317   -0.074   -0.005    0.057    0.263
+b.age.edu[1,3]    0.069   0.154   -0.185   -0.015    0.035    0.138    0.448
+b.age.edu[2,3]   -0.013   0.135   -0.313   -0.079   -0.007    0.054    0.274
+b.age.edu[3,3]    0.012   0.133   -0.255   -0.053    0.003    0.068    0.326
+b.age.edu[4,3]    0.071   0.167   -0.224   -0.020    0.038    0.145    0.481
+b.age.edu[1,4]   -0.001   0.138   -0.299   -0.071    0.000    0.064    0.277
+b.age.edu[2,4]   -0.032   0.126   -0.305   -0.100   -0.015    0.035    0.197
+b.age.edu[3,4]   -0.002   0.134   -0.280   -0.065   -0.003    0.065    0.267
+b.age.edu[4,4]    0.056   0.149   -0.174   -0.027    0.023    0.122    0.411
+b.black          -1.658   0.323   -2.311   -1.873   -1.648   -1.453   -1.058
+b.edu[1]         -0.182   0.307   -1.058   -0.287   -0.124   -0.013    0.268
+b.edu[2]         -0.045   0.274   -0.778   -0.121   -0.019    0.057    0.445
+b.edu[3]          0.142   0.287   -0.500    0.008    0.115    0.263    0.744
+b.edu[4]          0.005   0.278   -0.734   -0.076    0.008    0.104    0.579
+b.female         -0.090   0.100   -0.292   -0.157   -0.094   -0.025    0.104
+b.female.black   -0.207   0.427   -1.079   -0.485   -0.221    0.081    0.636
+b.region[1]      -0.225   0.327   -1.029   -0.383   -0.168   -0.028    0.273
+b.region[2]       0.022   0.300   -0.683   -0.089    0.022    0.150    0.598
+b.region[3]       0.071   0.302   -0.581   -0.054    0.057    0.212    0.643
+b.region[4]      -0.013   0.309   -0.725   -0.121    0.003    0.115    0.542
+b.region[5]       0.315   0.584   -0.397   -0.016    0.114    0.484    1.896
+b.state[1]        1.385   1.014   -0.152    0.573    1.240    2.046    3.523
+b.state[2]        1.030   1.009   -0.568    0.263    0.890    1.686    3.145
+b.state[3]        0.682   1.043   -1.000   -0.103    0.524    1.374    2.878
+b.state[4]        0.619   0.948   -0.860   -0.107    0.464    1.241    2.601
+b.state[5]        0.665   0.977   -0.876   -0.068    0.515    1.310    2.701
+b.state[6]        0.869   0.998   -0.728    0.085    0.725    1.555    2.949
+b.state[7]        0.340   1.023   -1.352   -0.435    0.194    1.040    2.403
+b.state[8]        0.446   1.027   -1.287   -0.329    0.346    1.127    2.583
+b.state[9]        0.832   0.923   -0.499    0.093    0.647    1.414    2.749
+b.state[10]       1.062   1.013   -0.506    0.292    0.903    1.733    3.214
+b.state[11]       0.583   0.986   -1.165   -0.112    0.445    1.208    2.661
+b.state[12]       0.435   0.943   -0.990   -0.295    0.286    1.048    2.388
+b.state[13]       1.007   1.039   -0.636    0.206    0.884    1.709    3.165
+b.state[14]       0.294   0.986   -1.278   -0.432    0.133    0.946    2.307
+b.state[15]       1.153   1.018   -0.496    0.389    0.984    1.833    3.259
+b.state[16]       0.910   0.959   -0.616    0.174    0.791    1.513    2.942
+b.state[17]       0.938   1.020   -0.686    0.185    0.774    1.596    3.134
+b.state[18]       0.591   0.968   -1.002   -0.126    0.454    1.234    2.603
+b.state[19]       0.231   1.006   -1.433   -0.509    0.077    0.904    2.345
+b.state[20]       0.194   0.959   -1.298   -0.541    0.060    0.880    2.184
+b.state[21]       0.493   0.942   -0.964   -0.227    0.333    1.154    2.413
+b.state[22]       0.156   0.935   -1.433   -0.524    0.018    0.735    2.086
+b.state[23]       1.191   0.998   -0.396    0.445    1.048    1.848    3.314
+b.state[24]       0.650   0.957   -0.857   -0.085    0.494    1.311    2.657
+b.state[25]       0.731   1.034   -0.936   -0.007    0.575    1.446    2.934
+b.state[26]       0.745   0.991   -0.828   -0.002    0.589    1.447    2.832
+b.state[27]       0.861   1.018   -0.745    0.101    0.704    1.531    3.083
+b.state[28]       0.957   1.186   -0.953    0.113    0.779    1.745    3.428
+b.state[29]       0.808   0.981   -0.770    0.061    0.647    1.444    2.784
+b.state[30]       0.467   1.048   -1.231   -0.315    0.315    1.188    2.662
+b.state[31]       0.255   0.953   -1.217   -0.496    0.091    0.884    2.232
+b.state[32]       1.151   0.958   -0.334    0.417    1.007    1.796    3.130
+b.state[33]       0.529   0.982   -1.128   -0.198    0.410    1.228    2.598
+b.state[34]       1.064   0.967   -0.392    0.324    0.916    1.704    3.086
+b.state[35]       0.911   1.055   -0.705    0.094    0.754    1.597    3.104
+b.state[36]       0.348   0.986   -1.289   -0.353    0.208    0.986    2.382
+b.state[37]       0.600   0.974   -0.872   -0.133    0.420    1.230    2.632
+b.state[38]       0.489   0.979   -1.172   -0.228    0.379    1.103    2.516
+b.state[39]       0.983   0.983   -0.582    0.234    0.844    1.638    3.007
+b.state[40]       0.432   0.948   -1.134   -0.254    0.314    1.086    2.352
+b.state[41]       1.468   0.996   -0.089    0.711    1.319    2.123    3.589
+b.state[42]       0.908   0.971   -0.572    0.143    0.753    1.559    2.874
+b.state[43]       1.376   1.041   -0.270    0.609    1.211    2.094    3.596
+b.state[44]       1.039   1.092   -0.705    0.224    0.882    1.774    3.376
+b.state[45]       1.269   1.033   -0.363    0.448    1.110    1.962    3.422
+b.state[46]       0.606   0.969   -0.926   -0.138    0.474    1.272    2.562
+b.state[47]       0.840   1.028   -0.799    0.052    0.669    1.501    2.982
+b.state[48]       0.440   0.951   -1.090   -0.275    0.303    1.059    2.386
+b.state[49]       0.613   0.942   -1.005   -0.060    0.527    1.238    2.586
+b.v.prev          1.389   1.688   -1.243    0.120    1.084    2.484    5.072
+sigma.age         0.183   0.189    0.008    0.064    0.136    0.235    0.657
+sigma.age.edu     0.150   0.103    0.010    0.070    0.133    0.208    0.389
+sigma.edu         0.333   0.388    0.009    0.110    0.221    0.396    1.479
+sigma.region      0.442   0.457    0.021    0.147    0.293    0.593    1.736
+sigma.state       0.430   0.106    0.245    0.357    0.421    0.495    0.666
+deviance       2609.503  11.547 2589.728 2600.830 2608.812 2616.853 2633.525
+                Rhat n.eff
+b.0            1.534     7
+b.age[1]       1.008  1100
+b.age[2]       1.020  1200
+b.age[3]       1.013   480
+b.age[4]       1.026   300
+b.age.edu[1,1] 1.002  1200
+b.age.edu[2,1] 1.002   870
+b.age.edu[3,1] 1.001  1200
+b.age.edu[4,1] 1.006   310
+b.age.edu[1,2] 1.004   960
+b.age.edu[2,2] 1.007   270
+b.age.edu[3,2] 1.005   390
+b.age.edu[4,2] 1.003  1200
+b.age.edu[1,3] 1.012   160
+b.age.edu[2,3] 1.001  1200
+b.age.edu[3,3] 1.002  1200
+b.age.edu[4,3] 1.008   320
+b.age.edu[1,4] 1.001  1200
+b.age.edu[2,4] 1.002   760
+b.age.edu[3,4] 1.003  1200
+b.age.edu[4,4] 1.004  1200
+b.black        1.007   300
+b.edu[1]       1.081    45
+b.edu[2]       1.079    47
+b.edu[3]       1.036    81
+b.edu[4]       1.062    49
+b.female       1.001  1200
+b.female.black 1.001  1200
+b.region[1]    1.023   860
+b.region[2]    1.041   900
+b.region[3]    1.039   630
+b.region[4]    1.034  1200
+b.region[5]    1.230    15
+b.state[1]     1.586     7
+b.state[2]     1.611     7
+b.state[3]     1.574     7
+b.state[4]     1.638     6
+b.state[5]     1.594     7
+b.state[6]     1.603     7
+b.state[7]     1.553     7
+b.state[8]     1.492     8
+b.state[9]     1.642     6
+b.state[10]    1.645     6
+b.state[11]    1.526     7
+b.state[12]    1.623     6
+b.state[13]    1.620     7
+b.state[14]    1.554     7
+b.state[15]    1.582     7
+b.state[16]    1.582     7
+b.state[17]    1.587     7
+b.state[18]    1.538     7
+b.state[19]    1.576     7
+b.state[20]    1.626     6
+b.state[21]    1.649     6
+b.state[22]    1.606     7
+b.state[23]    1.570     7
+b.state[24]    1.585     7
+b.state[25]    1.509     7
+b.state[26]    1.580     7
+b.state[27]    1.514     7
+b.state[28]    1.519     7
+b.state[29]    1.653     6
+b.state[30]    1.578     7
+b.state[31]    1.632     6
+b.state[32]    1.575     7
+b.state[33]    1.518     7
+b.state[34]    1.619     7
+b.state[35]    1.569     7
+b.state[36]    1.549     7
+b.state[37]    1.637     6
+b.state[38]    1.535     7
+b.state[39]    1.611     7
+b.state[40]    1.503     7
+b.state[41]    1.585     7
+b.state[42]    1.636     6
+b.state[43]    1.531     7
+b.state[44]    1.506     7
+b.state[45]    1.638     6
+b.state[46]    1.653     6
+b.state[47]    1.630     6
+b.state[48]    1.606     7
+b.state[49]    1.450     8
+b.v.prev       1.626     6
+sigma.age      1.008   250
+sigma.age.edu  1.016   220
+sigma.edu      1.029   100
+sigma.region   1.047    52
+sigma.state    1.017  1000
+deviance       1.002  1100
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 66.6 and DIC = 2676.2
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+</section>
+<section id="plots" class="level3" data-number="6.2.6">
+<h3 data-number="6.2.6" class="anchored" data-anchor-id="plots"><span class="header-section-number">6.2.6</span> Plots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CalvinBayes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggformula</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: scales</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'scales'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:arm':
+
+    rescale</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    discard</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:readr':
+
+    col_factor</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggridges</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+New to ggformula?  Try the tutorials: 
+    learnr::run_tutorial("introduction", package = "ggformula")
+    learnr::run_tutorial("refining", package = "ggformula")</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: bayesplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is bayesplot version 1.11.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- Online documentation and vignettes at mc-stan.org/bayesplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- bayesplot theme set to bayesplot::theme_default()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>   * Does _not_ affect other ggplot2 plots</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>   * See ?bayesplot_theme_set for details on theme setting</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'CalvinBayes'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:bayesplot':
+
+    rhat</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:datasets':
+
+    HairEyeColor</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diag_mcmc</span>(<span class="fu">as.mcmc</span>(jags_fit),<span class="at">parName =</span> <span class="st">"b.0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap17b_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diag_mcmc</span>(<span class="fu">as.mcmc</span>(jags_fit),<span class="at">parName =</span> <span class="st">"b.region[1]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap17b_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="logistic-model-with-redundant-parameters-centered" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="logistic-model-with-redundant-parameters-centered"><span class="header-section-number">6.3</span> Logistic model with redundant parameters (centered)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data for JAGS</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>data_jags <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">female =</span> female,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">black =</span> black,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> age,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">edu =</span> edu,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> state,</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">region =</span> region,</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">v.prev =</span> v.prev,</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fu">length</span>(y),</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.age =</span> <span class="fu">length</span>(<span class="fu">unique</span>(age)),</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.edu =</span> <span class="fu">length</span>(<span class="fu">unique</span>(edu)),</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.state =</span> <span class="fu">length</span>(<span class="fu">unique</span>(state)),</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.region =</span> <span class="fu">length</span>(<span class="fu">unique</span>(region))</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values for the parameters</span></span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.0 =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.female =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.black =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.female.black =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.age =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.age),</span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.edu =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.edu),</span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.age.edu =</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.age <span class="sc">*</span> data_jags<span class="sc">$</span>n.edu), <span class="at">nrow =</span> data_jags<span class="sc">$</span>n.age),</span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.state =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.state),</span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.region =</span> <span class="fu">rnorm</span>(data_jags<span class="sc">$</span>n.region),</span>
+<span id="cb43-30"><a href="#cb43-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">b.v.prev =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-31"><a href="#cb43-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.age =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb43-32"><a href="#cb43-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.edu =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb43-33"><a href="#cb43-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.age.edu =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb43-34"><a href="#cb43-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.state =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb43-35"><a href="#cb43-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma.region =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb43-36"><a href="#cb43-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu.age =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-37"><a href="#cb43-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu.edu =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-38"><a href="#cb43-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu.age.edu =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb43-39"><a href="#cb43-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu.region =</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb43-40"><a href="#cb43-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-41"><a href="#cb43-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-42"><a href="#cb43-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-43"><a href="#cb43-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters to monitor</span></span>
+<span id="cb43-44"><a href="#cb43-44" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu.adj"</span>, <span class="st">"b.0"</span>, <span class="st">"b.female"</span>, <span class="st">"b.black"</span>, <span class="st">"b.female.black"</span>, </span>
+<span id="cb43-45"><a href="#cb43-45" aria-hidden="true" tabindex="-1"></a>            <span class="st">"b.age.adj"</span>, <span class="st">"b.edu.adj"</span>, <span class="st">"b.age.edu.adj"</span>, <span class="st">"b.state"</span>, <span class="st">"b.region.adj"</span>, </span>
+<span id="cb43-46"><a href="#cb43-46" aria-hidden="true" tabindex="-1"></a>            <span class="st">"b.v.prev"</span>, <span class="st">"sigma.age"</span>, <span class="st">"sigma.edu"</span>, <span class="st">"sigma.age.edu"</span>, <span class="st">"sigma.state"</span>, </span>
+<span id="cb43-47"><a href="#cb43-47" aria-hidden="true" tabindex="-1"></a>            <span class="st">"sigma.region"</span>, <span class="st">"mu.age"</span>, <span class="st">"mu.edu"</span>, <span class="st">"mu.age.edu"</span>, <span class="st">"mu.region"</span>)</span>
+<span id="cb43-48"><a href="#cb43-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-49"><a href="#cb43-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model with JAGS</span></span>
+<span id="cb43-50"><a href="#cb43-50" aria-hidden="true" tabindex="-1"></a>jags_fit <span class="ot">&lt;-</span> <span class="fu">jags</span>(</span>
+<span id="cb43-51"><a href="#cb43-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_jags, </span>
+<span id="cb43-52"><a href="#cb43-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">inits =</span> inits, </span>
+<span id="cb43-53"><a href="#cb43-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters.to.save =</span> params, </span>
+<span id="cb43-54"><a href="#cb43-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.file =</span> <span class="st">"codigoJAGS/logistic_centered.jags"</span>,  <span class="co"># Replace with the actual model file name</span></span>
+<span id="cb43-55"><a href="#cb43-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>, </span>
+<span id="cb43-56"><a href="#cb43-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.iter =</span> <span class="dv">5000</span>, </span>
+<span id="cb43-57"><a href="#cb43-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.burnin =</span> <span class="dv">1000</span>, </span>
+<span id="cb43-58"><a href="#cb43-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.thin =</span> <span class="dv">10</span></span>
+<span id="cb43-59"><a href="#cb43-59" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 2015
+   Unobserved stochastic nodes: 270
+   Total graph size: 17254
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View summary of the model fit</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jags_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Bugs model at "codigoJAGS/logistic_centered.jags", fit using jags,
+ 3 chains, each with 5000 iterations (first 1000 discarded), n.thin = 10
+ n.sims = 1200 iterations saved
+                    mu.vect sd.vect     2.5%      25%      50%      75%
+b.0                  -2.247   2.524   -6.520   -4.758   -1.826   -0.098
+b.age.adj[1]          0.068   0.091   -0.088    0.003    0.053    0.123
+b.age.adj[2]         -0.060   0.087   -0.255   -0.114   -0.043   -0.002
+b.age.adj[3]          0.038   0.085   -0.120   -0.010    0.024    0.084
+b.age.adj[4]         -0.045   0.091   -0.259   -0.094   -0.026    0.009
+b.age.edu.adj[1,1]   -0.045   0.146   -0.411   -0.112   -0.022    0.031
+b.age.edu.adj[2,1]    0.078   0.150   -0.156   -0.011    0.046    0.145
+b.age.edu.adj[3,1]    0.025   0.138   -0.264   -0.042    0.008    0.094
+b.age.edu.adj[4,1]   -0.168   0.201   -0.659   -0.273   -0.115   -0.015
+b.age.edu.adj[1,2]    0.069   0.124   -0.144   -0.006    0.044    0.135
+b.age.edu.adj[2,2]   -0.104   0.133   -0.406   -0.181   -0.076   -0.007
+b.age.edu.adj[3,2]    0.016   0.119   -0.228   -0.043    0.007    0.074
+b.age.edu.adj[4,2]   -0.010   0.121   -0.269   -0.074   -0.004    0.056
+b.age.edu.adj[1,3]    0.060   0.137   -0.164   -0.024    0.032    0.127
+b.age.edu.adj[2,3]   -0.021   0.132   -0.322   -0.084   -0.012    0.045
+b.age.edu.adj[3,3]    0.002   0.135   -0.284   -0.063   -0.001    0.070
+b.age.edu.adj[4,3]    0.072   0.156   -0.193   -0.016    0.041    0.143
+b.age.edu.adj[1,4]    0.002   0.126   -0.266   -0.063    0.001    0.065
+b.age.edu.adj[2,4]   -0.038   0.118   -0.293   -0.105   -0.019    0.029
+b.age.edu.adj[3,4]    0.004   0.123   -0.265   -0.060    0.000    0.066
+b.age.edu.adj[4,4]    0.059   0.145   -0.199   -0.019    0.030    0.130
+b.black              -1.656   0.340   -2.333   -1.883   -1.661   -1.425
+b.edu.adj[1]         -0.166   0.137   -0.438   -0.264   -0.159   -0.059
+b.edu.adj[2]         -0.034   0.086   -0.215   -0.084   -0.028    0.019
+b.edu.adj[3]          0.172   0.118   -0.027    0.084    0.171    0.255
+b.edu.adj[4]          0.027   0.096   -0.154   -0.031    0.020    0.083
+b.female             -0.087   0.095   -0.273   -0.154   -0.086   -0.023
+b.female.black       -0.211   0.432   -1.051   -0.508   -0.192    0.086
+b.region.adj[1]      -0.224   0.198   -0.658   -0.360   -0.192   -0.058
+b.region.adj[2]      -0.001   0.141   -0.306   -0.073    0.005    0.079
+b.region.adj[3]       0.047   0.147   -0.269   -0.025    0.038    0.123
+b.region.adj[4]      -0.025   0.159   -0.419   -0.092   -0.006    0.061
+b.region.adj[5]       0.202   0.384   -0.309   -0.010    0.091    0.324
+b.state[1]            1.989   2.293   -1.792   -0.031    1.980    4.145
+b.state[2]            1.615   2.294   -2.083   -0.527    1.622    3.793
+b.state[3]            1.270   2.309   -2.467   -0.776    1.277    3.398
+b.state[4]            1.222   2.279   -2.439   -0.916    1.216    3.420
+b.state[5]            1.256   2.295   -2.546   -0.918    1.288    3.413
+b.state[6]            1.440   2.288   -2.294   -0.680    1.453    3.572
+b.state[7]            0.944   2.295   -2.945   -1.148    0.932    3.040
+b.state[8]            1.046   2.330   -2.828   -0.962    1.006    3.200
+b.state[9]            1.432   2.278   -2.161   -0.754    1.447    3.582
+b.state[10]           1.633   2.278   -2.079   -0.382    1.651    3.791
+b.state[11]           1.192   2.326   -2.769   -0.865    1.230    3.390
+b.state[12]           1.042   2.263   -2.619   -1.096    1.040    3.217
+b.state[13]           1.599   2.290   -2.221   -0.392    1.620    3.720
+b.state[14]           0.898   2.272   -2.922   -1.173    0.950    3.022
+b.state[15]           1.744   2.292   -2.000   -0.242    1.734    3.856
+b.state[16]           1.512   2.283   -2.220   -0.455    1.525    3.652
+b.state[17]           1.543   2.291   -2.191   -0.549    1.516    3.683
+b.state[18]           1.181   2.302   -2.647   -0.893    1.219    3.342
+b.state[19]           0.819   2.297   -3.013   -1.197    0.834    2.962
+b.state[20]           0.795   2.272   -2.870   -1.378    0.798    2.949
+b.state[21]           1.103   2.276   -2.500   -0.966    1.083    3.265
+b.state[22]           0.755   2.286   -2.986   -1.280    0.719    2.940
+b.state[23]           1.798   2.282   -1.953   -0.182    1.764    3.993
+b.state[24]           1.253   2.300   -2.492   -0.906    1.250    3.454
+b.state[25]           1.303   2.298   -2.497   -0.713    1.303    3.490
+b.state[26]           1.356   2.290   -2.454   -0.660    1.408    3.538
+b.state[27]           1.456   2.320   -2.427   -0.505    1.495    3.601
+b.state[28]           1.554   2.311   -2.335   -0.430    1.615    3.635
+b.state[29]           1.397   2.284   -2.269   -0.697    1.401    3.556
+b.state[30]           1.048   2.302   -2.684   -1.090    1.034    3.204
+b.state[31]           0.859   2.272   -2.753   -1.275    0.838    3.024
+b.state[32]           1.744   2.305   -1.926   -0.321    1.728    3.943
+b.state[33]           1.162   2.294   -2.652   -0.928    1.090    3.299
+b.state[34]           1.660   2.280   -1.976   -0.438    1.635    3.815
+b.state[35]           1.500   2.296   -2.270   -0.684    1.491    3.634
+b.state[36]           0.946   2.277   -2.769   -1.096    0.959    3.045
+b.state[37]           1.196   2.266   -2.435   -0.910    1.223    3.359
+b.state[38]           1.101   2.298   -2.623   -1.035    1.120    3.247
+b.state[39]           1.619   2.310   -2.122   -0.455    1.602    3.821
+b.state[40]           1.090   2.315   -2.766   -0.875    1.084    3.278
+b.state[41]           2.054   2.291   -1.672   -0.038    2.064    4.230
+b.state[42]           1.489   2.273   -2.128   -0.595    1.530    3.655
+b.state[43]           1.961   2.304   -1.839    0.043    1.925    4.123
+b.state[44]           1.620   2.294   -2.254   -0.386    1.627    3.750
+b.state[45]           1.859   2.295   -1.874   -0.283    1.861    4.027
+b.state[46]           1.215   2.302   -2.493   -0.917    1.189    3.406
+b.state[47]           1.432   2.297   -2.303   -0.614    1.426    3.577
+b.state[48]           1.049   2.263   -2.585   -0.981    1.063    3.206
+b.state[49]           1.252   2.325   -2.619   -0.734    1.255    3.415
+b.v.prev              1.011   1.310   -1.466    0.195    0.942    1.682
+mu.adj                0.439   0.085    0.277    0.381    0.439    0.494
+mu.age                0.822   1.960   -3.004   -0.546    1.496    2.129
+mu.age.edu           -0.342   0.526   -1.182   -0.702   -0.410   -0.039
+mu.edu                0.866   2.109   -2.890   -0.468    0.830    1.685
+mu.region             0.844   2.383   -3.269   -1.027    0.756    2.896
+sigma.age             0.192   0.208    0.005    0.061    0.130    0.240
+sigma.age.edu         0.148   0.095    0.014    0.073    0.136    0.201
+sigma.edu             0.346   0.379    0.019    0.128    0.238    0.412
+sigma.region          0.382   0.514    0.015    0.122    0.248    0.441
+sigma.state           0.429   0.102    0.241    0.356    0.424    0.493
+deviance           2608.893  11.378 2589.207 2600.737 2608.226 2616.198
+                      97.5%  Rhat n.eff
+b.0                   1.760 4.193     3
+b.age.adj[1]          0.272 1.002  1000
+b.age.adj[2]          0.085 1.002  1200
+b.age.adj[3]          0.222 1.002  1200
+b.age.adj[4]          0.110 1.000  1200
+b.age.edu.adj[1,1]    0.220 1.009  1200
+b.age.edu.adj[2,1]    0.444 1.015   200
+b.age.edu.adj[3,1]    0.342 1.009  1200
+b.age.edu.adj[4,1]    0.081 1.009   220
+b.age.edu.adj[1,2]    0.356 1.018   140
+b.age.edu.adj[2,2]    0.105 1.013   220
+b.age.edu.adj[3,2]    0.266 1.002  1200
+b.age.edu.adj[4,2]    0.237 1.010   830
+b.age.edu.adj[1,3]    0.386 1.005  1200
+b.age.edu.adj[2,3]    0.252 1.008   420
+b.age.edu.adj[3,3]    0.285 1.011   510
+b.age.edu.adj[4,3]    0.453 1.001  1200
+b.age.edu.adj[1,4]    0.266 1.009   670
+b.age.edu.adj[2,4]    0.180 1.004   690
+b.age.edu.adj[3,4]    0.273 1.004   500
+b.age.edu.adj[4,4]    0.401 1.007   900
+b.black              -1.011 1.003   650
+b.edu.adj[1]          0.051 1.000  1200
+b.edu.adj[2]          0.135 1.001  1200
+b.edu.adj[3]          0.404 1.005   390
+b.edu.adj[4]          0.225 1.003   640
+b.female              0.096 1.002  1200
+b.female.black        0.571 1.004   510
+b.region.adj[1]       0.058 1.004   460
+b.region.adj[2]       0.277 1.004   510
+b.region.adj[3]       0.332 1.000  1200
+b.region.adj[4]       0.272 1.002  1200
+b.region.adj[5]       1.312 1.006  1100
+b.state[1]            5.563 4.351     3
+b.state[2]            5.181 4.291     3
+b.state[3]            4.990 4.179     3
+b.state[4]            4.756 4.505     3
+b.state[5]            4.857 4.236     3
+b.state[6]            4.957 4.244     3
+b.state[7]            4.508 4.137     3
+b.state[8]            4.708 4.137     3
+b.state[9]            4.941 4.513     3
+b.state[10]           5.102 4.330     3
+b.state[11]           4.867 4.084     3
+b.state[12]           4.553 4.476     3
+b.state[13]           5.178 4.295     3
+b.state[14]           4.422 4.237     3
+b.state[15]           5.342 4.260     3
+b.state[16]           5.071 4.345     3
+b.state[17]           5.161 4.261     3
+b.state[18]           4.783 4.241     3
+b.state[19]           4.461 4.164     3
+b.state[20]           4.284 4.369     3
+b.state[21]           4.648 4.427     3
+b.state[22]           4.267 4.357     3
+b.state[23]           5.309 4.300     3
+b.state[24]           4.805 4.378     3
+b.state[25]           4.929 4.131     3
+b.state[26]           4.924 4.198     3
+b.state[27]           5.105 4.047     3
+b.state[28]           5.271 3.872     3
+b.state[29]           4.935 4.420     3
+b.state[30]           4.635 4.259     3
+b.state[31]           4.371 4.473     3
+b.state[32]           5.358 4.439     3
+b.state[33]           4.743 4.212     3
+b.state[34]           5.237 4.435     3
+b.state[35]           5.073 4.237     3
+b.state[36]           4.521 4.250     3
+b.state[37]           4.761 4.458     3
+b.state[38]           4.791 4.237     3
+b.state[39]           5.197 4.351     3
+b.state[40]           4.674 4.176     3
+b.state[41]           5.551 4.357     3
+b.state[42]           5.014 4.437     3
+b.state[43]           5.529 4.215     3
+b.state[44]           5.245 4.094     3
+b.state[45]           5.430 4.330     3
+b.state[46]           4.808 4.396     3
+b.state[47]           5.119 4.212     3
+b.state[48]           4.533 4.427     3
+b.state[49]           4.853 4.005     3
+b.v.prev              4.366 1.003  1100
+mu.adj                0.603 1.004   760
+mu.age                3.746 2.782     4
+mu.age.edu            0.956 1.151    21
+mu.edu                5.967 1.611     7
+mu.region             4.740 3.764     3
+sigma.age             0.741 1.000  1200
+sigma.age.edu         0.379 1.046    66
+sigma.edu             1.437 1.017  1200
+sigma.region          1.589 1.010   760
+sigma.state           0.650 1.003   670
+deviance           2633.799 1.003   720
+
+For each parameter, n.eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+
+DIC info (using the rule, pD = var(deviance)/2)
+pD = 64.7 and DIC = 2673.6
+DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+</div>
+</div>
+<section id="plots-1" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="plots-1"><span class="header-section-number">6.3.1</span> Plots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diag_mcmc</span>(<span class="fu">as.mcmc</span>(jags_fit),<span class="at">parName =</span> <span class="st">"mu.adj"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap17b_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diag_mcmc</span>(<span class="fu">as.mcmc</span>(jags_fit),<span class="at">parName =</span> <span class="st">"b.region.adj[1]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap17b_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="graphing-the-estimated-model-for-a-binary-outcome" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="graphing-the-estimated-model-for-a-binary-outcome"><span class="header-section-number">6.4</span> Graphing the Estimated Model for a Binary Outcome”</h2>
+<section id="overview" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">6.4.1</span> Overview</h3>
+<p>In this analysis, we aim to create summary plots for a multilevel model with a binary outcome, similar to the multilevel models in Chapters 12 and 13. We make two main adjustments for these plots:</p>
+<ol type="1">
+<li><p><strong>Binary Outcome</strong>: Since the outcome is binary, we plot the predicted probability <span class="math inline">\(\Pr(y = 1) = E(y)\)</span> as a function of the predictors, resulting in curved plots similar to those for generalized linear models.</p></li>
+<li><p><strong>Combined Predictors</strong>: With multiple predictors in the model, we combine them into a single <strong>linear predictor</strong> for demographics, called <code>linpred</code>, rather than plotting each predictor individually.</p></li>
+</ol>
+<section id="linear-predictor-definition" class="level4" data-number="6.4.1.1">
+<h4 data-number="6.4.1.1" class="anchored" data-anchor-id="linear-predictor-definition"><span class="header-section-number">6.4.1.1</span> Linear Predictor Definition</h4>
+<p>The combined demographic linear predictor for individual <span class="math inline">\(i\)</span> is defined as:</p>
+<p><span class="math display">\[
+\text{linpred}_i = \beta_0 + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i + \beta_{\text{female.black}} \cdot \text{female}_i \cdot \text{black}_i + \alpha^{\text{age}}_{k[i]} + \alpha^{\text{edu}}_{l[i]} + \alpha^{\text{age.edu}}_{k[i], l[i]}
+\]</span></p>
+</section>
+<section id="plotting-the-demographic-effects" class="level4" data-number="6.4.1.2">
+<h4 data-number="6.4.1.2" class="anchored" data-anchor-id="plotting-the-demographic-effects"><span class="header-section-number">6.4.1.2</span> Plotting the Demographic Effects</h4>
+<p>Estimates, along with their 50% and 95% intervals for each demographic coefficient, are shown below. These estimates can be interpreted directly as each predictor’s contribution to the sum <span class="math inline">\(X_i \beta\)</span>. For example, to predict the probability of a Republican vote for a female, aged 20, with no high school diploma, we would:</p>
+<ul>
+<li>Sum the constant term and the estimates for the corresponding main effects and interactions.</li>
+<li>Take the inverse-logit transformation to obtain the probability.</li>
+</ul>
+</section>
+<section id="regression-prediction-for-survey-respondents" class="level4" data-number="6.4.1.3">
+<h4 data-number="6.4.1.3" class="anchored" data-anchor-id="regression-prediction-for-survey-respondents"><span class="header-section-number">6.4.1.3</span> Regression Prediction for Survey Respondents</h4>
+<p>For each respondent <span class="math inline">\(i\)</span>, we can write the prediction as:</p>
+<p><span class="math display">\[
+\Pr(y_i = 1) = \text{logit}^{-1}(\text{linpred}_i + \alpha^{\text{state}}_{j[i]})
+\]</span></p>
+<p>where <span class="math inline">\(\text{linpred}_i\)</span> is the demographic linear predictor and <span class="math inline">\(\alpha^{\text{state}}_{j[i]}\)</span> is the state effect. This can then be plotted for each state.</p>
+</section>
+</section>
+<section id="r-code-for-computing-and-plotting-linpred" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="r-code-for-computing-and-plotting-linpred"><span class="header-section-number">6.4.2</span> R Code for Computing and Plotting <code>linpred</code></h3>
+<p>After fitting the model in <strong>JAGS</strong> , we can compute <code>linpred</code> using the simulations of the fitted model</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attach.jags</span>(jags_fit)  <span class="co"># Attach model output for access to parameter arrays</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span>(data_jags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked _by_ .GlobalEnv:
+
+    n.edu, region, state, v.prev</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from polls.subset:
+
+    age, black, edu, female, state, y</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute linpred for each individual</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>linpred <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  linpred[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    b<span class="fl">.0</span> <span class="sc">+</span> b.female <span class="sc">*</span> female[i] <span class="sc">+</span> b.black <span class="sc">*</span> black[i] <span class="sc">+</span> </span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    b.female.black <span class="sc">*</span> female[i] <span class="sc">*</span> black[i] <span class="sc">+</span> </span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    b.age.adj[,age[i]] <span class="sc">+</span> b.edu.adj[,edu[i]] <span class="sc">+</span> b.age.edu.adj[,age[i], edu[i]]</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plotting-predicted-probabilities-by-state" class="level3" data-number="6.4.3">
+<h3 data-number="6.4.3" class="anchored" data-anchor-id="plotting-predicted-probabilities-by-state"><span class="header-section-number">6.4.3</span> Plotting Predicted Probabilities by State</h3>
+<p>We create a plot for each displayed state showing the predicted probability of supporting Bush as a function of the linear predictor <code>linpred</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>))  <span class="co"># Arrange plots in a 2x4 grid</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>displayed.states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">8</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">5</span>,<span class="dv">9</span>)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> displayed.states) {</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="at">xlim =</span> <span class="fu">range</span>(linpred), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">yaxs =</span> <span class="st">"i"</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"Linear predictor"</span>, <span class="at">ylab =</span> <span class="st">"Pr (support Bush)"</span>,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> state.name[j], <span class="at">type =</span> <span class="st">"n"</span>)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Plot 20 simulated probability curves for the state</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>) {</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">curve</span>(<span class="fu">invlogit</span>(b.state[s, j] <span class="sc">+</span> x), <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Plot the median probability curve for the state</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">curve</span>(<span class="fu">invlogit</span>(<span class="fu">median</span>(b.state[, j]) <span class="sc">+</span> x), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add observed points for the current state</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">sum</span>(state <span class="sc">==</span> j) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(linpred[state <span class="sc">==</span> j], y[state <span class="sc">==</span> j])</span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cap17b_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation" class="level3" data-number="6.4.4">
+<h3 data-number="6.4.4" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">6.4.4</span> Interpretation</h3>
+<p>In the resulting plots: - The <strong>gray lines</strong> represent the simulated probability curves for each state. - The <strong>bold line</strong> represents the median probability curve. - <strong>Observed points</strong> are plotted for individuals in each state.</p>
+<p>These plots illustrate how the demographic predictors and state effects contribute to the probability of supporting Bush.</p>
+</section>
+</section>
+<section id="estimating-average-opinion-by-state-using-model-inferences" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="estimating-average-opinion-by-state-using-model-inferences"><span class="header-section-number">6.5</span> Estimating Average Opinion by State Using Model Inferences</h2>
+<section id="overview-1" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="overview-1"><span class="header-section-number">6.5.1</span> Overview</h3>
+<p>The logistic regression model provides a way to estimate the probability that any adult in a given demographic group and state will prefer Bush. Using these probabilities, we can compute weighted averages to estimate the proportion of Bush supporters in different population subsets.</p>
+<section id="data-preparation-1" class="level4" data-number="6.5.1.1">
+<h4 data-number="6.5.1.1" class="anchored" data-anchor-id="data-preparation-1"><span class="header-section-number">6.5.1.1</span> Data Preparation</h4>
+<p>Using data from the U.S. Census, we create a dataset of <strong>3264 cells</strong> (cross-classifications of demographics and states) with each cell representing a unique combination of: - <strong>Sex</strong> - <strong>Ethnicity</strong> - <strong>Age</strong> - <strong>Education level</strong> - <strong>State</strong></p>
+<p>Each cell contains the <strong>number of people</strong> fitting that combination, stored in the <code>census</code> data frame.</p>
+</section>
+<section id="calculating-expected-support-for-bush-y.pred" class="level4" data-number="6.5.1.2">
+<h4 data-number="6.5.1.2" class="anchored" data-anchor-id="calculating-expected-support-for-bush-y.pred"><span class="header-section-number">6.5.1.2</span> Calculating Expected Support for Bush (<code>y.pred</code>)</h4>
+<p>After fitting the model in <strong>JAGS</strong> and obtaining <code>n.sims</code> simulation draws, we calculate <code>y.pred</code>, the predicted probability of supporting Bush for each demographic cell in each simulation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming `census` contains the demographic and state information for each cell</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span> (foreign)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> <span class="fu">read.dta</span> (<span class="st">"data/ARM_Data/election88/census88.dta"</span>)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> census <span class="sc">%&gt;%</span> <span class="fu">filter</span>(state <span class="sc">&lt;=</span> <span class="dv">49</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">nrow</span>(census)  <span class="co"># Number of census cells</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>y.pred <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(n.sims, L))  <span class="co"># Initialize a matrix to store predictions</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>L) {</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>  y.pred[, l] <span class="ot">&lt;-</span> <span class="fu">invlogit</span>(</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    b<span class="fl">.0</span> <span class="sc">+</span> b.female <span class="sc">*</span> census<span class="sc">$</span>female[l] <span class="sc">+</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    b.black <span class="sc">*</span> census<span class="sc">$</span>black[l] <span class="sc">+</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    b.female.black <span class="sc">*</span> census<span class="sc">$</span>female[l] <span class="sc">*</span> census<span class="sc">$</span>black[l] <span class="sc">+</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>    b.age.adj[, census<span class="sc">$</span>age[l]] <span class="sc">+</span> b.edu.adj[, census<span class="sc">$</span>edu[l]] <span class="sc">+</span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>    b.age.edu.adj[, census<span class="sc">$</span>age[l], census<span class="sc">$</span>edu[l]] <span class="sc">+</span> b.state[, census<span class="sc">$</span>state[l]]</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="estimating-average-support-by-state" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="estimating-average-support-by-state"><span class="header-section-number">6.5.2</span> Estimating Average Support by State</h3>
+<p>For each state <span class="math inline">\(j\)</span>, we estimate the <strong>average response</strong> by taking a weighted sum of predictions across the 64 demographic categories within the state. This weighted average reflects the expected proportion of Bush supporters in each state.</p>
+<p>The weighted average for state <span class="math inline">\(j\)</span> is calculated as:</p>
+<p><span class="math display">\[
+y^{\text{state}}_{\text{pred}, j} = \frac{\sum_{l \in j} N_l \theta_l}{\sum_{l \in j} N_l}
+\]</span></p>
+<p>where: - <span class="math inline">\(N_l\)</span> is the population count for demographic group <span class="math inline">\(l\)</span> in state <span class="math inline">\(j\)</span>. - <span class="math inline">\(\theta_l\)</span> is the predicted probability of support for Bush for group <span class="math inline">\(l\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an array to store state-level predictions</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>y.pred.state <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(n.sims, n.state))</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute state-level weighted averages of predictions</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.sims) {</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.state) {</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    ok <span class="ot">&lt;-</span> census<span class="sc">$</span>state <span class="sc">==</span> j  <span class="co"># Identify cells corresponding to state j</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    y.pred.state[s, j] <span class="ot">&lt;-</span> <span class="fu">sum</span>(census<span class="sc">$</span>N[ok] <span class="sc">*</span> y.pred[s, ok]) <span class="sc">/</span> <span class="fu">sum</span>(census<span class="sc">$</span>N[ok])</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="summarizing-state-predictions" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="summarizing-state-predictions"><span class="header-section-number">6.5.3</span> Summarizing State Predictions</h3>
+<p>For each state, we compute a point estimate and 50% prediction interval from the <code>n.sims</code> simulations. This provides a summary of the proportion of adults in each state who are predicted to support Bush.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an array to store summary statistics</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>state.pred <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(<span class="dv">3</span>, n.state))</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 50% interval and median for each state</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.state) {</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  state.pred[, j] <span class="ot">&lt;-</span> <span class="fu">quantile</span>(y.pred.state[, j], <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="interpretation-1" class="level3" data-number="6.5.4">
+<h3 data-number="6.5.4" class="anchored" data-anchor-id="interpretation-1"><span class="header-section-number">6.5.4</span> Interpretation</h3>
+<p>The resulting <strong>state.pred</strong> array contains: - The <strong>25th percentile</strong> (lower 50% interval bound), - The <strong>median</strong> (point prediction), and - The <strong>75th percentile</strong> (upper 50% interval bound)</p>
+<p>for the proportion of adults in each state who supported Bush. These estimates account for demographic variation within each state and provide insights into the predicted level of support by state. ```</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./cap17a.html" class="pagination-link" aria-label="Chapter 17-Part A">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Chapter 17-Part A</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

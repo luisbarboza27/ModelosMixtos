@@ -1,0 +1,434 @@
+---
+title: "Chapter17-PartB"
+---
+
+## Multilevel logistic regression
+
+### Data Preparation
+
+```{r}
+library(tidyverse)
+library ("arm")
+
+data (state)                  # "state" is an R data file
+state.abbr <- c (state.abb[1:8], "DC", state.abb[9:50])
+dc <- 9
+not.dc <- c(1:8,10:51)
+region <- c(3,4,4,3,4,4,1,1,5,3,3,4,4,2,2,2,2,3,3,1,1,1,2,2,3,2,4,2,4,1,1,4,1,3,2,2,3,4,1,1,3,2,3,3,4,1,3,4,1,2,4)
+
+library(haven)
+polls <- read_dta("data/ARM_Data/election88/polls.dta")
+
+
+polls.subset <- polls %>% filter(survey == 8)
+polls.subset <- polls.subset %>% rename (y = bush)
+
+presvote <- read_dta('data/ARM_Data/election88/presvote.dta')
+v.prev <- presvote$g76_84pr
+not.dc <- c(1:8,10:51)
+candidate.effects <- read.table("data/ARM_Data/election88/candidate_effects.dat",
+                                header = T)
+
+v.prev[not.dc] <- v.prev[not.dc] +
+  (candidate.effects$X76 + candidate.effects$X80 + candidate.effects$X84)/3
+
+n.edu <- max(polls.subset$edu)
+
+# Reparametrizacion de la interacción
+polls.subset <- polls.subset %>% mutate(age.edu = n.edu*(age-1) + edu,
+                                        v.prev.full = v.prev[state],
+                                        region.full = region[state])
+
+```
+
+### Model Specification
+
+Simple Model with Demographic and Geographic Variation
+
+We model survey responses, where each response $y_i$ is coded as: - $y_i = 1$ for supporters of the Republican candidate - $y_i = 0$ for supporters of the Democrat
+
+Undecideds are excluded, and we assume the responses are independent, with: $$
+\Pr(y_i = 1) = \text{logit}^{-1}(X_i \beta)
+$$
+
+### Model Inputs
+
+The input variables include: - **State index** $j[i]$: to account for geographic variation. - **Demographic predictors**: categorical variables for **sex**, **ethnicity**, **age**, and **education** (used by CBS in survey weighting).
+
+### Multilevel Logistic Regression Example
+
+We demonstrate multilevel logistic regression with: - Two individual predictors: `female` and `black` - 51 states with varying intercepts
+
+$$
+\Pr(y_i = 1) = \text{logit}^{-1}(\alpha_{j[i]} + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i), \quad \text{for } i = 1, \dots, n
+$$
+
+where: - $\alpha_j \sim N(\mu_\alpha, \sigma_{\text{state}}^2)$ for each state $j = 1, \dots, 51$
+
+This model structure captures both individual demographic effects and state-level geographic variation in political support.
+
+## Fuller Model Including Non-Nested Factors
+
+This expanded model incorporates a comprehensive set of demographic and geographic predictors used in CBS survey weighting.
+
+### Model Structure
+
+We include: - **Demographic Predictors**: - **Sex × Ethnicity** and **Age × Education** interactions - Four age categories and four education categories with varying intercepts - A 16-level interaction between age and education - **State-level Predictors**: - Indicators for the 5 regions of the country (Northeast, Midwest, South, West, and D.C.) - **v.prev**: Average Republican vote share in the three previous elections, adjusted for home-state and home-region effects
+
+The model uses indices $j$, $k$, $l$, and $m$ for state, age category, education category, and region, respectively.
+
+### Model Specification
+
+The probability of supporting the Republican candidate is given by:
+
+$$
+\Pr(y_i = 1) = \text{logit}^{-1}(\beta_0 + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i + \beta_{\text{female.black}} \cdot \text{female}_i \cdot \text{black}_i + \alpha^{\text{age}}_{k[i]} + \alpha^{\text{edu}}_{l[i]} + \alpha^{\text{age.edu}}_{k[i],l[i]} + \alpha^{\text{state}}_{j[i]})
+$$
+
+where: - $\alpha^{\text{state}}_j \sim N(\alpha^{\text{region}}_{m[j]} + \beta_{\text{v.prev}} \cdot \text{v.prev}_j, \sigma_{\text{state}}^2)$
+
+### Multilevel Coefficients
+
+The multilevel coefficients have the following distributions:
+
+$$
+\alpha^{\text{age}}_k \sim N(0, \sigma_{\text{age}}^2), \quad \text{for } k = 1, \dots, 4
+$$ $$
+\alpha^{\text{edu}}_l \sim N(0, \sigma_{\text{edu}}^2), \quad \text{for } l = 1, \dots, 4
+$$ $$
+\alpha^{\text{age.edu}}_{k,l} \sim N(0, \sigma_{\text{age.edu}}^2), \quad \text{for } k, l = 1, \dots, 4
+$$ $$
+\alpha^{\text{region}}_m \sim N(0, \sigma_{\text{region}}^2), \quad \text{for } m = 1, \dots, 5
+$$
+
+### Summary
+
+This model captures a complex structure of individual and group-level interactions, enabling us to account for detailed demographic and geographic variations in voting behavior.
+
+### Fitting the Model
+
+```{r}
+# Load necessary library
+library(R2jags)
+
+attach(polls.subset)
+
+# Adjust `state` to be within 1 to n.state if needed
+state <- as.numeric(factor(state))  # Convert to consecutive integers starting from 1
+
+data_jags <- list(
+  y = y,
+  female = female,
+  black = black,
+  age = age,
+  edu = edu,
+  state = state,  # Adjusted state
+  region = region,
+  v.prev = v.prev,
+  n = length(y),
+  n.age = length(unique(age)),
+  n.edu = length(unique(edu)),
+  n.state = length(unique(state)),
+  n.region = length(unique(region))
+)
+
+
+# Initial values for the parameters
+inits <- function() {
+  list(
+    b.0 = rnorm(1),
+    b.female = rnorm(1),
+    b.black = rnorm(1),
+    b.female.black = rnorm(1),
+    b.age = rnorm(data_jags$n.age),
+    b.edu = rnorm(data_jags$n.edu),
+    b.age.edu = matrix(rnorm(data_jags$n.age * data_jags$n.edu), nrow = data_jags$n.age),
+    b.state = rnorm(data_jags$n.state),
+    b.region = rnorm(data_jags$n.region),
+    b.v.prev = rnorm(1),
+    sigma.age = runif(1, 0, 100),
+    sigma.edu = runif(1, 0, 100),
+    sigma.age.edu = runif(1, 0, 100),
+    sigma.state = runif(1, 0, 100),
+    sigma.region = runif(1, 0, 100)
+  )
+}
+
+# Parameters to monitor
+params <- c("b.0", "b.female", "b.black", "b.female.black", "b.age", "b.edu", 
+            "b.age.edu", "b.state", "b.region", "b.v.prev", 
+            "sigma.age", "sigma.edu", "sigma.age.edu", "sigma.state", "sigma.region")
+
+# Fit the model with JAGS
+jags_fit <- jags(
+  data = data_jags, 
+  inits = inits, 
+  parameters.to.save = params, 
+  model.file = "codigoJAGS/logistic.jags", 
+  n.chains = 3, 
+  n.iter = 5000, 
+  n.burnin = 1000, 
+  n.thin = 10
+)
+
+# View summary of the model fit
+print(jags_fit)
+
+
+```
+
+### Plots
+
+```{r}
+library(CalvinBayes)
+
+diag_mcmc(as.mcmc(jags_fit),parName = "b.0")
+diag_mcmc(as.mcmc(jags_fit),parName = "b.region[1]")
+```
+
+## Logistic model with redundant parameters (centered)
+
+```{r}
+
+# Prepare data for JAGS
+data_jags <- list(
+  y = y,
+  female = female,
+  black = black,
+  age = age,
+  edu = edu,
+  state = state,
+  region = region,
+  v.prev = v.prev,
+  n = length(y),
+  n.age = length(unique(age)),
+  n.edu = length(unique(edu)),
+  n.state = length(unique(state)),
+  n.region = length(unique(region))
+)
+
+# Initial values for the parameters
+inits <- function() {
+  list(
+    b.0 = rnorm(1),
+    b.female = rnorm(1),
+    b.black = rnorm(1),
+    b.female.black = rnorm(1),
+    b.age = rnorm(data_jags$n.age),
+    b.edu = rnorm(data_jags$n.edu),
+    b.age.edu = matrix(rnorm(data_jags$n.age * data_jags$n.edu), nrow = data_jags$n.age),
+    b.state = rnorm(data_jags$n.state),
+    b.region = rnorm(data_jags$n.region),
+    b.v.prev = rnorm(1),
+    sigma.age = runif(1, 0, 100),
+    sigma.edu = runif(1, 0, 100),
+    sigma.age.edu = runif(1, 0, 100),
+    sigma.state = runif(1, 0, 100),
+    sigma.region = runif(1, 0, 100),
+    mu.age = rnorm(1),
+    mu.edu = rnorm(1),
+    mu.age.edu = rnorm(1),
+    mu.region = rnorm(1)
+  )
+}
+
+# Parameters to monitor
+params <- c("mu.adj", "b.0", "b.female", "b.black", "b.female.black", 
+            "b.age.adj", "b.edu.adj", "b.age.edu.adj", "b.state", "b.region.adj", 
+            "b.v.prev", "sigma.age", "sigma.edu", "sigma.age.edu", "sigma.state", 
+            "sigma.region", "mu.age", "mu.edu", "mu.age.edu", "mu.region")
+
+# Fit the model with JAGS
+jags_fit <- jags(
+  data = data_jags, 
+  inits = inits, 
+  parameters.to.save = params, 
+  model.file = "codigoJAGS/logistic_centered.jags",  # Replace with the actual model file name
+  n.chains = 3, 
+  n.iter = 5000, 
+  n.burnin = 1000, 
+  n.thin = 10
+)
+
+# View summary of the model fit
+print(jags_fit)
+```
+
+### Plots
+
+```{r}
+
+diag_mcmc(as.mcmc(jags_fit),parName = "mu.adj")
+diag_mcmc(as.mcmc(jags_fit),parName = "b.region.adj[1]")
+```
+
+## Graphing the Estimated Model for a Binary Outcome"
+
+### Overview
+
+In this analysis, we aim to create summary plots for a multilevel model with a binary outcome, similar to the multilevel models in Chapters 12 and 13. We make two main adjustments for these plots:
+
+1.  **Binary Outcome**: Since the outcome is binary, we plot the predicted probability $\Pr(y = 1) = E(y)$ as a function of the predictors, resulting in curved plots similar to those for generalized linear models.
+
+2.  **Combined Predictors**: With multiple predictors in the model, we combine them into a single **linear predictor** for demographics, called `linpred`, rather than plotting each predictor individually.
+
+#### Linear Predictor Definition
+
+The combined demographic linear predictor for individual $i$ is defined as:
+
+$$
+\text{linpred}_i = \beta_0 + \beta_{\text{female}} \cdot \text{female}_i + \beta_{\text{black}} \cdot \text{black}_i + \beta_{\text{female.black}} \cdot \text{female}_i \cdot \text{black}_i + \alpha^{\text{age}}_{k[i]} + \alpha^{\text{edu}}_{l[i]} + \alpha^{\text{age.edu}}_{k[i], l[i]}
+$$
+
+#### Plotting the Demographic Effects
+
+Estimates, along with their 50% and 95% intervals for each demographic coefficient, are shown below. These estimates can be interpreted directly as each predictor’s contribution to the sum $X_i \beta$. For example, to predict the probability of a Republican vote for a female, aged 20, with no high school diploma, we would:
+
+-   Sum the constant term and the estimates for the corresponding main effects and interactions.
+-   Take the inverse-logit transformation to obtain the probability.
+
+#### Regression Prediction for Survey Respondents
+
+For each respondent $i$, we can write the prediction as:
+
+$$
+\Pr(y_i = 1) = \text{logit}^{-1}(\text{linpred}_i + \alpha^{\text{state}}_{j[i]})
+$$
+
+where $\text{linpred}_i$ is the demographic linear predictor and $\alpha^{\text{state}}_{j[i]}$ is the state effect. This can then be plotted for each state.
+
+### R Code for Computing and Plotting `linpred`
+
+After fitting the model in **JAGS** , we can compute `linpred` using the simulations of the fitted model
+
+```{r}
+
+attach.jags(jags_fit)  # Attach model output for access to parameter arrays
+
+attach(data_jags)
+# Compute linpred for each individual
+linpred <- rep(NA, n)
+for (i in 1:n) {
+  linpred[i] <- mean(
+    b.0 + b.female * female[i] + b.black * black[i] + 
+    b.female.black * female[i] * black[i] + 
+    b.age.adj[,age[i]] + b.edu.adj[,edu[i]] + b.age.edu.adj[,age[i], edu[i]]
+  )
+}
+```
+
+### Plotting Predicted Probabilities by State
+
+We create a plot for each displayed state showing the predicted probability of supporting Bush as a function of the linear predictor `linpred`.
+
+```{r}
+par(mfrow = c(2, 4))  # Arrange plots in a 2x4 grid
+displayed.states <- c(2,3,4,8,6,7,5,9)
+for (j in displayed.states) {
+  plot(0, 0, xlim = range(linpred), ylim = c(0, 1), yaxs = "i",
+       xlab = "Linear predictor", ylab = "Pr (support Bush)",
+       main = state.name[j], type = "n")
+
+  # Plot 20 simulated probability curves for the state
+  for (s in 1:20) {
+    curve(invlogit(b.state[s, j] + x), lwd = 0.5, add = TRUE, col = "gray")
+  }
+  
+  # Plot the median probability curve for the state
+  curve(invlogit(median(b.state[, j]) + x), lwd = 2, add = TRUE)
+  
+  # Add observed points for the current state
+  if (sum(state == j) > 0) {
+    points(linpred[state == j], y[state == j])
+  }
+}
+```
+
+### Interpretation
+
+In the resulting plots: - The **gray lines** represent the simulated probability curves for each state. - The **bold line** represents the median probability curve. - **Observed points** are plotted for individuals in each state.
+
+These plots illustrate how the demographic predictors and state effects contribute to the probability of supporting Bush.
+
+## Estimating Average Opinion by State Using Model Inferences
+
+### Overview
+
+The logistic regression model provides a way to estimate the probability that any adult in a given demographic group and state will prefer Bush. Using these probabilities, we can compute weighted averages to estimate the proportion of Bush supporters in different population subsets.
+
+#### Data Preparation
+
+Using data from the U.S. Census, we create a dataset of **3264 cells** (cross-classifications of demographics and states) with each cell representing a unique combination of: - **Sex** - **Ethnicity** - **Age** - **Education level** - **State**
+
+Each cell contains the **number of people** fitting that combination, stored in the `census` data frame.
+
+#### Calculating Expected Support for Bush (`y.pred`)
+
+After fitting the model in **JAGS** and obtaining `n.sims` simulation draws, we calculate `y.pred`, the predicted probability of supporting Bush for each demographic cell in each simulation.
+
+```{r}
+# Assuming `census` contains the demographic and state information for each cell
+library (foreign)
+library(tidyverse)
+census <- read.dta ("data/ARM_Data/election88/census88.dta")
+
+census <- census %>% filter(state <= 49)
+
+L <- nrow(census)  # Number of census cells
+y.pred <- array(NA, c(n.sims, L))  # Initialize a matrix to store predictions
+
+for (l in 1:L) {
+  y.pred[, l] <- invlogit(
+    b.0 + b.female * census$female[l] +
+    b.black * census$black[l] +
+    b.female.black * census$female[l] * census$black[l] +
+    b.age.adj[, census$age[l]] + b.edu.adj[, census$edu[l]] +
+    b.age.edu.adj[, census$age[l], census$edu[l]] + b.state[, census$state[l]]
+  )
+}
+```
+
+### Estimating Average Support by State
+
+For each state $j$, we estimate the **average response** by taking a weighted sum of predictions across the 64 demographic categories within the state. This weighted average reflects the expected proportion of Bush supporters in each state.
+
+The weighted average for state $j$ is calculated as:
+
+$$
+y^{\text{state}}_{\text{pred}, j} = \frac{\sum_{l \in j} N_l \theta_l}{\sum_{l \in j} N_l}
+$$
+
+where: - $N_l$ is the population count for demographic group $l$ in state $j$. - $\theta_l$ is the predicted probability of support for Bush for group $l$.
+
+```{r}
+# Initialize an array to store state-level predictions
+y.pred.state <- array(NA, c(n.sims, n.state))
+
+# Compute state-level weighted averages of predictions
+for (s in 1:n.sims) {
+  for (j in 1:n.state) {
+    ok <- census$state == j  # Identify cells corresponding to state j
+    y.pred.state[s, j] <- sum(census$N[ok] * y.pred[s, ok]) / sum(census$N[ok])
+  }
+}
+```
+
+### Summarizing State Predictions
+
+For each state, we compute a point estimate and 50% prediction interval from the `n.sims` simulations. This provides a summary of the proportion of adults in each state who are predicted to support Bush.
+
+```{r}
+# Initialize an array to store summary statistics
+state.pred <- array(NA, c(3, n.state))
+
+# Calculate 50% interval and median for each state
+for (j in 1:n.state) {
+  state.pred[, j] <- quantile(y.pred.state[, j], c(0.25, 0.5, 0.75))
+}
+```
+
+### Interpretation
+
+The resulting **state.pred** array contains: - The **25th percentile** (lower 50% interval bound), - The **median** (point prediction), and - The **75th percentile** (upper 50% interval bound)
+
+for the proportion of adults in each state who supported Bush. These estimates account for demographic variation within each state and provide insights into the predicted level of support by state. \`\`\`

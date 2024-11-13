@@ -12,6 +12,7 @@ book:
     - MLMavanzados.qmd
     - cap16.qmd
     - cap17a.qmd
+    - cap17b.qmd
 
 bibliography: references.bib
 
